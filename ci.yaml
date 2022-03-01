@@ -1,0 +1,26 @@
+name: ci
+
+on: [push, pull_request, workflow_dispatch]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_COLOR: 3
+  LOG_LEVEL: debug
+
+jobs:
+  validate-config-presets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        file:
+          - default
+    env:
+      RENOVATE_CONFIG_FILE: ${{ matrix.file }}.json
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Validating ${{ env.RENOVATE_CONFIG_FILE }}
+        run: npx -p renovate renovate-config-validator
