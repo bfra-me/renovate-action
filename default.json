@@ -29,7 +29,11 @@
 
   "internalChecksFilter": "strict",
 
-  "schedule": ["after 4pm and before 8am every weekday also every weekend"],
+  "schedule": [
+    "after 4pm every weekday",
+    "before 8am every weekday",
+    "every weekend"
+  ],
   "timezone": "America/Phoenix",
 
   "labels": ["dependencies"],
