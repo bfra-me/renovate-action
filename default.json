@@ -2,23 +2,32 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
 
   "extends": [
-    "config:base",
-    ":enableVulnerabilityAlertsWithLabel(security)",
-    ":automergeBranch",
-    ":semanticCommits",
-    ":semanticCommitScope(deps)",
+    ":ignoreModulesAndTests",
+    ":preserveSemverRanges",
     ":rebaseStalePrs",
     ":prNotPending",
     ":prHourlyLimitNone",
-    ":prConcurrentLimitNone",
-    "helpers:disableTypesNodeMajor",
-    ":dependencyDashboard",
+    ":automergeDigests",
+    ":automergeMinor",
+    ":automergeBranch",
     ":maintainLockFilesWeekly",
-    ":preserveSemverRanges",
+    ":ignoreUnstable",
+    ":updateNotScheduled",
+    ":enableVulnerabilityAlertsWithLabel(security)",
+    ":semanticCommits",
     "docker:enableMajor",
     "docker:pinDigests",
+    "group:monorepos",
+    "group:recommended",
+    "helpers:disableTypesNodeMajor",
+    "helpers:pinGitHubActionDigests",
+    "npm:unpublishSafe",
+    "replacements:all",
+    "workarounds:all",
     "github>whitesource/merge-confidence:beta"
   ],
+
+  "prConcurrentLimit": 5,
 
   "internalChecksFilter": "strict",
 
@@ -38,20 +47,10 @@
       "dependencyDashboardApproval": true
     },
     {
-      "description": "Automerge non-major updates",
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest", "lockFileMaintenance"],
-      "automerge": true
-    },
-    {
       "description": "v prefix workaround for action updates",
       "matchDepTypes": ["action"],
       "extractVersion": "^(?<version>v\\d+\\.\\d+\\.\\d+)$",
       "versioning": "regex:^v(?<major>\\d+)(\\.(?<minor>\\d+)\\.(?<patch>\\d+))?$"
-    },
-    {
-      "description": "One week stability period for npm packages",
-      "matchDatasources": ["npm"],
-      "stabilityDays": 7
     }
   ]
 }
