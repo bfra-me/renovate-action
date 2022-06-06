@@ -7,7 +7,7 @@
     ":rebaseStalePrs",
     ":prNotPending",
     ":prHourlyLimitNone",
-    ":automergeDigests",
+    ":automergeDigest",
     ":automergeMinor",
     ":automergeBranch",
     ":maintainLockFilesWeekly",
