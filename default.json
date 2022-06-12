@@ -2,6 +2,8 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
 
   "extends": [
+    "github>whitesource/merge-confidence:beta",
+    "bfra-me/renovate-config:onboarding",
     ":ignoreModulesAndTests",
     ":preserveSemverRanges",
     ":rebaseStalePrs",
@@ -23,8 +25,7 @@
     "helpers:pinGitHubActionDigests",
     "npm:unpublishSafe",
     "replacements:all",
-    "workarounds:all",
-    "github>whitesource/merge-confidence:beta"
+    "workarounds:all"
   ],
 
   "prConcurrentLimit": 5,
