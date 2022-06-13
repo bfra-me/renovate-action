@@ -45,9 +45,9 @@
 
   "packageRules": [
     {
-      "description": "Require dashboard approval for major updates",
+      "description": "Disable dependency dashboard approval for major updates",
       "matchUpdateTypes": ["major"],
-      "dependencyDashboardApproval": true
+      "dependencyDashboardApproval": false
     },
     {
       "description": "v prefix workaround for action updates",
