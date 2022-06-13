@@ -41,6 +41,8 @@
 
   "labels": ["dependencies"],
 
+  "postUpdateOptions": ["gomodTidy", "npmDedupe", "yarnDedupeHighest"],
+
   "packageRules": [
     {
       "description": "Require dashboard approval for major updates",
