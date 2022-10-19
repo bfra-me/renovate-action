@@ -9,8 +9,6 @@
     ":rebaseStalePrs",
     ":prNotPending",
     ":prHourlyLimitNone",
-    ":automergeDigest",
-    ":automergeMinor",
     ":automergeBranch",
     ":maintainLockFilesWeekly",
     ":ignoreUnstable",
@@ -28,8 +26,12 @@
     "workarounds:all"
   ],
 
+  "configMigration": true,
+  "configWarningReuseIssue": false,
+
   "prConcurrentLimit": 5,
 
+  "platformAutomerge": true,
   "internalChecksFilter": "strict",
 
   "schedule": [
