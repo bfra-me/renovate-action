@@ -4,7 +4,6 @@
   "extends": [
     "github>whitesource/merge-confidence:beta",
     "bfra-me/renovate-config:onboarding",
-    ":ignoreModulesAndTests",
     ":preserveSemverRanges",
     ":rebaseStalePrs",
     ":prNotPending",
@@ -44,6 +43,21 @@
   "labels": ["dependencies"],
 
   "postUpdateOptions": ["gomodTidy", "npmDedupe", "yarnDedupeHighest"],
+
+  "ignorePresets": [":ignoreModulesAndTests"],
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/vendor/**",
+    "**/examples/**",
+    "**/__tests__/**",
+    "**/test/**",
+    "**/tests/**",
+    "**/__fixtures__/**",
+    "**/out/**",
+    "**/dist/**",
+    "**/.yarn/**"
+  ],
 
   "packageRules": [
     {
