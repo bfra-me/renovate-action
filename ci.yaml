@@ -1,9 +1,13 @@
 name: ci
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches: [main, 'renovate/**']
+  pull_request:
+  workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  group: '${{ github.workflow }}-${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
   cancel-in-progress: true
 
 env:
