@@ -69,9 +69,14 @@
       "automerge": true
     },
     {
-      "description": "Disable dependency dashboard approval for major updates",
+      "description": "Enable dependency dashboard approval for major updates (except Renovate)",
       "matchUpdateTypes": ["major"],
-      "dependencyDashboardApproval": false
+      "excludePackagePatterns": [
+        "^renovate(bot)?($|\\                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         /)",
+        "^(renovate|(?:ghcr.io\\/)?containerbase)\\/buildpack$",
+        "^@renovatebot\\/"
+      ],
+      "dependencyDashboardApproval": true
     },
     {
       "description": "Delay updates until npm packages are safe from unpublishing (except Renovate)",
