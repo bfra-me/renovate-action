@@ -61,6 +61,17 @@
 
   "packageRules": [
     {
+      "description": "Automerge update types that are not `major`",
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest",
+        "lockFileMaintenance"
+      ],
+      "automerge": true
+    },
+    {
       "description": "Disable dependency dashboard approval for major updates",
       "matchUpdateTypes": ["major"],
       "dependencyDashboardApproval": false
