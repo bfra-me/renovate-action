@@ -72,7 +72,7 @@
       "description": "Enable dependency dashboard approval for major updates (except Renovate)",
       "matchUpdateTypes": ["major"],
       "excludePackagePatterns": [
-        "^renovate(bot)?($|\\                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         /)",
+        "^renovate(bot)?($|\\/)",
         "^(renovate|(?:ghcr.io\\/)?containerbase)\\/buildpack$",
         "^@renovatebot\\/"
       ],
