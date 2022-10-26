@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-
+  "description": "Use the default Renovate config preset for the @bfra-me organization.",
   "extends": [
     "config:base",
     "github>whitesource/merge-confidence:beta",
@@ -95,24 +95,27 @@
   ],
   "regexManagers": [
     {
-      "description": "Update `version` and <*>`_VERSION` values in GitHub workflows",
-      "fileMatch": ["^\\.github\\/workflows\\/[^/]+\\.ya?ml$"],
+      "description": "Update `version` and <*>`_VERSION` values in GitHub Actions and workflows.",
+      "fileMatch": [
+        "^action\\.ya?ml$",
+        "^\\.github\\/(actions|workflows)\\/[^/]+\\.ya?ml$"
+      ],
       "matchStrings": [
         "\\s+version: (?<currentValue>.+?) # renovate: datasource=(?<datasource>.+?) depName=(?<depName>.+?)(?: (?:packageName|lookupName)=(?<packageName>.+?))?(?: versioning=(?<versioning>.+?))?\\s",
-        "\\s*\\w+?_VERSION: (?<currentValue>.+?) # renovate: datasource=(?<datasource>.+?) depName=(?<depName>.+?)(?: (?:packageName|lookupName)=(?<packageName>.+?))?(?: versioning=(?<versioning>.+?))?\\s"
+        "\\s*[A-Z0-9_]+?_VERSION: (?<currentValue>.+?) # renovate: datasource=(?<datasource>.+?) depName=(?<depName>.+?)(?: (?:packageName|lookupName)=(?<packageName>.+?))?(?: versioning=(?<versioning>.+?))?\\s"
       ]
     },
     {
-      "description": "Update `install-`<*> Buildpack commands and <*>`_VERSION` values in Dockerfiles",
+      "description": "Update `install-`<*> Buildpack commands and <*>`_VERSION` values in Dockerfiles.",
       "fileMatch": ["(^|/|\\.)Dockerfile$", "(^|/)Dockerfile\\.[^/]*$"],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>.+?) depName=(?<depName>.+?)(?: (?:packageName|lookupName)=(?<packageName>.+?))?( versioning=(?<versioning>.+?))?\\s(ENV|ARG) \\w+?_VERSION=(?<currentValue>.+?)\\s",
+        "# renovate: datasource=(?<datasource>.+?) depName=(?<depName>.+?)(?: (?:packageName|lookupName)=(?<packageName>.+?))?(?: versioning=(?<versioning>.+?))?\\s(?:ENV|ARG) .+?_VERSION=(?<currentValue>.+?)\\s",
         "# renovate: datasource=(?<datasource>.+?)(?: (?:packageName|lookupName)=(?<packageName>.+?))?(?: versioning=(?<versioning>.+?))?\\sRUN install-[a-z0-9]+? (?<depName>[a-z0-9-]+?) (?<currentValue>.+?)\\s"
       ],
       "versioningTemplate": "{{#if versioning}}{{versioning}}{{else}}semver{{/if}}"
     },
     {
-      "description": "Update GitHub Action references in the Markdown files",
+      "description": "Update GitHub Action references in Markdown files.",
       "fileMatch": ["\\.md$"],
       "matchStrings": [
         "\\suses: (?<depName>[\\w-]+\\/[\\w-]+)(?<path>\\/.*)?@(?<currentValue>v\\d+\\.\\d+\\.\\d+)",
