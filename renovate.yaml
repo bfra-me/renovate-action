@@ -5,18 +5,15 @@ on:
   pull_request:
     branches: [main]
     paths: [.github/workflows/renovate.yaml]
-  push:
-    branches: [main]
-    paths: [.github/workflows/renovate.yaml]
   schedule:
     - cron: '0/15 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:
         description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
-        required: true
-        type: string
-        default: 'full'
+        required: false
+        type: boolean
+        default: true
       log_level:
         description: Set the log level.
         required: false
@@ -61,7 +58,7 @@ jobs:
           LOG_LEVEL: ${{ github.event.inputs.log_level || 'info' }}
           RENOVATE_AUTODISCOVER: true
           RENOVATE_CONFIG: '{"extends": ["github>bfra-me/renovate-config"]}'
-          RENOVATE_DRY_RUN: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run) || (github.event_name == 'pull_request' || github.event_name == 'push') && 'full' }}
+          RENOVATE_DRY_RUN: ${{ github.event.inputs.dry_run || github.event_name == 'pull_request' || github.event_name == 'push' && 'full' || '' }}
           RENOVATE_GIT_AUTHOR: 'bfra-me[bot] <${{ secrets.APPLICATION_ID }}+bfra-me@users.noreply.github.com>'
           RENOVATE_GIT_PRIVATE_KEY: ${{ secrets.APPLICATION_PRIVATE_KEY }}
           RENOVATE_IGNORE_PR_AUTHOR: true
