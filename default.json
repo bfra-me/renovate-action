@@ -26,6 +26,7 @@
 
   "prConcurrentLimit": 5,
 
+  "gitIgnoredAuthors": ["Renovate Bot <bot@renovateapp.com>"],
   "platformAutomerge": true,
   "internalChecksFilter": "strict",
 
