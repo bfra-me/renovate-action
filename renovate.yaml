@@ -1,0 +1,70 @@
+---
+name: Renovate
+
+on:
+  pull_request:
+    branches: [main]
+    paths: [.github/workflows/renovate.yaml]
+  push:
+    branches: [main]
+    paths: [.github/workflows/renovate.yaml]
+  schedule:
+    - cron: '0/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
+        required: true
+        type: string
+        default: 'full'
+      log_level:
+        description: Set the log level.
+        required: false
+        type: choice
+        default: 'info'
+        options: ['trace', 'debug', 'info', 'warn', 'error', 'fatal']
+      print_config:
+        description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
+        required: false
+        type: boolean
+        default: false
+
+permissions: {}
+
+env:
+  FORCE_COLOR: 3
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Workflow Token
+        id: get_workflow_token
+        uses: peter-murray/workflow-application-token-action@v1
+        with:
+          application_id: ${{ secrets.APPLICATION_ID }}
+          application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          organization: ${{ github.repository_owner }}
+          permissions: >
+            checks:write,
+            contents:write,
+            issues:write,
+            pull_requests:write,
+            vulnerability_alerts:read,
+            workflows:write
+
+      - name: Renovate
+        uses: renovatebot/github-action@v34.21.2
+        with:
+          token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
+        env:
+          LOG_LEVEL: ${{ github.event.inputs.log_level || 'info' }}
+          RENOVATE_AUTODISCOVER: true
+          RENOVATE_CONFIG: '{"extends": ["github>bfra-me/renovate-config"]}'
+          RENOVATE_DRY_RUN: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run) || (github.event_name == 'pull_request' || github.event_name == 'push') && 'full' }}
+          RENOVATE_GIT_AUTHOR: 'bfra-me[bot] <${{ secrets.APPLICATION_ID }}+bfra-me@users.noreply.github.com>'
+          RENOVATE_GIT_PRIVATE_KEY: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          RENOVATE_IGNORE_PR_AUTHOR: true
+          RENOVATE_PLATFORM: github
+          RENOVATE_PRINT_CONFIG: ${{ github.event.inputs.print_config || 'false' }}
+          RENOVATE_USERNAME: 'bfra-me[bot]'
