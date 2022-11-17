@@ -26,7 +26,10 @@
 
   "prConcurrentLimit": 5,
 
-  "gitIgnoredAuthors": ["Renovate Bot <bot@renovateapp.com>"],
+  "gitIgnoredAuthors": [
+    "bot@renovateapp.com",
+    "261136+bfra-me@users.noreply.github.com"
+  ],
   "platformAutomerge": true,
   "internalChecksFilter": "strict",
 
