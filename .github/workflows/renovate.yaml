@@ -59,9 +59,8 @@ jobs:
           RENOVATE_AUTODISCOVER: true
           RENOVATE_CONFIG: '{"extends": ["github>bfra-me/renovate-config"]}'
           RENOVATE_DRY_RUN: ${{ github.event.inputs.dry_run || github.event_name == 'pull_request' || github.event_name == 'push' && 'full' || '' }}
-          RENOVATE_GIT_AUTHOR: 'bfra-me[bot] <${{ secrets.APPLICATION_ID }}+bfra-me@users.noreply.github.com>'
+          RENOVATE_GIT_AUTHOR: 'bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>'
           RENOVATE_GIT_PRIVATE_KEY: ${{ secrets.APPLICATION_GPG_PRIVATE_KEY }}
-          RENOVATE_IGNORE_PR_AUTHOR: true
           RENOVATE_PLATFORM: github
           RENOVATE_PRINT_CONFIG: ${{ github.event.inputs.print_config || 'false' }}
           RENOVATE_USERNAME: 'bfra-me[bot]'
