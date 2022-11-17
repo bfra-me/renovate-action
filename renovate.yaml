@@ -57,7 +57,6 @@ jobs:
         env:
           LOG_LEVEL: ${{ github.event.inputs.log_level || 'info' }}
           RENOVATE_AUTODISCOVER: true
-          RENOVATE_CONFIG: '{"extends": ["github>bfra-me/renovate-config"]}'
           RENOVATE_DRY_RUN: ${{ github.event.inputs.dry_run || github.event_name == 'pull_request' || github.event_name == 'push' && 'full' || '' }}
           RENOVATE_GIT_AUTHOR: 'bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>'
           RENOVATE_GIT_PRIVATE_KEY: ${{ secrets.APPLICATION_GPG_PRIVATE_KEY }}
