@@ -7,8 +7,42 @@ on:
     paths: [.github/workflows/renovate.yaml]
   schedule:
     - cron: '0/15 * * * *'
+  workflow_call:
+    inputs:
+      autodiscover:
+        description: Autodiscover all repositories.
+        required: false
+        type: boolean
+        default: true
+      dry_run:
+        description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
+        required: false
+        type: boolean
+        default: true
+      log_level:
+        description: Set the log level.
+        required: false
+        type: string
+        default: 'info'
+      print_config:
+        description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
+        required: false
+        type: boolean
+        default: false
+    secrets:
+      APPLICATION_ID:
+        description: GitHub App ID
+        required: true
+      APPLICATION_PRIVATE_KEY:
+        description: GitHub App private key
+        required: true
   workflow_dispatch:
     inputs:
+      autodiscover:
+        description: Autodiscover all repositories.
+        required: false
+        type: boolean
+        default: true
       dry_run:
         description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
         required: false
@@ -56,9 +90,10 @@ jobs:
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
         env:
           LOG_LEVEL: ${{ github.event.inputs.log_level || 'info' }}
-          RENOVATE_AUTODISCOVER: true
+          RENOVATE_AUTODISCOVER: ${{ github.event.inputs.autodiscover || 'true' }}
           RENOVATE_DRY_RUN: ${{ github.event.inputs.dry_run || github.event_name == 'pull_request' || github.event_name == 'push' && 'full' || '' }}
           RENOVATE_GIT_AUTHOR: 'bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>'
           RENOVATE_PLATFORM: github
           RENOVATE_PRINT_CONFIG: ${{ github.event.inputs.print_config || 'false' }}
+          RENOVATE_REPOSITORIES: ${{ github.event.inputs.autodiscover && '' || format('["{0}"]', github.repository) }}
           RENOVATE_USERNAME: 'bfra-me[bot]'
