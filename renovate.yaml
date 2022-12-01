@@ -85,7 +85,7 @@ jobs:
             workflows:write
 
       - name: Renovate
-        uses: renovatebot/github-action@e24c028a6d3b903b79320c97e89e4e9bd7055054 # v34.42.0
+        uses: renovatebot/github-action@234c0c062fa7a8766864ba0f464a33e4faf687e5 # v34.44.0
         with:
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
         env:
