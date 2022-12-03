@@ -63,6 +63,11 @@ on:
 permissions: {}
 
 env:
+  # Use the contains function to convert the boolean input to a string and compare it to 'false'. This is required when
+  # the workflow is triggered from workflow_call because the github context is that of the workflow that called this
+  # workflow.
+  AUTODISCOVER: ${{ inputs.autodiscover || contains(inputs.autodiscover, 'false') && 'false' || 'true' }}
+  DRY_RUN: ${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' || contains(fromJson('["push", "pull_request"]'), github.event_name) }}
   FORCE_COLOR: 3
 
 jobs:
@@ -89,11 +94,11 @@ jobs:
         with:
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
         env:
-          LOG_LEVEL: ${{ github.event.inputs.log_level || 'info' }}
-          RENOVATE_AUTODISCOVER: ${{ github.event.inputs.autodiscover || 'true' }}
-          RENOVATE_DRY_RUN: ${{ github.event.inputs.dry_run || github.event_name == 'pull_request' || github.event_name == 'push' && 'full' || '' }}
+          LOG_LEVEL: ${{ inputs.log_level || 'info' }}
+          RENOVATE_AUTODISCOVER: ${{ env.AUTODISCOVER }}
+          RENOVATE_DRY_RUN: ${{ fromJSON(env.DRY_RUN) && 'full' || '' }}
           RENOVATE_GIT_AUTHOR: 'bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>'
           RENOVATE_PLATFORM: github
-          RENOVATE_PRINT_CONFIG: ${{ github.event.inputs.print_config || 'false' }}
-          RENOVATE_REPOSITORIES: ${{ github.event.inputs.autodiscover && '' || format('["{0}"]', github.repository) }}
+          RENOVATE_PRINT_CONFIG: ${{ inputs.print_config || 'false' }}
+          RENOVATE_REPOSITORIES: ${{ !fromJSON(env.AUTODISCOVER) && format('["{0}"]', github.repository) || '' }}
           RENOVATE_USERNAME: 'bfra-me[bot]'
