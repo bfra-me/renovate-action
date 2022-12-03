@@ -33,9 +33,8 @@ jobs:
     needs: validate-config-presets
     if: github.event_name != 'workflow_dispatch'
     uses: ./.github/workflows/renovate.yaml
-    # Disable autodiscovery to run Renovate on this repository only
+    # Set autodiscover to false to run Renovate on this repository only
     with:
       autodiscover: false
-      dry_run: true
       log_level: debug
     secrets: inherit
