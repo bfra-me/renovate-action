@@ -28,3 +28,14 @@ jobs:
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
       - name: Validating ${{ env.RENOVATE_CONFIG_FILE }}
         run: npx -p renovate renovate-config-validator
+
+  renovate:
+    needs: validate-config-presets
+    if: github.event_name != 'workflow_dispatch'
+    uses: ./.github/workflows/renovate.yaml
+    # Disable autodiscovery to run Renovate on this repository only
+    with:
+      autodiscover: false
+      dry_run: true
+      log_level: debug
+    secrets: inherit
