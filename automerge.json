@@ -1,0 +1,20 @@
+{
+  "default": {
+    "description": "Use default automerge settings.",
+    "extends": [":automergeBranch", ":automergeRequireAllStatusChecks"],
+    "platformAutomerge": true
+  },
+  "enabled": {
+    "description": "Automerge branches and PRs.",
+    "automerge": true,
+    "addLabels": ["automerge"],
+    "platformAutomerge": true,
+    "azureAutoApprove": true,
+    "gitLabAutomerge": true,
+    "gitLabIgnoreApprovals": true,
+    "assignAutomerge": false,
+    "assigneesFromCodeOwners": false,
+    "dependencyDashboardApproval": false,
+    "reviewersFromCodeOwners": false
+  }
+}

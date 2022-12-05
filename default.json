@@ -9,7 +9,6 @@
     ":rebaseStalePrs",
     ":prNotPending",
     ":prHourlyLimitNone",
-    ":automergeBranch",
     ":maintainLockFilesWeekly",
     ":updateNotScheduled",
     ":enableVulnerabilityAlertsWithLabel(security)",
@@ -18,7 +17,8 @@
     "docker:pinDigests",
     "helpers:disableTypesNodeMajor",
     "helpers:pinGitHubActionDigests",
-    "replacements:all"
+    "replacements:all",
+    "github>bfra-me/renovate-config:automerge"
   ],
 
   "configMigration": true,
@@ -30,7 +30,7 @@
     "bot@renovateapp.com",
     "261136+bfra-me@users.noreply.github.com"
   ],
-  "platformAutomerge": true,
+
   "internalChecksFilter": "strict",
 
   "schedule": [

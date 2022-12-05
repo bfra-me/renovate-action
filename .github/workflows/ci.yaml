@@ -29,12 +29,13 @@ jobs:
       - name: Validating ${{ env.RENOVATE_CONFIG_FILE }}
         run: npx -p renovate renovate-config-validator
 
-  renovate:
-    needs: validate-config-presets
-    if: github.event_name != 'workflow_dispatch'
-    uses: ./.github/workflows/renovate.yaml
-    # Set autodiscover to false to run Renovate on this repository only
-    with:
-      autodiscover: false
-      log_level: debug
-    secrets: inherit
+  # Revisit this job when renovatebot/renovate#18974 is resolved.
+  # renovate:
+  #   needs: validate-config-presets
+  #   if: github.event_name != 'workflow_dispatch'
+  #   uses: ./.github/workflows/renovate.yaml
+  #   # Set autodiscover to false to run Renovate on this repository only
+  #   with:
+  #     autodiscover: false
+  #     print_config: true
+  #   secrets: inherit
