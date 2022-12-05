@@ -69,13 +69,13 @@
         "digest",
         "lockFileMaintenance"
       ],
-      "automerge": true
+      "extends": ["github>bfra-me/renovate-config:automerge/enabled"]
     },
     {
       "description": "Automerge minor version updates (unless the major version is 0)",
       "matchUpdateTypes": ["minor"],
       "matchCurrentVersion": "!/^0/",
-      "automerge": true
+      "extends": ["github>bfra-me/renovate-config:automerge/enabled"]
     },
     {
       "description": "Enable dependency dashboard approval for major updates (except Renovate)",
