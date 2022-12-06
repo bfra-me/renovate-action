@@ -8,7 +8,6 @@
     "description": "Automerge branches and PRs.",
     "automerge": true,
     "addLabels": ["automerge"],
-    "commitMessageSuffix": " [automerge]",
     "platformAutomerge": true,
     "azureAutoApprove": true,
     "gitLabAutomerge": true,
