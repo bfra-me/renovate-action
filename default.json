@@ -3,8 +3,6 @@
   "description": "Use the default Renovate config preset for the @bfra-me organization.",
   "extends": [
     "config:base",
-    "github>whitesource/merge-confidence:beta",
-    "bfra-me/renovate-config:onboarding",
     ":preserveSemverRanges",
     ":rebaseStalePrs",
     ":prNotPending",
@@ -17,7 +15,10 @@
     "docker:pinDigests",
     "helpers:disableTypesNodeMajor",
     "helpers:pinGitHubActionDigests",
+    "group:linters",
     "replacements:all",
+    "github>whitesource/merge-confidence:beta",
+    "github>bfra-me/renovate-config:onboarding",
     "github>bfra-me/renovate-config:automerge"
   ],
 
@@ -100,6 +101,12 @@
       "matchDepTypes": ["action"],
       "extractVersion": "^(?<version>v\\d+\\.\\d+\\.\\d+)$",
       "versioning": "regex:^v(?<major>\\d+)(\\.(?<minor>\\d+)\\.(?<patch>\\d+))?$"
+    },
+    {
+      "description": "Group Prettier packages",
+      "matchPackageNames": ["prettier"],
+      "matchPackagePatterns": ["^@prettier\\/", "^prettier-plugin-"],
+      "groupName": "Prettier packages"
     }
   ],
   "regexManagers": [
