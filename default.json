@@ -27,11 +27,6 @@
 
   "prConcurrentLimit": 5,
 
-  "gitIgnoredAuthors": [
-    "bot@renovateapp.com",
-    "261136+bfra-me@users.noreply.github.com"
-  ],
-
   "internalChecksFilter": "strict",
 
   "schedule": [
