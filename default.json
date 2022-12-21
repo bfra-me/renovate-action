@@ -13,7 +13,6 @@
     ":semanticCommits",
     "docker:enableMajor",
     "docker:pinDigests",
-    "helpers:disableTypesNodeMajor",
     "helpers:pinGitHubActionDigests",
     "group:linters",
     "replacements:all",
