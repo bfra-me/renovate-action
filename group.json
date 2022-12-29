@@ -1,0 +1,6 @@
+{
+  "default": {
+    "description": "Use default group preset settings.",
+    "extends": ["group:linters"]
+  }
+}
