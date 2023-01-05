@@ -27,6 +27,7 @@
   "prConcurrentLimit": 5,
 
   "internalChecksFilter": "strict",
+  "transitiveRemediation": true,
 
   "schedule": [
     "after 4pm every weekday",
