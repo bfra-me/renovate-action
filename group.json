@@ -1,6 +1,19 @@
 {
   "default": {
     "description": "Use default group preset settings.",
-    "extends": ["group:linters"]
+    "extends": ["group:linters", "bfra-me/renovate-config:group/prettier"]
+  },
+  "prettier": {
+    "description": "Group Prettier packages together.",
+    "packageRules": [
+      {
+        "groupName": "prettier packages",
+        "matchPackagePatterns": [
+          "^prettier$",
+          "^@prettier\\/",
+          "^prettier-plugin-"
+        ]
+      }
+    ]
   }
 }
