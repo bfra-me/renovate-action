@@ -98,7 +98,7 @@ jobs:
           RENOVATE_AUTODISCOVER: ${{ env.AUTODISCOVER }}
           RENOVATE_DRY_RUN: ${{ fromJSON(env.DRY_RUN) && 'full' || '' }}
           RENOVATE_GIT_AUTHOR: 'bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>'
-          RENOVATE_GIT_IGNORED_AUTHORS: '["bot@renovateapp.com","support@github.com","261136+bfra-me@users.noreply.github.com"]'
+          RENOVATE_GIT_IGNORED_AUTHORS: '["bot@renovateapp.com","29139614+renovate[bot]@users.noreply.github.com","support@github.com","261136+bfra-me@users.noreply.github.com"]'
           RENOVATE_PLATFORM: github
           RENOVATE_PRINT_CONFIG: ${{ inputs.print_config || 'false' }}
           RENOVATE_REPOSITORIES: ${{ !fromJSON(env.AUTODISCOVER) && format('["{0}"]', github.repository) || '' }}
