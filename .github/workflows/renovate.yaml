@@ -2,7 +2,7 @@
 name: Renovate
 
 on:
-  pull_request:
+  push:
     branches: [main]
     paths: [.github/workflows/renovate.yaml]
   schedule:
@@ -67,7 +67,7 @@ env:
   # the workflow is triggered from workflow_call because the github context is that of the workflow that called this
   # workflow.
   AUTODISCOVER: ${{ inputs.autodiscover || contains(inputs.autodiscover, 'false') && 'false' || 'true' }}
-  DRY_RUN: ${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' || contains(fromJson('["push", "pull_request"]'), github.event_name) }}
+  DRY_RUN: ${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' }}
   FORCE_COLOR: 3
 
 jobs:
