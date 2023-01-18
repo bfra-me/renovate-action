@@ -1,11 +1,14 @@
 {
   "default": {
     "description": "Use default automerge settings.",
-    "extends": [":automergeBranch", ":automergeRequireAllStatusChecks"],
+    "extends": [
+      ":automergeBranch",
+      ":automergeRequireAllStatusChecks",
+      "bfra-me/renovate-config:automerge/all-update-types-except-major"
+    ],
     "platformAutomerge": true
   },
   "enabled": {
-    "description": "Automerge branches and PRs.",
     "automerge": true,
     "addLabels": ["automerge"],
     "platformAutomerge": true,
@@ -16,5 +19,27 @@
     "assigneesFromCodeOwners": false,
     "dependencyDashboardApproval": false,
     "reviewersFromCodeOwners": false
+  },
+  "all-update-types-except-major": {
+    "description": "Automerge all update types except `major`.",
+    "packageRules": [
+      {
+        "description": "Automerge update types that are not `major`",
+        "matchUpdateTypes": [
+          "patch",
+          "pin",
+          "pinDigest",
+          "digest",
+          "lockFileMaintenance"
+        ],
+        "extends": ["github>bfra-me/renovate-config:automerge/enabled"]
+      },
+      {
+        "description": "Automerge minor version updates (unless the major version is 0)",
+        "matchUpdateTypes": ["minor"],
+        "matchCurrentVersion": "!/^0/",
+        "extends": ["github>bfra-me/renovate-config:automerge/enabled"]
+      }
+    ]
   }
 }

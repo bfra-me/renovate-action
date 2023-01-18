@@ -57,23 +57,6 @@
 
   "packageRules": [
     {
-      "description": "Automerge update types that are not `major`",
-      "matchUpdateTypes": [
-        "patch",
-        "pin",
-        "pinDigest",
-        "digest",
-        "lockFileMaintenance"
-      ],
-      "extends": ["github>bfra-me/renovate-config:automerge/enabled"]
-    },
-    {
-      "description": "Automerge minor version updates (unless the major version is 0)",
-      "matchUpdateTypes": ["minor"],
-      "matchCurrentVersion": "!/^0/",
-      "extends": ["github>bfra-me/renovate-config:automerge/enabled"]
-    },
-    {
       "description": "Enable dependency dashboard approval for major updates (except Renovate)",
       "matchUpdateTypes": ["major"],
       "excludePackagePatterns": [
