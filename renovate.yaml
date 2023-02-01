@@ -4,7 +4,10 @@ name: Renovate
 on:
   push:
     branches: [main]
-    paths: [.github/workflows/renovate.yaml]
+    paths:
+      - '*.json'
+      - '.github/renovate.json'
+      - '.github/workflows/renovate.yaml'
   schedule:
     - cron: '0/15 * * * *'
   workflow_call:
