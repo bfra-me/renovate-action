@@ -1,6 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>bfra-me/renovate-config"
+  "extends": ["local>bfra-me/renovate-config"],
+  "packageRules": [
+    {
+      "matchPackageNames": ["renovatebot/github-action"],
+      "customChangelogUrl": "https://github.com/renovatebot/renovate"
+    }
   ]
 }
