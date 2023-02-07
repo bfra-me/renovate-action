@@ -6,6 +6,7 @@
       ":automergeRequireAllStatusChecks",
       "bfra-me/renovate-config:automerge/all-update-types-except-major"
     ],
+    "automergeStrategy": "squash",
     "platformAutomerge": true
   },
   "enabled": {

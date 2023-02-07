@@ -25,6 +25,7 @@
   "configWarningReuseIssue": false,
 
   "prConcurrentLimit": 5,
+  "recreateClosed": true,
 
   "internalChecksFilter": "strict",
   "transitiveRemediation": true,
