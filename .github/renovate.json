@@ -4,7 +4,7 @@
   "packageRules": [
     {
       "matchPackageNames": ["renovatebot/github-action"],
-      "customChangelogUrl": "https://github.com/renovatebot/renovate"
+      "customChangelogUrl": "https://github.com/renovatebot/renovate/releases"
     }
   ]
 }
