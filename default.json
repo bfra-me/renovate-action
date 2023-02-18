@@ -18,7 +18,8 @@
     "github>bfra-me/renovate-config:onboarding",
     "github>bfra-me/renovate-config:automerge/default",
     "github>bfra-me/renovate-config:group/default",
-    "github>bfra-me/renovate-config:replacements/default"
+    "github>bfra-me/renovate-config:replacements/default",
+    "github>bfra-me/renovate-config:maintenance/default"
   ],
 
   "configMigration": true,
@@ -39,7 +40,12 @@
 
   "labels": ["dependencies"],
 
-  "postUpdateOptions": ["gomodTidy", "npmDedupe", "yarnDedupeHighest"],
+  "postUpdateOptions": [
+    "gomodTidy",
+    "npmDedupe",
+    "pnpmDedupe",
+    "yarnDedupeHighest"
+  ],
 
   "ignorePresets": [":ignoreModulesAndTests"],
   "ignorePaths": [

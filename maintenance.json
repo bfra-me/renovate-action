@@ -1,0 +1,9 @@
+{
+  "default": {
+    "description": "Include default config presets for repository maintainers.",
+    "assigneesFromCodeOwners": true,
+    "assigneesSampleSize": 2,
+    "reviewersFromCodeOwners": true,
+    "reviewersSampleSize": 2
+  }
+}
