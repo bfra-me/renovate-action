@@ -28,7 +28,7 @@
         "extends": ["github>bfra-me/renovate-config:automerge/enabled"]
       },
       {
-        "matchUpdateTypes": ["lockFileMaintenance", "minor"],
+        "matchUpdateTypes": ["minor"],
         "matchCurrentVersion": "!/^0\\./",
         "extends": ["github>bfra-me/renovate-config:automerge/enabled"]
       }
