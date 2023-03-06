@@ -1,12 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>bfra-me/renovate-config", ":automergePr"],
-  "packageRules": [
-    {
-      "description": "Use Renovate's changelog for the GitHub Action",
-      "matchPackageNames": ["renovatebot/github-action"],
-      "customChangelogUrl": "https://github.com/renovatebot/renovate",
-      "extractVersion": "^v(?<version>.*)$"
-    }
-  ]
+  "extends": ["local>bfra-me/renovate-config"]
 }
