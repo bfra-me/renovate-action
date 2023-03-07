@@ -1,4 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>bfra-me/renovate-config"]
+  "extends": ["local>bfra-me/renovate-config"],
+  "packageRules": [
+    {
+      "description": "Automerge Renovate GitHub Action updates and include Renovate's release notes in the PR body",
+      "matchPackageNames": ["renovate/github-action"],
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "extends": [":automergePr", ":prImmediately"],
+      "customChangelogUrl": "https://github.com/renovatebot/renovate/releases/tag/{{replace 'v' '' newVersion}}",
+      "prBodyNotes": "[Renovate {{replace 'v' '' newVersion}} Release Notes](https://github.com/renovatebot/renovate/releases/tag/{{replace 'v' '' newVersion}})"
+    }
+  ]
 }
