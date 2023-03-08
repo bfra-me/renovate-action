@@ -5,10 +5,12 @@
     {
       "description": "Automerge Renovate GitHub Action updates and include Renovate's release notes in the PR body",
       "matchPackageNames": ["renovate/github-action"],
-      "matchUpdateTypes": ["digest", "major", "minor", "patch"],
-      "extends": [":automergePr", ":prImmediately"],
+      "matchUpdateTypes": ["digest", "major", "minor", "patch", "pinDigest"],
+      "automergeType": "pr",
+      "prCreation": "immediate",
       "customChangelogUrl": "https://github.com/renovatebot/renovate/releases/tag/{{replace 'v' '' newVersion}}",
-      "prBodyNotes": "[Renovate {{replace 'v' '' newVersion}} Release Notes](https://github.com/renovatebot/renovate/releases/tag/{{replace 'v' '' newVersion}})"
+      "prBodyNotes": "[Renovate {{replace 'v' '' newVersion}} Release Notes](https://github.com/renovatebot/renovate/releases/tag/{{replace 'v' '' newVersion}})",
+      "printConfig": true
     }
   ]
 }
