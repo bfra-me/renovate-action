@@ -25,7 +25,8 @@
     "packageRules": [
       {
         "matchUpdateTypes": ["patch", "pin", "pinDigest", "digest"],
-        "extends": ["github>bfra-me/renovate-config:automerge/enabled"]
+        "extends": ["github>bfra-me/renovate-config:automerge/enabled"],
+        "separateMinorPatch": true
       },
       {
         "matchUpdateTypes": ["minor"],
