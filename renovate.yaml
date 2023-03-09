@@ -106,7 +106,7 @@ jobs:
       - name: Renovate
         uses: renovatebot/github-action@5e8129624e65d182d7dc0fa673708ff4badab949 # v34.159.1
         with:
-          env-regex: '^(?:RENOVATE_\\w+|FORCE_COLOR|GITHUB_COM_TOKEN|LOG_LEVEL|NODE_OPTIONS)$'
+          env-regex: '^(?:RENOVATE_\w+|FORCE_COLOR|GITHUB_COM_TOKEN|LOG_LEVEL|NODE_OPTIONS)$'
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
         env:
           LOG_LEVEL: ${{ inputs.log_level || 'info' }}
