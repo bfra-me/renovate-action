@@ -81,6 +81,13 @@ jobs:
   renovate:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Force Overrides
+        if: github.repository_owner == 'bfra-me'
+        run: |
+          # Specify force overrides (RENOVATE_FORCE) to the Renovate configuration for the bfra-me organization
+          # See https://docs.renovatebot.com/self-hosted-configuration/#force
+          echo 'RENOVATE_FORCE={"schedule":["at any time"]}' >> $GITHUB_ENV
+
       - name: Get Workflow Token
         id: get_workflow_token
         uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
@@ -99,6 +106,7 @@ jobs:
       - name: Renovate
         uses: renovatebot/github-action@5e8129624e65d182d7dc0fa673708ff4badab949 # v34.159.1
         with:
+          env-regex: '^(?:RENOVATE_\\w+|FORCE_COLOR|GITHUB_COM_TOKEN|LOG_LEVEL|NODE_OPTIONS)$'
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
         env:
           LOG_LEVEL: ${{ inputs.log_level || 'info' }}
@@ -107,6 +115,7 @@ jobs:
           RENOVATE_GIT_AUTHOR: 'bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>'
           RENOVATE_GIT_IGNORED_AUTHORS: '["bot@renovateapp.com","29139614+renovate[bot]@users.noreply.github.com","support@github.com","261136+bfra-me@users.noreply.github.com"]'
           RENOVATE_PLATFORM: github
+          RENOVATE_PLATFORM_COMMIT: true
           RENOVATE_PRINT_CONFIG: ${{ inputs.print_config || 'false' }}
           RENOVATE_REPOSITORIES: ${{ !fromJSON(env.AUTODISCOVER) && format('["{0}"]', github.repository) || '' }}
           RENOVATE_USERNAME: 'bfra-me[bot]'
