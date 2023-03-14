@@ -81,13 +81,6 @@ jobs:
   renovate:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Force Overrides
-        if: github.repository_owner == 'bfra-me'
-        run: |
-          # Specify force overrides (RENOVATE_FORCE) to the Renovate configuration for the bfra-me organization
-          # See https://docs.renovatebot.com/self-hosted-configuration/#force
-          echo 'RENOVATE_FORCE={"schedule":["at any time"]}' >> $GITHUB_ENV
-
       - name: Get Workflow Token
         id: get_workflow_token
         uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
@@ -118,4 +111,6 @@ jobs:
           RENOVATE_PLATFORM_COMMIT: true
           RENOVATE_PRINT_CONFIG: ${{ inputs.print_config || 'false' }}
           RENOVATE_REPOSITORIES: ${{ !fromJSON(env.AUTODISCOVER) && format('["{0}"]', github.repository) || '' }}
+          RENOVATE_SCHEDULE: '["at any time"]'
           RENOVATE_USERNAME: 'bfra-me[bot]'
+          RENOVATE_VERSION: 35.0.0 # renovate: datasource=docker depName=renovate/renovate
