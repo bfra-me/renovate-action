@@ -6,7 +6,7 @@
       "description": "Automerge Renovate GitHub Action updates and include Renovate's release notes in the PR body",
       "matchPackageNames": ["renovatebot/github-action"],
       "automergeType": "pr",
-      "prBodyNotes": "[Renovate {{replace 'v' '' env.RENOVATE_VERSION}} Release Notes](https://github.com/renovatebot/renovate/releases/tag/{{replace 'v' '' env.RENOVATE_VERSION}})",
+      "prBodyNotes": "[Renovate {{replace 'v' '' renovateVersion}} Release Notes](https://github.com/renovatebot/renovate/releases/tag/{{replace 'v' '' renovateVersion}})",
       "prCreation": "immediate",
       "printConfig": true
     }
