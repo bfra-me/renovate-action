@@ -26,7 +26,7 @@ on:
         description: Set the log level.
         required: false
         type: string
-        default: 'info'
+        default: 'debug'
       print_config:
         description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
         required: false
@@ -55,7 +55,7 @@ on:
         description: Set the log level.
         required: false
         type: choice
-        default: 'info'
+        default: 'debug'
         options: ['trace', 'debug', 'info', 'warn', 'error', 'fatal']
       print_config:
         description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
@@ -103,7 +103,7 @@ jobs:
           renovate-version: ${{ env.RENOVATE_VERSION }}
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
         env:
-          LOG_LEVEL: ${{ inputs.log_level || 'info' }}
+          LOG_LEVEL: ${{ inputs.log_level || 'debug' }}
           RENOVATE_AUTODISCOVER: ${{ env.AUTODISCOVER }}
           RENOVATE_DRY_RUN: ${{ fromJSON(env.DRY_RUN) && 'full' || '' }}
           RENOVATE_GIT_AUTHOR: 'bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>'
