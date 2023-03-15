@@ -3,8 +3,11 @@
   "extends": ["local>bfra-me/renovate-config"],
   "packageRules": [
     {
-      "description": "Automerge Renovate GitHub Action updates and include Renovate's release notes in the PR body",
-      "matchPackageNames": ["renovatebot/github-action"],
+      "description": [
+        "Automerge Renovate GitHub Action and Docker updates",
+        "Include Renovate's release notes in the PR body"
+      ],
+      "matchPackageNames": ["renovatebot/github-action", "renovate/renovate"],
       "automergeType": "pr",
       "prBodyNotes": "[Renovate {{replace 'v' '' renovateVersion}} Release Notes](https://github.com/renovatebot/renovate/releases/tag/{{replace 'v' '' renovateVersion}})",
       "prCreation": "immediate",

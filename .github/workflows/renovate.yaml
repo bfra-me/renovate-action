@@ -114,4 +114,4 @@ jobs:
           RENOVATE_REPOSITORIES: ${{ !fromJSON(env.AUTODISCOVER) && format('["{0}"]', github.repository) || '' }}
           RENOVATE_SCHEDULE: '["at any time"]'
           RENOVATE_USERNAME: 'bfra-me[bot]'
-          RENOVATE_VERSION: 35.6.0 # renovate: datasource=docker depName=renovate/renovate
+          RENOVATE_VERSION: 35.6.0 # renovate: datasource=docker depName=renovate packageName=renovate/renovate
