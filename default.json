@@ -3,7 +3,6 @@
   "description": "Use the default Renovate config preset for the @bfra-me organization.",
   "extends": [
     "config:base",
-    ":preserveSemverRanges",
     ":rebaseStalePrs",
     ":prNotPending",
     ":prHourlyLimitNone",
@@ -31,11 +30,6 @@
   "internalChecksFilter": "strict",
   "transitiveRemediation": true,
 
-  "schedule": [
-    "after 4pm every weekday",
-    "before 8am every weekday",
-    "every weekend"
-  ],
   "timezone": "America/Phoenix",
 
   "labels": ["dependencies"],
