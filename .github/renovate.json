@@ -4,10 +4,11 @@
   "packageRules": [
     {
       "description": "Raise PRs for Renovate GitHub Action and Docker updates",
-      "matchPackageNames": ["renovatebot/github-action", "renovate"],
+      "matchDepNames": ["renovate"],
+      "matchPackageNames": ["renovatebot/github-action"],
       "automergeType": "pr",
-      "prCreation": "immediate",
-      "printConfig": true
+      "prCreation": "immediate"
     }
-  ]
+  ],
+  "printConfig": true
 }

@@ -105,6 +105,23 @@ jobs:
         env:
           LOG_LEVEL: ${{ inputs.log_level || 'debug' }}
           RENOVATE_AUTODISCOVER: ${{ env.AUTODISCOVER }}
+          RENOVATE_CONFIG: '{
+              "description": [
+                "Use the global config preset for the @bfra-me organization.",
+                "_See the [renovate workflow](https://github.com/bfra-me/renovate-config/blob/main/.github/workflows/renovate.yaml) for details._"
+              ],
+              "packageRules": [
+                {
+                  "matchPackagePatterns": ["*"],
+                  "rangeStrategy": "pin"
+                },
+                {
+                  "matchDepTypes": ["engines", "peerDependencies"],
+                  "rangeStrategy": "update-lockfile"
+                }
+              ],
+              "schedule": ["at any time"]
+            }'
           RENOVATE_DRY_RUN: ${{ fromJSON(env.DRY_RUN) && 'full' || '' }}
           RENOVATE_GIT_AUTHOR: 'bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>'
           RENOVATE_GIT_IGNORED_AUTHORS: '["bot@renovateapp.com","29139614+renovate[bot]@users.noreply.github.com","support@github.com","261136+bfra-me@users.noreply.github.com"]'
@@ -112,6 +129,5 @@ jobs:
           RENOVATE_PLATFORM_COMMIT: true
           RENOVATE_PRINT_CONFIG: ${{ inputs.print_config || 'false' }}
           RENOVATE_REPOSITORIES: ${{ !fromJSON(env.AUTODISCOVER) && format('["{0}"]', github.repository) || '' }}
-          RENOVATE_SCHEDULE: '["at any time"]'
           RENOVATE_USERNAME: 'bfra-me[bot]'
           RENOVATE_VERSION: 35.8.3 # renovate: datasource=docker depName=renovate packageName=renovate/renovate
