@@ -64,8 +64,8 @@ on:
         default: false
 
 concurrency:
-  group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+  group: '${{ github.repository }}-${{ github.workflow }}-$${{ github.ref }}'
+  cancel-in-progress: false
 
 permissions: {}
 
