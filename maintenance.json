@@ -5,5 +5,17 @@
     "assigneesSampleSize": 2,
     "reviewersFromCodeOwners": true,
     "reviewersSampleSize": 2
+  },
+  "weeklyLockFileUpdates": {
+    "description": "Perform lock file maintenance every week.",
+    "lockFileMaintenance": {
+      "enabled": true,
+      "schedule": ["before 6am on Monday"],
+      "addLabels": ["scheduled"],
+      "prBodyDefinitions": {
+        "Change": "All lock files updated (every Monday before 6 AM)"
+      },
+      "extends": ["bfra-me/renovate-config:automerge/enabled"]
+    }
   }
 }

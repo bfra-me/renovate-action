@@ -6,7 +6,6 @@
     ":rebaseStalePrs",
     ":prNotPending",
     ":prHourlyLimitNone",
-    ":maintainLockFilesWeekly",
     ":updateNotScheduled",
     ":enableVulnerabilityAlertsWithLabel(security)",
     ":semanticCommits",
