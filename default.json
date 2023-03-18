@@ -10,6 +10,7 @@
     ":updateNotScheduled",
     ":enableVulnerabilityAlertsWithLabel(security)",
     ":semanticCommits",
+    ":separateMultipleMajorReleases",
     "docker:enableMajor",
     "docker:pinDigests",
     "helpers:pinGitHubActionDigests",
