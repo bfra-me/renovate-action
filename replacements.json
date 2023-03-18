@@ -1,10 +1,7 @@
 {
   "default": {
     "description": "Use @bfra-me replacements config presets.",
-    "extends": [
-      "replacements:all",
-      "bfra-me/renovate-config:replacements/zeit-ncc-to-vercel-ncc"
-    ]
+    "extends": ["bfra-me/renovate-config:replacements/zeit-ncc-to-vercel-ncc"]
   },
   "zeit-ncc-to-vercel-ncc": {
     "description": "The `@zeit/ncc` package has been renamed to `@vercel/ncc`.",
