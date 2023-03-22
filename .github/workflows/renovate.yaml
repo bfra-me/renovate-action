@@ -130,4 +130,4 @@ jobs:
           RENOVATE_PRINT_CONFIG: ${{ inputs.print_config || 'false' }}
           RENOVATE_REPOSITORIES: ${{ !fromJSON(env.AUTODISCOVER) && format('["{0}"]', github.repository) || '' }}
           RENOVATE_USERNAME: 'bfra-me[bot]'
-          RENOVATE_VERSION: 35.17.0 # renovate: datasource=docker depName=renovate packageName=renovate/renovate
+          RENOVATE_VERSION: 35.17.1 # renovate: datasource=docker depName=renovate packageName=renovate/renovate
