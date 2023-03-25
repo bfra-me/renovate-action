@@ -83,7 +83,7 @@ jobs:
         # required when the workflow is triggered from workflow_call because the github context is that of the workflow
         # that called this workflow.
         run: |
-          read -r -d '' env_vars <<-EOF
+          read -r -d '' env_vars <<- EOF
             AUTODISCOVER=${{ inputs.autodiscover || contains(inputs.autodiscover, 'false') && 'false' || 'true' }}
             DRY_RUN=${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' }}
             FORCE_COLOR=true
