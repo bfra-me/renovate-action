@@ -70,12 +70,6 @@ concurrency:
 permissions: {}
 
 env:
-  # Use the contains function to convert the boolean input to a string and compare it to 'false'. This is required when
-  # the workflow is triggered from workflow_call because the github context is that of the workflow that called this
-  # workflow.
-  AUTODISCOVER: ${{ inputs.autodiscover || contains(inputs.autodiscover, 'false') && 'false' || 'true' }}
-  DRY_RUN: ${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' }}
-  FORCE_COLOR: true
   RENOVATE_VERSION: 35.20.1 # renovate: datasource=docker depName=renovate packageName=renovate/renovate
 
 jobs:
@@ -83,6 +77,27 @@ jobs:
     name: Renovate
     runs-on: ubuntu-latest
     steps:
+      - name: Configure workflow run
+        id: configure
+        # Use the contains function to convert the boolean input to a string and compare it to 'false'. This is
+        # required when the workflow is triggered from workflow_call because the github context is that of the workflow
+        # that called this workflow.
+        run: |
+          read -r -d '' $env_vars <<-EOF
+            AUTODISCOVER=${{ inputs.autodiscover || contains(inputs.autodiscover, 'false') && 'false' || 'true' }}
+            DRY_RUN=${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' }}
+            FORCE_COLOR=true
+            LOG_LEVEL=${{ inputs.log_level || 'debug' }}
+          EOF
+          echo "$env_vars" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=renovate/renovate:${{ env.RENOVATE_VERSION }}" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Cache Docker images
+        uses: ScribeMD/docker-cache@0.3.0
+        with:
+          key: ${{ steps.configure.outputs.DOCKER_IMAGE }}
+
       - name: Get Workflow Token
         id: get_workflow_token
         uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
