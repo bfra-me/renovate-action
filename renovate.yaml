@@ -111,7 +111,7 @@ jobs:
                 "Use the global config preset for the @bfra-me organization.",
                 "_See the [renovate workflow](https://github.com/bfra-me/renovate-config/blob/main/.github/workflows/renovate.yaml) for details._"
               ],
-              "dryRun": ${{ fromJSON(env.DRY_RUN) && '"full"' || null }},
+              "dryRun": ${{ fromJSON(env.DRY_RUN) && '"full"' || 'null' }},
               "gitAuthor": "bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>",
               "gitIgnoredAuthors": [
                 "bot@renovateapp.com",
@@ -132,7 +132,7 @@ jobs:
               "platform": "github",
               "platformCommit": true,
               "printConfig": ${{ inputs.print_config || false }},
-              "repositories": ${{ !fromJSON(env.AUTODISCOVER) && format('["{0}"]', github.repository) || null }},
+              "repositories": ${{ !fromJSON(env.AUTODISCOVER) && format('["{0}"]', github.repository) || 'null' }},
               "schedule": ["at any time"],
               "username": "bfra-me[bot]"
             }
