@@ -1,9 +1,10 @@
-name: ci
+name: CI
 
 on:
   push:
     branches: [main, 'renovate/**']
   pull_request:
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
@@ -11,11 +12,12 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  FORCE_COLOR: 3
+  FORCE_COLOR: true
   LOG_LEVEL: debug
 
 jobs:
   validate-config-presets:
+    name: Validate config presets
     runs-on: ubuntu-latest
     timeout-minutes: 10
     strategy:
