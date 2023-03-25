@@ -136,4 +136,4 @@ jobs:
               "schedule": ["at any time"],
               "username": "bfra-me[bot]"
             }
-          RENOVATE_VERSION: 35.20.0 # renovate: datasource=docker depName=renovate packageName=renovate/renovate
+          RENOVATE_VERSION: 35.20.1 # renovate: datasource=docker depName=renovate packageName=renovate/renovate
