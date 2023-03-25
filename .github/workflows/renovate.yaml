@@ -97,7 +97,7 @@ jobs:
             workflows:write
 
       - name: Renovate
-        uses: renovatebot/github-action@2529763aa12e6d5b445bc911e8bd8cce2a4f205c # v36.0.1
+        uses: renovatebot/github-action@95cbcd7e8b9d0d69e15ba26208631839ce7eee48 # v36.0.2
         with:
           env-regex: '^(?:RENOVATE_\w+|FORCE_COLOR|GITHUB_COM_TOKEN|LOG_LEVEL|NODE_OPTIONS)$'
           renovate-version: ${{ env.RENOVATE_VERSION }}
