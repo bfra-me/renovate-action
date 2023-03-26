@@ -32,6 +32,11 @@ on:
         required: false
         type: boolean
         default: false
+      use_slim:
+        description: Use the `slim` version of the Renovate Docker image.
+        required: false
+        type: boolean
+        default: true
     secrets:
       APPLICATION_ID:
         description: GitHub App ID
@@ -62,6 +67,11 @@ on:
         required: false
         type: boolean
         default: false
+      use_slim:
+        description: Use the `slim` version of the Renovate Docker image.
+        required: false
+        type: boolean
+        default: true
 
 concurrency:
   group: '${{ github.repository }}-${{ github.workflow }}-$${{ github.ref }}'
@@ -91,7 +101,10 @@ jobs:
           EOF
           )
           echo "$env_vars" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=renovate/renovate:${{ env.RENOVATE_VERSION }}" >> $GITHUB_OUTPUT
+          use_slim=${{ inputs.use_slim || contains(inputs.use_slim, 'false') && 'false' || 'true' }}
+          $use_slim && slim_suffix='-slim' || slim_suffix=''
+          echo "DOCKER_IMAGE=renovate/renovate:${{ env.RENOVATE_VERSION }}${slim_suffix}" >> $GITHUB_OUTPUT
+          echo "USE_SLIM=$use_slim" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Cache Docker images
@@ -120,7 +133,7 @@ jobs:
           env-regex: '^(?:RENOVATE_\w+|FORCE_COLOR|GITHUB_COM_TOKEN|LOG_LEVEL|NODE_OPTIONS)$'
           renovate-version: ${{ env.RENOVATE_VERSION }}
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
-          useSlim: false
+          useSlim: ${{ steps.configure.outputs.USE_SLIM }}
         env:
           RENOVATE_CONFIG: |-
             {
