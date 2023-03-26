@@ -17,6 +17,10 @@ on:
         required: false
         type: boolean
         default: true
+      branch:
+        description: Run Renovate on this branch.
+        required: false
+        type: string
       dry_run:
         description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
         required: false
@@ -51,6 +55,10 @@ on:
         required: false
         type: boolean
         default: true
+      branch:
+        description: Run Renovate on this branch.
+        required: false
+        type: string
       dry_run:
         description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
         required: false
@@ -93,6 +101,10 @@ jobs:
         # required when the workflow is triggered from workflow_call because the github context is that of the workflow
         # that called this workflow.
         run: |
+          branches="$(jq 'split(",")' -Rc <(echo '${{ inputs.branch }}'))"
+          if [[ "$branches" != "[]" ]]; then
+            echo "RENOVATE_BASE_BRANCHES=$branches" >> $GITHUB_ENV
+          fi
           env_vars=$(sed 's/^[[:space:]]*//' <<EOF
             AUTODISCOVER=${{ inputs.autodiscover || contains(inputs.autodiscover, 'false') && 'false' || 'true' }}
             DRY_RUN=${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' }}
