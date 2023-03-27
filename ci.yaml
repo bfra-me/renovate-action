@@ -2,9 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [main, 'renovate/**']
-  pull_request:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 concurrency:
