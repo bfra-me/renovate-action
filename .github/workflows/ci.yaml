@@ -8,8 +8,11 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: '${{ github.workflow }}-${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  group: '${{ github.workflow }}-${{ github.event.number || github.ref }}'
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 env:
   FORCE_COLOR: true
@@ -31,13 +34,14 @@ jobs:
       - name: Validating ${{ env.RENOVATE_CONFIG_FILE }}
         run: npx -p renovate renovate-config-validator
 
-  # Revisit this job when renovatebot/renovate#18974 is resolved.
-  # renovate:
-  #   needs: validate-config-presets
-  #   if: github.event_name != 'workflow_dispatch'
-  #   uses: ./.github/workflows/renovate.yaml
-  #   # Set autodiscover to false to run Renovate on this repository only
-  #   with:
-  #     autodiscover: false
-  #     print_config: true
-  #   secrets: inherit
+  renovate-pr:
+    if: contains(github.event_name, 'pull_request')
+    name: 'Renovate PR #${{ github.event.number }}'
+    needs: validate-config-presets
+    secrets: inherit
+    uses: ./.github/workflows/renovate.yaml
+    with:
+      autodiscover: false
+      branch: ${{ github.head_ref }}
+      dry_run: true
+      print_config: true
