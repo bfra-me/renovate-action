@@ -104,6 +104,7 @@ jobs:
           branches="$(jq 'split(",")' -Rc <(echo '${{ inputs.branch }}'))"
           if [[ "$branches" != "[]" ]]; then
             echo "RENOVATE_BASE_BRANCHES=$branches" >> $GITHUB_ENV
+            echo "RENOVATE_USE_BASE_BRANCH_CONFIG=merge" >> $GITHUB_ENV
           fi
           env_vars=$(sed 's/^[[:space:]]*//' <<EOF
             AUTODISCOVER=${{ inputs.autodiscover || contains(inputs.autodiscover, 'false') && 'false' || 'true' }}
