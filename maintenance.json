@@ -6,6 +6,16 @@
     "reviewersFromCodeOwners": true,
     "reviewersSampleSize": 2
   },
+  "dashboardApprovalForMajorUpdates": {
+    "description": "Enable dependency dashboard approval for major updates.",
+    "packageRules": [
+      {
+        "matchUpdateTypes": ["major"],
+        "dependencyDashboardApproval": true,
+        "dependencyDashboardLabels": ["approval-pending"]
+      }
+    ]
+  },
   "weeklyLockFileUpdates": {
     "description": "Perform lock file maintenance every week.",
     "lockFileMaintenance": {

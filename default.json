@@ -58,16 +58,6 @@
 
   "packageRules": [
     {
-      "description": "Enable dependency dashboard approval for major updates (except Renovate)",
-      "matchUpdateTypes": ["major"],
-      "excludePackagePatterns": [
-        "^renovate(bot)?($|\\/)",
-        "^(renovate|(?:ghcr.io\\/)?containerbase)\\/buildpack$",
-        "^@renovatebot\\/"
-      ],
-      "dependencyDashboardApproval": true
-    },
-    {
       "description": "Delay updates until npm packages are safe from unpublishing (except Renovate)",
       "matchDatasources": ["npm"],
       "excludePackageNames": ["renovate"],
