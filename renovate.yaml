@@ -149,33 +149,33 @@ jobs:
         env:
           RENOVATE_CONFIG: |-
             {
-              "autodiscover": ${{ env.AUTODISCOVER }},
-              "description": [
-                "Use the global config preset for the @bfra-me organization.",
-                "_See the [renovate workflow](https://github.com/bfra-me/renovate-config/blob/main/.github/workflows/renovate.yaml) for details._"
+              autodiscover: ${{ env.AUTODISCOVER }},
+              description: [
+                'Use the global config preset for the @bfra-me organization.',
+                '_See the [renovate workflow](https://github.com/bfra-me/renovate-config/blob/main/.github/workflows/renovate.yaml) for details._',
               ],
-              "dryRun": ${{ fromJSON(env.DRY_RUN) && '"full"' || 'null' }},
-              "gitAuthor": "bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>",
-              "gitIgnoredAuthors": [
-                "bot@renovateapp.com",
-                "29139614+renovate[bot]@users.noreply.github.com",
-                "support@github.com",
-                "261136+bfra-me@users.noreply.github.com"
+              dryRun: ${{ fromJSON(env.DRY_RUN) && '"full"' || 'null' }},
+              gitAuthor: 'bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>',
+              gitIgnoredAuthors: [
+                'bot@renovateapp.com',
+                '29139614+renovate[bot]@users.noreply.github.com',
+                'support@github.com',
+                '261136+bfra-me@users.noreply.github.com',
               ],
-              "packageRules": [
+              packageRules: [
                 {
-                  "matchPackagePatterns": ["*"],
-                  "rangeStrategy": "pin"
+                  matchPackagePatterns: ['*'],
+                  rangeStrategy: 'pin',
                 },
                 {
-                  "matchDepTypes": ["engines", "peerDependencies"],
-                  "rangeStrategy": "update-lockfile"
+                  matchDepTypes: ['engines', 'peerDependencies'],
+                  rangeStrategy: 'update-lockfile',
                 }
               ],
-              "platform": "github",
-              "platformCommit": true,
-              "printConfig": ${{ inputs.print_config || false }},
-              "repositories": ${{ !fromJSON(env.AUTODISCOVER) && format('["{0}"]', github.repository) || 'null' }},
-              "schedule": ["at any time"],
-              "username": "bfra-me[bot]"
+              platform: 'github',
+              platformCommit: true,
+              printConfig: ${{ inputs.print_config || false }},
+              repositories: ${{ !fromJSON(env.AUTODISCOVER) && format('["{0}"]', github.repository) || 'null' }},
+              schedule: ['at any time'],
+              username: 'bfra-me[bot]',
             }
