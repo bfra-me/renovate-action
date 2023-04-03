@@ -124,6 +124,7 @@ jobs:
         uses: ScribeMD/docker-cache@820df2d639d90d13c25ec323a10b3c1b485b9f64 # 0.3.0
         with:
           key: ${{ steps.configure.outputs.DOCKER_IMAGE }}
+          read-only: ${{ github.repository != 'bfra-me/renovate-config' }}
 
       - name: Get Workflow Token
         id: get_workflow_token
