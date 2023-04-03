@@ -23,6 +23,7 @@
 
   "configMigration": true,
   "configWarningReuseIssue": false,
+  "ignoreScripts": false,
 
   "prConcurrentLimit": 5,
   "recreateClosed": true,
