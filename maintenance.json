@@ -1,11 +1,29 @@
 {
   "default": {
-    "description": "Include default config presets for repository maintainers.",
+    "description": "Include default config presets for repository maintenance.",
+    "extends": [
+      ":rebaseStalePrs",
+      ":prNotPending",
+      ":prHourlyLimitNone",
+      ":updateNotScheduled",
+      "github>bfra-me/renovate-config:maintenance/security"
+    ],
+    "addLabels": ["dependencies"],
+
+    "configMigration": true,
+    "configWarningReuseIssue": false,
+
+    "prConcurrentLimit": 5,
+    "recreateClosed": true,
+
     "assigneesFromCodeOwners": true,
     "assigneesSampleSize": 2,
     "reviewersFromCodeOwners": true,
-    "reviewersSampleSize": 2
+    "reviewersSampleSize": 2,
+
+    "timezone": "America/Phoenix"
   },
+
   "dashboardApprovalForMajorUpdates": {
     "description": "Enable dependency dashboard approval for major updates.",
     "packageRules": [
@@ -16,6 +34,13 @@
       }
     ]
   },
+
+  "security": {
+    "description": "Enable security updates from vulnerability alerts.",
+    "extends": ["enableVulnerabilityAlertsWithLabel(security)"],
+    "osvVulnerabilityAlerts": true
+  },
+
   "weeklyLockFileUpdates": {
     "description": "Perform lock file maintenance every week.",
     "lockFileMaintenance": {

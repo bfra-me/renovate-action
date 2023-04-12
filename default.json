@@ -1,13 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "Use the default Renovate config preset for the @bfra-me organization.",
+
+  "ignorePresets": [":ignoreModulesAndTests"],
+
   "extends": [
     "config:base",
-    ":rebaseStalePrs",
-    ":prNotPending",
-    ":prHourlyLimitNone",
-    ":updateNotScheduled",
-    ":enableVulnerabilityAlertsWithLabel(security)",
     ":semanticCommits",
     ":separateMultipleMajorReleases",
     "docker:enableMajor",
@@ -21,19 +19,9 @@
     "github>bfra-me/renovate-config:maintenance/default"
   ],
 
-  "configMigration": true,
-  "configWarningReuseIssue": false,
   "ignoreScripts": false,
-
-  "prConcurrentLimit": 5,
-  "recreateClosed": true,
-
   "internalChecksFilter": "strict",
   "transitiveRemediation": true,
-
-  "timezone": "America/Phoenix",
-
-  "labels": ["dependencies"],
 
   "postUpdateOptions": [
     "gomodTidy",
@@ -42,7 +30,6 @@
     "yarnDedupeHighest"
   ],
 
-  "ignorePresets": [":ignoreModulesAndTests"],
   "ignorePaths": [
     "**/node_modules/**",
     "**/bower_components/**",
