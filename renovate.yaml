@@ -157,6 +157,7 @@ jobs:
               allowedPostUpgradeCommands: [
                 '^npm ci$',
                 '^npm ci --ignore-scripts$',
+                '^npx prettier --write \\.$',
                 '^pnpm install --frozen-lockfile$',
                 '^pnpm install --frozen-lockfile --ignore-scripts$',
                 '^yarn install --frozen-lockfile$',
