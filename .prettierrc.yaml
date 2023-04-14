@@ -3,11 +3,11 @@ singleQuote: true
 tabWidth: 2
 overrides:
   - files:
-    - "*.json"
+      - '*.json'
     options:
       singleQuote: false
       trailingComma: none
   - files:
-      - ".vscode/*.json"
+      - '.vscode/*.json'
     options:
       tabWidth: 4
