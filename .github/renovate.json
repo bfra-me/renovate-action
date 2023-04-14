@@ -23,5 +23,10 @@
       "separateMajorMinor": false,
       "stabilityDays": 0
     }
-  ]
+  ],
+  "postUpgradeTasks": {
+    "commands": ["npx prettier --write ."],
+    "fileFilters": ["**/*.{json,md,yaml,yml}"],
+    "executionMode": "branch"
+  }
 }
