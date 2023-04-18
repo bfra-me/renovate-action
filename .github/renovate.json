@@ -26,7 +26,7 @@
   ],
   "postUpgradeTasks": {
     "commands": ["npx prettier --write ."],
-    "fileFilters": ["**/*.{json,md,yaml,yml}"],
+    "fileFilters": ["**/**"],
     "executionMode": "branch"
   }
 }
