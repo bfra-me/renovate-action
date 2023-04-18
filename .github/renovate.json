@@ -21,7 +21,7 @@
       "semanticCommitType": "docs",
       "semanticCommitScope": null,
       "separateMajorMinor": false,
-      "stabilityDays": 0
+      "minimumReleaseAge": null
     }
   ],
   "postUpgradeTasks": {
