@@ -160,6 +160,7 @@ jobs:
                 '^npx prettier --write \\.$',
                 '^pnpm install --frozen-lockfile$',
                 '^pnpm install --frozen-lockfile --ignore-scripts$',
+                '^pnpm prettier --write \\.$',
                 '^yarn install --frozen-lockfile$',
                 '^yarn install --frozen-lockfile --ignore-scripts$',
                 '^yarn install --immutable$',
