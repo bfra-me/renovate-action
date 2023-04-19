@@ -43,5 +43,5 @@ jobs:
     with:
       autodiscover: false
       branch: ${{ github.head_ref }}
-      dry_run: false
+      dry_run: ${{ github.event_name == 'pull_request' && true }}
       print_config: ${{ github.event_name == 'pull_request' && true }}
