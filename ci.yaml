@@ -33,14 +33,9 @@ jobs:
       - name: Validating ${{ env.RENOVATE_CONFIG_FILE }}
         run: npx -p renovate renovate-config-validator
 
+  # Renovate PRs and pushes to main.
   renovate-ci:
-    # Renovate PRs (as a dry run) and pushes to main.
-    if: >
-      github.repository == 'bfra-me/renovate-config' &&
-      (
-        contains(github.event_name, 'pull_request') ||
-        github.ref == 'refs/heads/main'
-      )
+    if: github.repository == 'bfra-me/renovate-config'
     name: Renovate CI
     needs: validate-config-presets
     secrets: inherit
