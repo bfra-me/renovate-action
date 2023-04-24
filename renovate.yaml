@@ -191,3 +191,5 @@ jobs:
               schedule: ['at any time'],
               username: 'bfra-me[bot]',
             }
+          RENOVATE_DEPENDENCY_DASHBOARD_FOOTER: >-
+            - [ ] <!-- manual job -->Check here to trigger a Renovate run on this repository
