@@ -82,7 +82,7 @@ concurrency:
 permissions: {}
 
 env:
-  RENOVATE_VERSION: 35.59.0 # renovate: datasource=docker depName=renovate packageName=renovate/renovate
+  RENOVATE_VERSION: 35.60.0 # renovate: datasource=docker depName=renovate packageName=renovate/renovate
 
 jobs:
   renovate:
