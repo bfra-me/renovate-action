@@ -91,33 +91,72 @@ jobs:
     steps:
       - name: Configure workflow run
         id: configure
+        env:
+          autodiscover: ${{ inputs.autodiscover || contains(inputs.autodiscover, 'false') && 'false' || 'true' }}
+          dry_run: ${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' }}
+          log_level: ${{ inputs.log_level || 'debug' }}
+          print_config: ${{ inputs.print_config || 'false' }}
+          use_slim: ${{ inputs.use_slim || contains(inputs.use_slim, 'false') && 'false' || 'true' }}
+          zzglobal_config: |-
+            {
+              allowPlugins: true,
+              allowPostUpgradeCommandTemplating: true,
+              allowScripts: true,
+              allowedPostUpgradeCommands: [
+                '^npm ci$',
+                '^npm ci --ignore-scripts$',
+                '^npx prettier( --no-color)? --write \\.$',
+                '^pnpm install --frozen-lockfile$',
+                '^pnpm install --frozen-lockfile --ignore-scripts$',
+                '^pnpm prettier( --no-color)? --write \\.$',
+                '^yarn install --frozen-lockfile$',
+                '^yarn install --frozen-lockfile --ignore-scripts$',
+                '^yarn install --immutable$',
+                '^yarn install --immutable --immutable-cache$',
+              ],
+              description: [
+                'Use the global config preset for the @bfra-me organization.',
+                '_See the [renovate workflow](https://github.com/bfra-me/renovate-config/blob/main/.github/workflows/renovate.yaml) for details._',
+              ],
+              exposeAllEnv: true,
+              packageRules: [
+                {
+                  matchPackagePatterns: ['*'],
+                  rangeStrategy: 'pin',
+                },
+                {
+                  matchDepTypes: ['engines', 'peerDependencies'],
+                  rangeStrategy: 'update-lockfile',
+                },
+              ],
+              schedule: ['at any time'],
+            }
+
         # Use the contains function to convert the boolean input to a string and compare it to 'false'. This is
         # required when the workflow is triggered from workflow_call because the github context is that of the workflow
         # that called this workflow.
         run: |
-          branches="$(jq 'split(",")' -Rc <(echo '${{ inputs.branch }}'))"
-          if [[ "$branches" != "[]" ]]; then
-            echo "RENOVATE_BASE_BRANCHES=$branches" >> $GITHUB_ENV
-            echo "RENOVATE_USE_BASE_BRANCH_CONFIG=merge" >> $GITHUB_ENV
-          fi
-          env_vars=$(sed 's/^[[:space:]]*//' <<EOF
-            AUTODISCOVER=${{ inputs.autodiscover || contains(inputs.autodiscover, 'false') && 'false' || 'true' }}
-            DRY_RUN=${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' }}
-            FORCE_COLOR=true
-            LOG_LEVEL=${{ inputs.log_level || 'debug' }}
+          # Create outputs for this configuration
+          [[ -n "${{ inputs.branch }}" ]] && base_branches=$(jq 'split(",")' -Rc <(echo '${{ inputs.branch }}'))
+          sed 's/^[[:space:]]*//' <<EOF >> $GITHUB_OUTPUT
+            autodiscover=${{ env.autodiscover }}
+            base-branches=${base_branches}
+            docker-image=renovate/renovate:${{ env.RENOVATE_VERSION }}${{ env.use_slim && '-slim' || ''}}
+            dry-run=${{ env.dry_run }}
+            force-color=true
+            global-config=$(echo "${zzglobal_config}" | tr -d '\n')
+            log-level=${{ env.log_level }}
+            print-config=${{ env.print_config }}
+            renovate-version=${{ env.RENOVATE_VERSION }}
+            repositories=${{ !fromJSON(env.autodiscover) && format('["{0}"]', github.repository) || '' }}
+            use-slim=${{ env.use_slim }}
           EOF
-          )
-          echo "$env_vars" >> $GITHUB_ENV
-          use_slim=${{ inputs.use_slim || contains(inputs.use_slim, 'false') && 'false' || 'true' }}
-          $use_slim && slim_suffix='-slim' || slim_suffix=''
-          echo "DOCKER_IMAGE=renovate/renovate:${{ env.RENOVATE_VERSION }}${slim_suffix}" >> $GITHUB_OUTPUT
-          echo "USE_SLIM=$use_slim" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Cache Docker images
         uses: ScribeMD/docker-cache@820df2d639d90d13c25ec323a10b3c1b485b9f64 # 0.3.0
         with:
-          key: ${{ steps.configure.outputs.DOCKER_IMAGE }}
+          key: ${{ steps.configure.outputs.docker-image }}
           read-only: ${{ github.repository != 'bfra-me/renovate-config' }}
 
       - name: Get Workflow Token
@@ -137,59 +176,25 @@ jobs:
 
       - name: Renovate ${{ env.RENOVATE_VERSION }}
         uses: renovatebot/github-action@81cd2edbb5fd1dc42115b0d1c8854d5a6b74d835 # v36.0.3
-        with:
-          env-regex: '^(?:RENOVATE_\w+|FORCE_COLOR|GITHUB_COM_TOKEN|LOG_LEVEL|NODE_OPTIONS)$'
-          renovate-version: ${{ env.RENOVATE_VERSION }}
-          token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
-          useSlim: ${{ steps.configure.outputs.USE_SLIM }}
         env:
-          RENOVATE_CONFIG: |-
-            {
-              allowPlugins: true,
-              allowPostUpgradeCommandTemplating: true,
-              allowScripts: true,
-              allowedPostUpgradeCommands: [
-                '^npm ci$',
-                '^npm ci --ignore-scripts$',
-                '^npx prettier( --no-color)? --write \\.$',
-                '^pnpm install --frozen-lockfile$',
-                '^pnpm install --frozen-lockfile --ignore-scripts$',
-                '^pnpm prettier( --no-color)? --write \\.$',
-                '^yarn install --frozen-lockfile$',
-                '^yarn install --frozen-lockfile --ignore-scripts$',
-                '^yarn install --immutable$',
-                '^yarn install --immutable --immutable-cache$',
-              ],
-              autodiscover: ${{ env.AUTODISCOVER }},
-              description: [
-                'Use the global config preset for the @bfra-me organization.',
-                '_See the [renovate workflow](https://github.com/bfra-me/renovate-config/blob/main/.github/workflows/renovate.yaml) for details._',
-              ],
-              dryRun: ${{ fromJSON(env.DRY_RUN) && '"full"' || 'null' }},
-              exposeAllEnv: true,
-              gitAuthor: 'bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>',
-              gitIgnoredAuthors: [
-                'bot@renovateapp.com',
-                '29139614+renovate[bot]@users.noreply.github.com',
-                'support@github.com',
-                '261136+bfra-me@users.noreply.github.com',
-              ],
-              packageRules: [
-                {
-                  matchPackagePatterns: ['*'],
-                  rangeStrategy: 'pin',
-                },
-                {
-                  matchDepTypes: ['engines', 'peerDependencies'],
-                  rangeStrategy: 'update-lockfile',
-                }
-              ],
-              platform: 'github',
-              platformCommit: true,
-              printConfig: ${{ inputs.print_config || false }},
-              repositories: ${{ !fromJSON(env.AUTODISCOVER) && format('["{0}"]', github.repository) || 'null' }},
-              schedule: ['at any time'],
-              username: 'bfra-me[bot]',
-            }
+          FORCE_COLOR: ${{ steps.configure.outputs.force-color }}
+          LOG_LEVEL: ${{ steps.configure.outputs.log-level }}
+          RENOVATE_AUTODISCOVER: ${{ steps.configure.outputs.autodiscover }}
+          RENOVATE_BASE_BRANCHES: ${{ steps.configure.outputs.base-branches }}
+          RENOVATE_USE_BASE_BRANCH_CONFIG: ${{ steps.configure.outputs.base-branches && 'merge' || 'none' }}
+          RENOVATE_CONFIG: ${{ steps.configure.outputs.global-config }}
           RENOVATE_DEPENDENCY_DASHBOARD_FOOTER: >-
             - [ ] <!-- manual job -->Check here to trigger a Renovate run on this repository
+          RENOVATE_DRY_RUN: ${{ fromJSON(steps.configure.outputs.dry-run) && 'full' || '' }}
+          RENOVATE_GIT_AUTHOR: 'bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>'
+          RENOVATE_GIT_IGNORED_AUTHORS: '["bot@renovateapp.com","29139614+renovate[bot]@users.noreply.github.com","support@github.com","261136+bfra-me@users.noreply.github.com"]'
+          RENOVATE_PLATFORM: github
+          RENOVATE_PLATFORM_COMMIT: true
+          RENOVATE_PRINT_CONFIG: ${{ steps.configure.outputs.print-config }}
+          RENOVATE_REPOSITORIES: ${{ steps.configure.outputs.repositories }}
+          RENOVATE_USERNAME: 'bfra-me[bot]'
+        with:
+          env-regex: '^(?:RENOVATE_\w+|FORCE_COLOR|GITHUB_\w+|LOG_LEVEL|NODE_OPTIONS)$'
+          renovate-version: ${{ steps.configure.outputs.renovate-version }}
+          token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
+          useSlim: ${{ steps.configure.outputs.use-slim }}
