@@ -35,6 +35,13 @@ on:
         required: false
         type: boolean
         default: true
+    outputs:
+      docker-image:
+        description: The name of the Renovate Docker image
+        value: ${{ jobs.renovate.outputs.docker-image }}
+      renovate-version:
+        description: The Renovate version
+        value: ${{ jobs.renovate.outputs.renovate-version }}
     secrets:
       APPLICATION_ID:
         description: GitHub App ID
@@ -88,6 +95,17 @@ jobs:
   renovate:
     name: Renovate
     runs-on: ubuntu-latest
+    outputs:
+      autodiscover: ${{ steps.configure.outputs.autodiscover }}
+      base-branches: ${{ steps.configure.outputs.base-branches }}
+      docker-image: ${{ steps.configure.outputs.docker-image }}
+      dry-run: ${{ steps.configure.outputs.dry-run }}
+      global-config: ${{ steps.configure.outputs.global-config }}
+      log-level: ${{ steps.configure.outputs.log-level }}
+      print-config: ${{ steps.configure.outputs.print-config }}
+      renovate-version: ${{ steps.configure.outputs.renovate-version }}
+      repositories: ${{ steps.configure.outputs.repositories }}
+      use-slim: ${{ steps.configure.outputs.use-slim }}
     steps:
       - name: Configure workflow run
         id: configure
@@ -195,7 +213,7 @@ jobs:
           RENOVATE_REPOSITORIES: ${{ steps.configure.outputs.repositories }}
           RENOVATE_USERNAME: 'bfra-me[bot]'
         with:
-          env-regex: '^(?:RENOVATE_\w+|FORCE_COLOR|GITHUB_\w+|LOG_LEVEL|NODE_OPTIONS)$'
+          env-regex: '^(?:RENOVATE_\w+|FORCE_COLOR|GITHUB_\w+|LOG_LEVEL|NODE_OPTIONS|RUNNER_\w+)$'
           renovate-version: ${{ steps.configure.outputs.renovate-version }}
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
           useSlim: ${{ steps.configure.outputs.use-slim }}
