@@ -213,7 +213,7 @@ jobs:
           RENOVATE_REPOSITORIES: ${{ steps.configure.outputs.repositories }}
           RENOVATE_USERNAME: 'bfra-me[bot]'
         with:
-          env-regex: '^(?:RENOVATE_\w+|FORCE_COLOR|GITHUB_\w+|LOG_LEVEL|NODE_OPTIONS|RUNNER_\w+)$'
+          env-regex: '^(?:CI|FORCE_COLOR|GITHUB_(?:(?!PATH|ENV).)+|LOG_LEVEL|NODE_OPTIONS|RENOVATE_\w+|RUNNER_\w+)$'
           renovate-version: ${{ steps.configure.outputs.renovate-version }}
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
           useSlim: ${{ steps.configure.outputs.use-slim }}
