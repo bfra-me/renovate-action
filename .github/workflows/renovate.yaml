@@ -171,7 +171,7 @@ jobs:
         shell: bash
 
       - name: Cache Docker images
-        uses: ScribeMD/docker-cache@820df2d639d90d13c25ec323a10b3c1b485b9f64 # 0.3.0
+        uses: ScribeMD/docker-cache@e7089ca9036c6a9f291d3d7aeecc47149efa6dbf # 0.3.3
         with:
           key: ${{ steps.configure.outputs.docker-image }}
           read-only: ${{ github.repository != 'bfra-me/renovate-config' }}
