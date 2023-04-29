@@ -170,6 +170,8 @@ jobs:
             contents:write,
             issues:write,
             pull_requests:write,
+            security_events:read,
+            statuses:write,
             vulnerability_alerts:read,
             workflows:write
 
