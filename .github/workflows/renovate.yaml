@@ -124,7 +124,7 @@ jobs:
           dry_run: ${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' }}
           log_level: ${{ inputs.log_level || 'debug' }}
           print_config: ${{ inputs.print_config || 'false' }}
-          cache: ${{ inputs.cache && !inputs.dry_run && 'true' || 'false' }}
+          cache: ${{ inputs.cache && !inputs.dry_run && 'true' || github.event.name == 'schedule' && 'true' || 'false' }}
           use_slim: ${{ inputs.use_slim || contains(inputs.use_slim, 'false') && 'false' || 'true' }}
           zzglobal_config: |-
             {
