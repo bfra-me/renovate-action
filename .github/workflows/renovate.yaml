@@ -203,10 +203,28 @@ jobs:
             vulnerability_alerts:read,
             workflows:write
 
-      - name: Setup Renovate Cache
+      - name: Configure Renovate cache
         if: steps.configure.outputs.enable-cache == 'true'
+        shell: bash
         run: |
-          ls -alhFR /tmp || exit 0
+          echo "RENOVATE_CACHE_DIR=${RENOVATE_CACHE_DIR:-/tmp/renovate/cache}" >> $GITHUB_ENV
+      - id: renovate-cache
+        name: Cache Renovate
+        if: steps.configure.outputs.enable-cache == 'true'
+        env:
+          RENOVATE_CACHE_DIR: ${{ env.RENOVATE_CACHE_DIR }}
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.RENOVATE_CACHE_DIR }}
+          key: renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ hashFiles('**/renovate.json5', '**/renovate.json', 'default.json') }}
+          restore-keys: |
+            renovate-cache-${{ steps.configure.outputs.renovate-version }}-
+            renovate-cache-
+      - name: Configure Renovate repository cache
+        if: steps.configure.outputs.enable-cache == 'true'
+        shell: bash
+        run: |
+          echo "RENOVATE_REPOSITORY_CACHE=${{ fromJSON(steps.renovate-cache.outputs.cache-hit) && 'enabled' || 'reset' }}" >> $GITHUB_ENV
 
       - name: Renovate ${{ env.RENOVATE_VERSION }}
         uses: renovatebot/github-action@81cd2edbb5fd1dc42115b0d1c8854d5a6b74d835 # v36.0.3
