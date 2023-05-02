@@ -15,6 +15,10 @@ on:
         description: Run Renovate on this branch.
         required: false
         type: string
+      cache:
+        description: Enable the Renovate cache.
+        required: false
+        type: boolean
       dry_run:
         description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
         required: false
@@ -60,6 +64,10 @@ on:
         description: Run Renovate on this branch.
         required: false
         type: string
+      cache:
+        description: Enable the Renovate cache.
+        required: false
+        type: boolean
       dry_run:
         description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
         required: false
@@ -114,6 +122,7 @@ jobs:
           dry_run: ${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' }}
           log_level: ${{ inputs.log_level || 'debug' }}
           print_config: ${{ inputs.print_config || 'false' }}
+          cache: ${{ inputs.cache || 'false' }}
           use_slim: ${{ inputs.use_slim || contains(inputs.use_slim, 'false') && 'false' || 'true' }}
           zzglobal_config: |-
             {
@@ -160,6 +169,7 @@ jobs:
             base-branches=${base_branches}
             docker-image=renovate/renovate:${{ env.RENOVATE_VERSION }}${{ env.use_slim && '-slim' || ''}}
             dry-run=${{ env.dry_run }}
+            enable-cache=${{ env.cache }}
             force-color=true
             global-config=$(echo "${zzglobal_config}" | tr -d '\n')
             log-level=${{ env.log_level }}
@@ -193,6 +203,11 @@ jobs:
             vulnerability_alerts:read,
             workflows:write
 
+      - name: Setup Renovate Cache
+        if: steps.configure.outputs.enable-cache == 'true'
+        run: |
+          ls -alhFR /tmp || exit 0
+
       - name: Renovate ${{ env.RENOVATE_VERSION }}
         uses: renovatebot/github-action@81cd2edbb5fd1dc42115b0d1c8854d5a6b74d835 # v36.0.3
         env:
@@ -217,3 +232,8 @@ jobs:
           renovate-version: ${{ steps.configure.outputs.renovate-version }}
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
           useSlim: ${{ steps.configure.outputs.use-slim }}
+
+      - name: Explore Renovate Cache
+        if: steps.configure.outputs.enable-cache == 'true'
+        run: |
+          ls -alhFR /tmp || exit 0
