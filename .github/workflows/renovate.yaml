@@ -213,7 +213,7 @@ jobs:
         if: steps.configure.outputs.enable-cache == 'true'
         env:
           RENOVATE_CACHE_DIR: ${{ env.RENOVATE_CACHE_DIR }}
-        uses: actions/cache@v3
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
         with:
           path: ${{ env.RENOVATE_CACHE_DIR }}
           key: renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ hashFiles('**/renovate.json5', '**/renovate.json', 'default.json') }}
