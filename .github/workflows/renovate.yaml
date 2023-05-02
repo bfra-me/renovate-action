@@ -216,15 +216,14 @@ jobs:
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ env.RENOVATE_CACHE_DIR }}
-          key: renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ hashFiles('**/renovate.json5', '**/renovate.json', 'default.json') }}
+          key: renovate-cache-${{ steps.configure.outputs.renovate-version }}-
           restore-keys: |
-            renovate-cache-${{ steps.configure.outputs.renovate-version }}-
             renovate-cache-
       - name: Configure Renovate repository cache
         if: steps.configure.outputs.enable-cache == 'true'
         shell: bash
         run: |
-          echo "RENOVATE_REPOSITORY_CACHE=${{ fromJSON(steps.renovate-cache.outputs.cache-hit) && 'enabled' || 'reset' }}" >> $GITHUB_ENV
+          echo "RENOVATE_REPOSITORY_CACHE=${{ steps.renovate-cache.outputs.cache-hit == 'true' && 'enabled' || 'reset' }}" >> $GITHUB_ENV
 
       - name: Renovate ${{ env.RENOVATE_VERSION }}
         uses: renovatebot/github-action@81cd2edbb5fd1dc42115b0d1c8854d5a6b74d835 # v36.0.3
