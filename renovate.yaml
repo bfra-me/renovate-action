@@ -255,8 +255,3 @@ jobs:
           renovate-version: ${{ steps.configure.outputs.renovate-version }}
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
           useSlim: ${{ steps.configure.outputs.use-slim }}
-
-      - name: Explore Renovate Cache
-        if: steps.configure.outputs.enable-cache == 'true'
-        run: |
-          ls -alhFR /tmp || exit 0
