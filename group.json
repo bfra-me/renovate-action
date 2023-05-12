@@ -1,18 +1,95 @@
 {
   "default": {
     "description": "Use default group preset settings.",
-    "extends": ["group:linters", "bfra-me/renovate-config:group/prettier"]
+    "extends": [
+      "group:linters",
+      "bfra-me/renovate-config:group/@types",
+      "bfra-me/renovate-config:group/github-actions",
+      "bfra-me/renovate-config:group/jest",
+      "bfra-me/renovate-config:group/octokit",
+      "bfra-me/renovate-config:group/prettier",
+      "bfra-me/renovate-config:group/rollup"
+    ]
   },
+
+  "@types": {
+    "description": "Group <code>@types</code> dependencies together.",
+    "packageRules": [
+      {
+        "groupName": "@types packages",
+        "matchPackagePrefixes": ["@types/"],
+        "matchUpdateTypes": ["minor", "patch"],
+        "matchCurrentVersion": ">1.0.0"
+      },
+      {
+        "groupName": "@types packages",
+        "matchPackagePrefixes": ["@types/"],
+        "matchUpdateTypes": ["patch"],
+        "matchCurrentVersion": "0.x"
+      }
+    ]
+  },
+
+  "github-actions": {
+    "description": "Group GitHub Actions updates together.",
+    "packageRules": [
+      {
+        "groupName": "GitHub Actions",
+        "matchManagers": ["github-actions"],
+        "matchUpdateTypes": ["minor", "patch", "pin"]
+      }
+    ]
+  },
+
+  "jest": {
+    "description": "Group Jest and related packages together.",
+    "ignorePresets": [
+      "group:jestMonorepo",
+      "group:jestPlusTypes",
+      "group:jestPlusTsJest",
+      "monorepo:jest"
+    ],
+    "packageRules": [
+      {
+        "groupName": "Jest packages",
+        "matchSourceUrls": ["https://github.com/facebook/jest"]
+      },
+      {
+        "groupName": "Jest packages",
+        "matchPackageNames": ["@types/jest", "ts-jest"],
+        "matchPackagePrefixes": ["@types/jest-", "jest"]
+      }
+    ]
+  },
+
+  "octokit": {
+    "description": "Group Octokit packages together.",
+    "packageRules": [
+      {
+        "groupName": "Octokit packages",
+        "matchSourceUrlPrefixes": ["https://github.com/octokit/"]
+      }
+    ]
+  },
+
   "prettier": {
     "description": "Group Prettier packages together.",
     "packageRules": [
       {
-        "groupName": "prettier packages",
-        "matchPackagePatterns": [
-          "^prettier$",
-          "^@prettier\\/",
-          "^prettier-plugin-"
-        ]
+        "groupName": "Prettier packages",
+        "matchPackageNames": ["prettier"],
+        "matchPackagePatterns": ["^@prettier\\/", "^prettier-plugin-"]
+      }
+    ]
+  },
+
+  "rollup": {
+    "description": "Group Rollup and related packages together.",
+    "packageRules": [
+      {
+        "groupName": "Rollup packages",
+        "matchPackagePatterns": ["^rollup"],
+        "matchPackagePrefixes": ["@rollup"]
       }
     ]
   }
