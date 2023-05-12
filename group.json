@@ -3,30 +3,12 @@
     "description": "Use default group preset settings.",
     "extends": [
       "group:linters",
-      "bfra-me/renovate-config:group/@types",
-      "bfra-me/renovate-config:group/github-actions",
-      "bfra-me/renovate-config:group/jest",
-      "bfra-me/renovate-config:group/octokit",
-      "bfra-me/renovate-config:group/prettier",
-      "bfra-me/renovate-config:group/rollup"
-    ]
-  },
-
-  "@types": {
-    "description": "Group <code>@types</code> dependencies together.",
-    "packageRules": [
-      {
-        "groupName": "@types packages",
-        "matchPackagePrefixes": ["@types/"],
-        "matchUpdateTypes": ["minor", "patch"],
-        "matchCurrentVersion": ">1.0.0"
-      },
-      {
-        "groupName": "@types packages",
-        "matchPackagePrefixes": ["@types/"],
-        "matchUpdateTypes": ["patch"],
-        "matchCurrentVersion": "0.x"
-      }
+      "github>bfra-me/renovate-config:group/github-actions",
+      "github>bfra-me/renovate-config:group/jest",
+      "github>bfra-me/renovate-config:group/octokit",
+      "github>bfra-me/renovate-config:group/prettier",
+      "github>bfra-me/renovate-config:group/rollup",
+      "github>bfra-me/renovate-config:group/types"
     ]
   },
 
@@ -90,6 +72,24 @@
         "groupName": "Rollup packages",
         "matchPackagePatterns": ["^rollup"],
         "matchPackagePrefixes": ["@rollup"]
+      }
+    ]
+  },
+
+  "types": {
+    "description": "Group <code>@types</code> dependencies together.",
+    "packageRules": [
+      {
+        "groupName": "@types packages",
+        "matchPackagePrefixes": ["@types/"],
+        "matchUpdateTypes": ["minor", "patch"],
+        "matchCurrentVersion": ">1.0.0"
+      },
+      {
+        "groupName": "@types packages",
+        "matchPackagePrefixes": ["@types/"],
+        "matchUpdateTypes": ["patch"],
+        "matchCurrentVersion": "0.x"
       }
     ]
   }
