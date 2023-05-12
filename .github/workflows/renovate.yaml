@@ -227,7 +227,7 @@ jobs:
           echo "RENOVATE_REPOSITORY_CACHE=${{ steps.renovate-cache.outputs.cache-hit == 'true' && 'enabled' || 'reset' }}" >> $GITHUB_ENV
 
       - name: Renovate ${{ env.RENOVATE_VERSION }}
-        uses: renovatebot/github-action@0da8b0cd8bb013041bad4f818c2790fa3253efb1 # v36.1.1
+        uses: renovatebot/github-action@4cc203c40dc0eb6b356306893cabda6ff9d42f33 # v37.0.0
         env:
           FORCE_COLOR: ${{ steps.configure.outputs.force-color }}
           LOG_LEVEL: ${{ steps.configure.outputs.log-level }}
