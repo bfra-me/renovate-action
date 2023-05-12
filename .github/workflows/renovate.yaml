@@ -240,6 +240,15 @@ jobs:
           RENOVATE_DRY_RUN: ${{ fromJSON(steps.configure.outputs.dry-run) && 'full' || '' }}
           RENOVATE_GIT_AUTHOR: 'bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>'
           RENOVATE_GIT_IGNORED_AUTHORS: '["bot@renovateapp.com","29139614+renovate[bot]@users.noreply.github.com","support@github.com","261136+bfra-me@users.noreply.github.com"]'
+          RENOVATE_HOST_RULES: |
+            [
+              {
+                "hostType": "docker",
+                "matchHost": "ghcr.io",
+                "username": ${{ github.actor }},
+                "password": ${{ steps.get_workflow_token.outputs.token }}
+              }
+            ]
           RENOVATE_PLATFORM: github
           RENOVATE_PLATFORM_COMMIT: true
           RENOVATE_PRINT_CONFIG: ${{ steps.configure.outputs.print-config }}
