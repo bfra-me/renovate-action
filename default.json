@@ -18,7 +18,7 @@
     "github>bfra-me/renovate-config:replacements/default",
     "github>bfra-me/renovate-config:maintenance/default"
   ],
-  
+
   "commitMessageLowerCase": "never",
 
   "ignoreScripts": false,
