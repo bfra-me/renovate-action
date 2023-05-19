@@ -214,17 +214,12 @@ jobs:
         with:
           path: ${{ env.RENOVATE_CACHE_DIR }}
           key: >-
-            renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ github.ref }}-${{ steps.configure.outputs.autodiscover == 'true' && 'autodiscover' || format('{0}-{1}', github.repository_owner, github.event.repository.name) }}
+            renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ format('{0}-{1}', github.repository_owner, github.event.repository.name) }}-${{ github.sha }}
           restore-keys: |
-            renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ github.ref }}-autodiscover
-            renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ github.ref }}-${{ github.repository_owner }}-
-            renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ github.ref }}-
-            renovate-cache-${{ steps.configure.outputs.renovate-version }}
-      - name: Configure Renovate repository cache
-        if: steps.configure.outputs.enable-cache == 'true'
-        shell: bash
-        run: |
-          echo "RENOVATE_REPOSITORY_CACHE=${{ steps.renovate-cache.outputs.cache-hit == 'true' && 'enabled' || 'reset' }}" >> $GITHUB_ENV
+            renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ format('{0}-{1}', github.repository_owner, github.event.repository.name) }}-
+            renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ github.repository_owner }}-
+            renovate-cache-${{ steps.configure.outputs.renovate-version }}-
+            renovate-cache-
 
       - name: Renovate ${{ env.RENOVATE_VERSION }}
         uses: renovatebot/github-action@0da8b0cd8bb013041bad4f818c2790fa3253efb1 # v36.1.1
@@ -253,6 +248,7 @@ jobs:
           RENOVATE_PLATFORM_COMMIT: true
           RENOVATE_PRINT_CONFIG: ${{ steps.configure.outputs.print-config }}
           RENOVATE_REPOSITORIES: ${{ steps.configure.outputs.repositories }}
+          RENOVATE_REPOSITORY_CACHE: ${{ steps.configure.outputs.enable-cache != 'true' && 'disabled' || steps.renovate-cache.outputs.cache-hit == 'true' && 'enabled' || 'reset' }}
           RENOVATE_USERNAME: 'bfra-me[bot]'
         with:
           env-regex: '^(?:CI|FORCE_COLOR|GITHUB_(?:(?!PATH|ENV).)+|LOG_LEVEL|NODE_OPTIONS|RENOVATE_\w+|RUNNER_\w+)$'
