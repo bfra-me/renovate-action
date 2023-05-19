@@ -248,7 +248,7 @@ jobs:
           RENOVATE_PLATFORM_COMMIT: true
           RENOVATE_PRINT_CONFIG: ${{ steps.configure.outputs.print-config }}
           RENOVATE_REPOSITORIES: ${{ steps.configure.outputs.repositories }}
-          RENOVATE_REPOSITORY_CACHE: ${{ steps.configure.outputs.enable-cache != 'true' && 'disabled' || steps.renovate-cache.outputs.cache-hit == 'true' && 'enabled' || 'reset' }}
+          RENOVATE_REPOSITORY_CACHE: ${{ steps.configure.outputs.enable-cache == 'true' && 'enabled' || 'disabled' }}
           RENOVATE_USERNAME: 'bfra-me[bot]'
         with:
           env-regex: '^(?:CI|FORCE_COLOR|GITHUB_(?:(?!PATH|ENV).)+|LOG_LEVEL|NODE_OPTIONS|RENOVATE_\w+|RUNNER_\w+)$'
