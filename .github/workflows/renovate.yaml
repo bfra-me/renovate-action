@@ -177,6 +177,9 @@ jobs:
           EOF
         shell: bash
 
+      - name: Run Docker in Rootless Mode
+        uses: ScribeMD/rootless-docker@0.2.2
+
       - name: Cache Docker images
         uses: ScribeMD/docker-cache@e7089ca9036c6a9f291d3d7aeecc47149efa6dbf # 0.3.3
         with:
