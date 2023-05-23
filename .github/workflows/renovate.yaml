@@ -178,7 +178,7 @@ jobs:
         shell: bash
 
       - name: Run Docker in Rootless Mode
-        uses: ScribeMD/rootless-docker@0.2.2
+        uses: ScribeMD/rootless-docker@6bd157a512c2fafa4e0243a8aa87d964eb890886 # 0.2.2
 
       - name: Cache Docker images
         uses: ScribeMD/docker-cache@e7089ca9036c6a9f291d3d7aeecc47149efa6dbf # 0.3.3
