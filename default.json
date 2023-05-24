@@ -32,6 +32,23 @@
     "yarnDedupeHighest"
   ],
 
+  "commitMessageAction": "update",
+  "lockFileMaintenance": {
+    "commitMessageAction": "maintain lockfiles"
+  },
+  "pin": {
+    "commitMessageAction": "pin"
+  },
+  "pinDigest": {
+    "commitMessageAction": "pin"
+  },
+  "replacement": {
+    "commitMessageAction": "replace"
+  },
+  "rollback": {
+    "commitMessageAction": "rollback"
+  },
+
   "ignorePaths": [
     "**/node_modules/**",
     "**/bower_components/**",
