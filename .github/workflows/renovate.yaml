@@ -165,6 +165,7 @@ jobs:
             autodiscover=${{ env.autodiscover }}
             base-branches=${base_branches}
             docker-image=renovate/renovate:${{ env.RENOVATE_VERSION }}${{ env.use_slim && '-slim' || ''}}
+            docker-user="$(id -u):0"
             dry-run=${{ env.dry_run }}
             enable-cache=${{ env.cache }}
             force-color=true
@@ -236,14 +237,19 @@ jobs:
           RENOVATE_AUTODISCOVER: ${{ steps.configure.outputs.autodiscover }}
           RENOVATE_BASE_BRANCHES: ${{ steps.configure.outputs.base-branches }}
           RENOVATE_USE_BASE_BRANCH_CONFIG: ${{ steps.configure.outputs.base-branches && 'merge' || 'none' }}
+          RENOVATE_CACHE_NPM_MINUTES: 30
           RENOVATE_CONFIG: ${{ steps.configure.outputs.global-config }}
           RENOVATE_DEPENDENCY_DASHBOARD_FOOTER: >-
             - [ ] <!-- manual job -->Check here to trigger a Renovate run on this repository
+          RENOVATE_DOCKER_USER: ${{ steps.configure.outputs.docker-user }}
           RENOVATE_DRY_RUN: ${{ fromJSON(steps.configure.outputs.dry-run) && 'full' || '' }}
           RENOVATE_GIT_AUTHOR: 'bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>'
           RENOVATE_GIT_IGNORED_AUTHORS: '["bot@renovateapp.com","29139614+renovate[bot]@users.noreply.github.com","support@github.com","261136+bfra-me@users.noreply.github.com"]'
           RENOVATE_HOST_RULES: |-
             [
+              {
+                "dnsCache": true
+              },
               {
                 "hostType": "docker",
                 "matchHost": "ghcr.io",
