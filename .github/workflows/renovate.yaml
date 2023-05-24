@@ -225,9 +225,11 @@ jobs:
             renovate-cache-${{ steps.configure.outputs.renovate-version }}-
             renovate-cache-
 
-      # - continue-on-error: true
-      #   run: >
-      #     [ -d /tmp/renovate ] && sudo chmod -R +rwX /tmp/renovate
+      - name: Workaround Renovate cache permissions
+        if: steps.configure.outputs.enable-cache == 'true'
+        continue-on-error: true
+        run: >
+          [ -d /tmp/renovate ] && sudo chown -R 1000 /tmp/renovate || true
 
       - name: Renovate ${{ env.RENOVATE_VERSION }}
         uses: renovatebot/github-action@4cc203c40dc0eb6b356306893cabda6ff9d42f33 # v37.0.0
@@ -268,3 +270,9 @@ jobs:
           renovate-version: ${{ steps.configure.outputs.renovate-version }}
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
           useSlim: ${{ steps.configure.outputs.use-slim }}
+
+      - name: Restore Renovate cache permissions
+        if: always() && steps.configure.outputs.enable-cache == 'true'
+        continue-on-error: true
+        run: >
+          [ -d /tmp/renovate ] && sudo chown -R $(whoami) /tmp/renovate
