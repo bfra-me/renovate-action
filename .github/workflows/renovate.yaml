@@ -177,12 +177,6 @@ jobs:
           EOF
         shell: bash
 
-      - name: Cache Docker images
-        uses: ScribeMD/docker-cache@e7089ca9036c6a9f291d3d7aeecc47149efa6dbf # 0.3.3
-        with:
-          key: ${{ steps.configure.outputs.docker-image }}
-          read-only: ${{ github.repository != 'bfra-me/renovate-config' }}
-
       - name: Get Workflow Token
         id: get_workflow_token
         uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
