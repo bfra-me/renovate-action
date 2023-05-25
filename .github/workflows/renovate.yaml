@@ -168,7 +168,6 @@ jobs:
             docker-user="$(id -u):0"
             dry-run=${{ env.dry_run }}
             enable-cache=${{ env.cache }}
-            force-color=true
             global-config=$(echo "${zzglobal_config}" | tr -d '\n')
             log-level=${{ env.log_level }}
             print-config=${{ env.print_config }}
@@ -231,7 +230,6 @@ jobs:
       - name: Renovate ${{ env.RENOVATE_VERSION }}
         uses: renovatebot/github-action@4cc203c40dc0eb6b356306893cabda6ff9d42f33 # v37.0.0
         env:
-          FORCE_COLOR: ${{ steps.configure.outputs.force-color }}
           LOG_LEVEL: ${{ steps.configure.outputs.log-level }}
           RENOVATE_AUTODISCOVER: ${{ steps.configure.outputs.autodiscover }}
           RENOVATE_BASE_BRANCHES: ${{ steps.configure.outputs.base-branches }}
@@ -263,7 +261,7 @@ jobs:
           RENOVATE_REPOSITORY_CACHE: ${{ steps.configure.outputs.enable-cache == 'true' && 'enabled' || 'disabled' }}
           RENOVATE_USERNAME: 'bfra-me[bot]'
         with:
-          env-regex: '^(?:CI|FORCE_COLOR|GITHUB_(?:(?!PATH|ENV).)+|LOG_LEVEL|NODE_OPTIONS|RENOVATE_\w+|RUNNER_\w+)$'
+          env-regex: '^(?:CI|GITHUB_(?:(?!PATH|ENV).)+|LOG_LEVEL|NODE_OPTIONS|RENOVATE_\w+|RUNNER_\w+)$'
           renovate-version: ${{ steps.configure.outputs.renovate-version }}
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
           useSlim: ${{ steps.configure.outputs.use-slim }}
