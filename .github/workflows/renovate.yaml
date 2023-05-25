@@ -19,7 +19,7 @@ on:
         description: Enable the Renovate cache.
         required: false
         type: boolean
-        default: false
+        default: true
       dry_run:
         description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
         required: false
@@ -69,7 +69,7 @@ on:
         description: Enable the Renovate cache.
         required: false
         type: boolean
-        default: false
+        default: true
       dry_run:
         description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
         required: false
@@ -124,7 +124,7 @@ jobs:
           dry_run: ${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' }}
           log_level: ${{ inputs.log_level || 'debug' }}
           print_config: ${{ inputs.print_config || 'false' }}
-          cache: ${{ inputs.cache && !inputs.dry_run && 'true' || github.event_name == 'schedule' && 'false' || 'false' }}
+          cache: ${{ inputs.cache && !inputs.dry_run && 'true' || github.event_name == 'schedule' && 'true' || 'false' }}
           use_slim: ${{ inputs.use_slim || contains(inputs.use_slim, 'false') && 'false' || 'true' }}
           zzglobal_config: |-
             {
