@@ -164,7 +164,7 @@ jobs:
           sed 's/^[[:space:]]*//' <<EOF >> $GITHUB_OUTPUT
             autodiscover=${{ env.autodiscover }}
             base-branches=${base_branches}
-            docker-image=renovate/renovate:${{ env.RENOVATE_VERSION }}${{ env.use_slim && '-slim' || ''}}
+            docker-image=ghcr.io/renovatebot/renovate:${{ env.RENOVATE_VERSION }}${{ env.use_slim && '-slim' || ''}}
             docker-user="$(id -u):0"
             dry-run=${{ env.dry_run }}
             enable-cache=${{ env.cache }}
