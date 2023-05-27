@@ -21,7 +21,6 @@
 
   "commitMessageLowerCase": "never",
 
-  "ignoreScripts": false,
   "internalChecksFilter": "strict",
   "transitiveRemediation": true,
 

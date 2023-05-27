@@ -4,7 +4,7 @@
     "extends": [
       ":automergeBranch",
       ":automergeRequireAllStatusChecks",
-      "bfra-me/renovate-config:automerge/all-update-types-except-major"
+      "github>bfra-me/renovate-config:automerge/all-update-types-except-major"
     ],
     "automergeStrategy": "squash"
   },
