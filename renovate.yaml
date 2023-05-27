@@ -116,9 +116,7 @@ jobs:
           cache: ${{ inputs.cache && !inputs.dry_run && 'true' || github.event_name == 'schedule' && 'true' || 'false' }}
           zzglobal_config: |-
             {
-              allowPlugins: true,
               allowPostUpgradeCommandTemplating: true,
-              allowScripts: true,
               allowedPostUpgradeCommands: [
                 '^npm ci( --ignore-scripts)?$',
                 '^(npx|pnpm|yarn) prettier( --no-color)? --write \\.$',
@@ -129,7 +127,6 @@ jobs:
                 'Use the global config preset for the @bfra-me organization.',
                 '_See the [renovate workflow](https://github.com/bfra-me/renovate-config/blob/main/.github/workflows/renovate.yaml) for details._',
               ],
-              exposeAllEnv: true,
               packageRules: [
                 {
                   matchPackagePatterns: ['*'],
@@ -140,7 +137,6 @@ jobs:
                   rangeStrategy: 'update-lockfile',
                 },
               ],
-              schedule: ['at any time'],
             }
 
         # Use the contains function to convert the boolean input to a string and compare it to 'false'. This is
@@ -211,6 +207,7 @@ jobs:
       - name: Renovate ${{ steps.configure.outputs.renovate-version }}
         uses: renovatebot/github-action@f9a5a67d4271f326b1e80695ea86dd9398b61d58 # v38.1.0
         env:
+          FORCE_COLOR: 3
           LOG_LEVEL: ${{ steps.configure.outputs.log-level }}
           RENOVATE_AUTODISCOVER: ${{ steps.configure.outputs.autodiscover }}
           RENOVATE_BASE_BRANCHES: ${{ steps.configure.outputs.base-branches }}
@@ -242,7 +239,7 @@ jobs:
           RENOVATE_REPOSITORY_CACHE: ${{ steps.configure.outputs.enable-cache == 'true' && 'enabled' || 'disabled' }}
           RENOVATE_USERNAME: 'bfra-me[bot]'
         with:
-          env-regex: '^(?:CI|GITHUB_(?:(?!PATH|ENV).)+|LOG_LEVEL|NODE_OPTIONS|RENOVATE_\w+|RUNNER_\w+)$'
+          env-regex: '^(?:CI|FORCE_COLOR|GITHUB_(?:(?!PATH|ENV).)+|(?:HTTPS?|NO)_PROXY|(?:https?|no)_proxy|LOG_LEVEL|NODE_OPTIONS|RENOVATE_\w+|RUNNER_\w+)$'
           renovate-version: ${{ env.RENOVATE_DOCKER_VERSION }}
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
           useSlim: false
