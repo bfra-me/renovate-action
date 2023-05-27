@@ -35,11 +35,6 @@ on:
         required: false
         type: boolean
         default: false
-      use_slim:
-        description: Use the `slim` version of the Renovate Docker image.
-        required: false
-        type: boolean
-        default: true
     outputs:
       docker-image:
         description: The name of the Renovate Docker image
@@ -86,11 +81,6 @@ on:
         required: false
         type: boolean
         default: false
-      use_slim:
-        description: Use the `slim` version of the Renovate Docker image.
-        required: false
-        type: boolean
-        default: true
 
 concurrency:
   group: '${{ github.repository }}-${{ github.workflow }}-$${{ github.ref }}'
@@ -99,7 +89,7 @@ concurrency:
 permissions: {}
 
 env:
-  RENOVATE_VERSION: 35.102.6 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate
+  RENOVATE_DOCKER_VERSION: 35.102.6-slim # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate
 
 jobs:
   renovate:
@@ -115,7 +105,6 @@ jobs:
       print-config: ${{ steps.configure.outputs.print-config }}
       renovate-version: ${{ steps.configure.outputs.renovate-version }}
       repositories: ${{ steps.configure.outputs.repositories }}
-      use-slim: ${{ steps.configure.outputs.use-slim }}
     steps:
       - name: Configure workflow run
         id: configure
@@ -125,7 +114,6 @@ jobs:
           log_level: ${{ inputs.log_level || 'debug' }}
           print_config: ${{ inputs.print_config || 'false' }}
           cache: ${{ inputs.cache && !inputs.dry_run && 'true' || github.event_name == 'schedule' && 'true' || 'false' }}
-          use_slim: ${{ inputs.use_slim || contains(inputs.use_slim, 'false') && 'false' || 'true' }}
           zzglobal_config: |-
             {
               allowPlugins: true,
@@ -164,16 +152,15 @@ jobs:
           sed 's/^[[:space:]]*//' <<EOF >> $GITHUB_OUTPUT
             autodiscover=${{ env.autodiscover }}
             base-branches=${base_branches}
-            docker-image=ghcr.io/renovatebot/renovate:${{ env.RENOVATE_VERSION }}${{ env.use_slim && '-slim' || ''}}
+            docker-image=ghcr.io/renovatebot/renovate:${{ env.RENOVATE_DOCKER_VERSION }}
             docker-user="$(id -u):0"
             dry-run=${{ env.dry_run }}
             enable-cache=${{ env.cache }}
             global-config=$(echo "${zzglobal_config}" | tr -d '\n')
             log-level=${{ env.log_level }}
             print-config=${{ env.print_config }}
-            renovate-version=${{ env.RENOVATE_VERSION }}
+            renovate-version=$(echo "${{ env.RENOVATE_DOCKER_VERSION }}" | tr -d '\-slim')
             repositories=${{ !fromJSON(env.autodiscover) && format('["{0}"]', github.repository) || '' }}
-            use-slim=${{ env.use_slim }}
           EOF
         shell: bash
 
@@ -221,7 +208,7 @@ jobs:
         run: >
           [ -d /tmp/renovate ] && sudo chown -R 1000 /tmp/renovate || true
 
-      - name: Renovate ${{ env.RENOVATE_VERSION }}
+      - name: Renovate ${{ steps.configure.outputs.renovate-version }}
         uses: renovatebot/github-action@f9a5a67d4271f326b1e80695ea86dd9398b61d58 # v38.1.0
         env:
           LOG_LEVEL: ${{ steps.configure.outputs.log-level }}
@@ -256,9 +243,9 @@ jobs:
           RENOVATE_USERNAME: 'bfra-me[bot]'
         with:
           env-regex: '^(?:CI|GITHUB_(?:(?!PATH|ENV).)+|LOG_LEVEL|NODE_OPTIONS|RENOVATE_\w+|RUNNER_\w+)$'
-          renovate-version: ${{ steps.configure.outputs.renovate-version }}
+          renovate-version: ${{ env.RENOVATE_DOCKER_VERSION }}
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
-          useSlim: ${{ steps.configure.outputs.use-slim }}
+          useSlim: false
 
       - name: Restore Renovate cache permissions
         if: always() && steps.configure.outputs.enable-cache == 'true'
