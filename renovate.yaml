@@ -89,7 +89,7 @@ concurrency:
 permissions: {}
 
 env:
-  RENOVATE_DOCKER_VERSION: 35.114.2-slim # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate
+  RENOVATE_DOCKER_VERSION: 35.114.3-slim # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate
 
 jobs:
   renovate:
