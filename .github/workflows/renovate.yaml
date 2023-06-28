@@ -101,6 +101,7 @@ jobs:
       docker-image: ${{ steps.configure.outputs.docker-image }}
       dry-run: ${{ steps.configure.outputs.dry-run }}
       global-config: ${{ steps.configure.outputs.global-config }}
+      is-org-account: ${{ steps.configure.outputs.is-org-account }}
       log-level: ${{ steps.configure.outputs.log-level }}
       print-config: ${{ steps.configure.outputs.print-config }}
       renovate-version: ${{ steps.configure.outputs.renovate-version }}
@@ -111,6 +112,9 @@ jobs:
         env:
           autodiscover: ${{ inputs.autodiscover || contains(inputs.autodiscover, 'false') && 'false' || 'true' }}
           dry_run: ${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' }}
+          # Check if this workflow was triggered from an organization account. We assume the `repository_owner` is the
+          # account that triggered the workflow.
+          is-org-account: ${{ github.event.organization && 'true' || 'false' }}
           log_level: ${{ inputs.log_level || 'debug' }}
           print_config: ${{ inputs.print_config || 'false' }}
           cache: ${{ inputs.cache && !inputs.dry_run && 'true' || github.event_name == 'schedule' && 'true' || 'false' }}
@@ -152,6 +156,7 @@ jobs:
             dry-run=${{ env.dry_run }}
             enable-cache=${{ env.cache }}
             global-config=$(echo "${zzglobal_config}" | tr -d '\n')
+            is-org-account=${{ env.is-org-account }}
             log-level=${{ env.log_level }}
             print-config=${{ env.print_config }}
             renovate-version=$(echo "${{ env.RENOVATE_DOCKER_VERSION }}" | tr -d '\-slim')
@@ -165,7 +170,7 @@ jobs:
         with:
           application_id: ${{ secrets.APPLICATION_ID }}
           application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
-          organization: ${{ github.repository_owner }}
+          organization: ${{ fromJSON(steps.configure.outputs.is-org-account) && github.repository_owner || '' }}
           permissions: >
             checks:write,
             contents:write,
