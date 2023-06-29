@@ -32,4 +32,8 @@ jobs:
           GIT_COMMITTER_EMAIL: '118100583+bfra-me[bot]@users.noreply.github.com'
           GIT_COMMITTER_NAME: 'bfra.me'
           GITHUB_TOKEN: ${{ steps.get-workflow-access-token.outputs.token }}
-        run: npx semantic-release
+        run: |
+          # Run `semantic-release`
+          npx \
+            -p conventional-changelog-conventionalcommits \
+            semantic-release
