@@ -34,6 +34,5 @@ jobs:
           GITHUB_TOKEN: ${{ steps.get-workflow-access-token.outputs.token }}
         run: |
           # Run `semantic-release`
-          npx \
-            -p conventional-changelog-conventionalcommits \
-            semantic-release
+          npm install conventional-changelog-conventionalcommits
+          npx semantic-release
