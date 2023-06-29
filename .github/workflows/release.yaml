@@ -4,6 +4,13 @@ name: Release
 'on':
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run'
+        default: false
+        required: false
+        type: boolean
 
 jobs:
   Release:
@@ -29,10 +36,12 @@ jobs:
 
       - name: Semantic Release
         env:
+          GIT_AUTHOR_EMAIL: '118100583+bfra-me[bot]@users.noreply.github.com'
+          GIT_AUTHOR_NAME: 'bfra.me'
           GIT_COMMITTER_EMAIL: '118100583+bfra-me[bot]@users.noreply.github.com'
           GIT_COMMITTER_NAME: 'bfra.me'
-          GITHUB_TOKEN: ${{ steps.get-workflow-access-token.outputs.token }}
+          GITHUB_TOKEN: 'x-access-token:${{ steps.get-workflow-access-token.outputs.token }}'
         run: |
           # Run `semantic-release`
           npm install conventional-changelog-conventionalcommits
-          npx semantic-release
+          npx semantic-release -- ${{ github.event.inputs.dry_run && '--dry-run' || '' }}
