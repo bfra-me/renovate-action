@@ -44,4 +44,4 @@ jobs:
         run: |
           # Run `semantic-release`
           npm install conventional-changelog-conventionalcommits
-          npx semantic-release -- ${{ github.event.inputs.dry_run && '--dry-run' || '' }}
+          npx semantic-release@21.0.1 -- ${{ github.event.inputs.dry_run && '--dry-run' || '' }}
