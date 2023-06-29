@@ -1,0 +1,52 @@
+branches:
+  - main
+
+plugins:
+  - |-
+    '@semantic-release/commit-analyzer'
+    {
+      releaseRules: [
+        {
+          type: 'docs',
+          release: 'patch',
+        },
+        {
+          type: 'build',
+          release: 'patch',
+        },
+      ],
+    }
+  - '@semantic-release/release-notes-generator'
+  - |-
+    '@semantic-release/github'
+    {
+      releasedLabels: false
+      successComment: false
+    }
+
+preset: conventionalcommits
+
+presetConfig:
+  types:
+    - type: build
+      section: 'Build System'
+    - type: chore
+      section: 'Miscellaneous Chores'
+    - type: ci
+      section: 'Continuous Integration'
+    - type: docs
+      section: 'Documentation'
+    - type: feat
+      section: 'Features'
+    - type: fix
+      section: 'Bug Fixes'
+    - type: perf
+      section: 'Performance Improvements'
+    - type: refactor
+      section: 'Code Refactoring'
+    - type: revert
+      section: 'Reverts'
+    - type: style
+      section: 'Styles'
+    - type: test
+      section: 'Tests'

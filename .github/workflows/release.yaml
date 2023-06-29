@@ -1,0 +1,35 @@
+---
+name: Release
+
+'on':
+  push:
+    branches: [main]
+
+jobs:
+  Release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.5.3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version: '18.x'
+
+      - name: Get Workflow Access Token
+        id: get-workflow-access-token
+        uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
+        with:
+          application_id: ${{ secrets.APPLICATION_ID }}
+          application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+
+      - name: Semantic Release
+        env:
+          GIT_COMMITTER_EMAIL: '118100583+bfra-me[bot]@users.noreply.github.com'
+          GIT_COMMITTER_NAME: 'bfra.me'
+          GITHUB_TOKEN: ${{ steps.get-workflow-access-token.outputs.token }}
+        run: npx semantic-release
