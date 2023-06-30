@@ -89,7 +89,7 @@ concurrency:
 permissions: {}
 
 env:
-  RENOVATE_DOCKER_VERSION: 35.151.0-slim # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate
+  RENOVATE_VERSION: 35.151.0 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate
 
 jobs:
   renovate:
@@ -152,14 +152,14 @@ jobs:
           sed 's/^[[:space:]]*//' <<EOF >> $GITHUB_OUTPUT
             autodiscover=${{ env.autodiscover }}
             base-branches=${base_branches}
-            docker-image=ghcr.io/renovatebot/renovate:${{ env.RENOVATE_DOCKER_VERSION }}
+            docker-image=ghcr.io/renovatebot/renovate:${{ env.RENOVATE_VERSION }}-slim
             dry-run=${{ env.dry_run }}
             enable-cache=${{ env.cache }}
             global-config=$(echo "${zzglobal_config}" | tr -d '\n')
             is-org-account=${{ env.is-org-account }}
             log-level=${{ env.log_level }}
             print-config=${{ env.print_config }}
-            renovate-version=$(echo "${{ env.RENOVATE_DOCKER_VERSION }}" | tr -d '\-slim')
+            renovate-version=$(echo "${{ env.RENOVATE_VERSION }}" | tr -d '\-slim')
             repositories=${{ !fromJSON(env.autodiscover) && format('["{0}"]', github.repository) || '' }}
           EOF
         shell: bash
@@ -245,9 +245,8 @@ jobs:
         with:
           env-regex: '^(?:CI|FORCE_COLOR|GITHUB_(?:(?!PATH|ENV).)+|(?:HTTPS?|NO)_PROXY|(?:https?|no)_proxy|LOG_LEVEL|NODE_OPTIONS|RENOVATE_\w+|RUNNER_\w+)$'
           mount-docker-socket: true
-          renovate-version: ${{ env.RENOVATE_DOCKER_VERSION }}
+          renovate-version: ${{ env.RENOVATE_VERSION }}
           token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
-          useSlim: false
 
       - name: Restore Renovate cache permissions
         if: always() && steps.configure.outputs.enable-cache == 'true'
