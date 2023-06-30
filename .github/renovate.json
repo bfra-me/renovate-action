@@ -27,10 +27,6 @@
       "semanticCommitType": "build"
     },
     {
-      "matchPaths": [".github/workflows/**"],
-      "semanticCommitType": "ci"
-    },
-    {
       "matchPaths": ["**/*.md"],
       "extends": ["github>bfra-me/renovate-config:automerge/enabled"],
       "additionalBranchPrefix": "docs-",
