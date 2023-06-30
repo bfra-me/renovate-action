@@ -216,7 +216,6 @@ jobs:
           LOG_LEVEL: ${{ steps.configure.outputs.log-level }}
           RENOVATE_AUTODISCOVER: ${{ steps.configure.outputs.autodiscover }}
           RENOVATE_BASE_BRANCHES: ${{ steps.configure.outputs.base-branches }}
-          RENOVATE_BRANCH_PREFIX: 'renovate-github/'
           RENOVATE_USE_BASE_BRANCH_CONFIG: ${{ steps.configure.outputs.base-branches && 'merge' || 'none' }}
           RENOVATE_CACHE_NPM_MINUTES: 30
           RENOVATE_CONFIG: ${{ steps.configure.outputs.global-config }}
