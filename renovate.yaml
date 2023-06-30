@@ -35,6 +35,14 @@ on:
         required: false
         type: boolean
         default: false
+      renovate_git_author:
+        description: Set the Git author name and email (used to set the `gitAuthor` Renovate configuration option).
+        required: false
+        type: string
+      renovate_username:
+        description: Set the Renovate username (used to set the `username` Renovate configuration option).
+        required: false
+        type: string
     outputs:
       docker-image:
         description: The name of the Renovate Docker image
@@ -112,8 +120,7 @@ jobs:
         env:
           autodiscover: ${{ inputs.autodiscover || contains(inputs.autodiscover, 'false') && 'false' || 'true' }}
           dry_run: ${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' }}
-          # Check if this workflow was triggered from an organization account. We assume the `repository_owner` is the
-          # account that triggered the workflow.
+          # Check if this workflow was triggered from an organization account.
           is-org-account: ${{ github.event.organization && 'true' || 'false' }}
           log_level: ${{ inputs.log_level || 'debug' }}
           print_config: ${{ inputs.print_config || 'false' }}
@@ -222,7 +229,7 @@ jobs:
           RENOVATE_DEPENDENCY_DASHBOARD_FOOTER: >-
             - [ ] <!-- manual job -->Check here to trigger a Renovate run on this repository
           RENOVATE_DRY_RUN: ${{ fromJSON(steps.configure.outputs.dry-run) && 'full' || '' }}
-          RENOVATE_GIT_AUTHOR: 'bfra-me[bot] <118100583+bfra-me[bot]@users.noreply.github.com>'
+          RENOVATE_GIT_AUTHOR: ${{ inputs.renovate_git_author || vars.RENOVATE_GIT_AUTHOR || '' }}
           RENOVATE_GIT_IGNORED_AUTHORS: '["bot@renovateapp.com","29139614+renovate[bot]@users.noreply.github.com","support@github.com","261136+bfra-me@users.noreply.github.com"]'
           RENOVATE_HOST_RULES: |-
             [
@@ -241,7 +248,7 @@ jobs:
           RENOVATE_PRINT_CONFIG: ${{ steps.configure.outputs.print-config }}
           RENOVATE_REPOSITORIES: ${{ steps.configure.outputs.repositories }}
           RENOVATE_REPOSITORY_CACHE: ${{ steps.configure.outputs.enable-cache == 'true' && 'enabled' || 'disabled' }}
-          RENOVATE_USERNAME: 'bfra-me[bot]'
+          RENOVATE_USERNAME: ${{ inputs.renovate_username || vars.RENOVATE_USERNAME || '' }}
         with:
           env-regex: '^(?:CI|FORCE_COLOR|GITHUB_(?:(?!PATH|ENV).)+|(?:HTTPS?|NO)_PROXY|(?:https?|no)_proxy|LOG_LEVEL|NODE_OPTIONS|RENOVATE_\w+|RUNNER_\w+)$'
           mount-docker-socket: true
