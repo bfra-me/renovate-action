@@ -11,18 +11,30 @@
   },
   "packageRules": [
     {
+      "matchDatasources": ["docker"],
+      "semanticCommitType": "build"
+    },
+    {
       "matchDepTypes": ["dependencies"],
       "semanticCommitType": "build"
     },
     {
-      "matchPaths": ["./.github/workflows/**"],
+      "matchPackageNames": [
+        "conventional-changelog-conventionalcommits",
+        "semantic-release"
+      ],
+      "matchPackagePrefixes": ["@semantic-release/"],
+      "semanticCommitType": "build"
+    },
+    {
+      "matchPaths": [".github/workflows/**"],
       "semanticCommitType": "ci"
     },
     {
       "matchPaths": ["**/*.md"],
       "extends": ["github>bfra-me/renovate-config:automerge/enabled"],
       "additionalBranchPrefix": "docs-",
-      "commitMessageTopic": "references to {{depName}}",
+      "commitMessageTopic": "references to {{{depName}}}",
       "semanticCommitType": "docs",
       "semanticCommitScope": null,
       "separateMajorMinor": false,
