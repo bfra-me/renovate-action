@@ -2,22 +2,19 @@ branches:
   - main
 
 plugins:
-  - [
-      '@semantic-release/commit-analyzer',
-      {
-        preset: 'conventionalcommits',
-        releaseRules:
-          [
-            { type: 'docs', release: 'patch' },
-            { type: 'build', release: 'patch' },
-          ],
-      },
-    ]
+  - '@semantic-release/commit-analyzer'
   - '@semantic-release/release-notes-generator'
   - [
       '@semantic-release/github',
       { releasedLabels: false, successComment: false },
     ]
+
+analyzeCommits:
+  releaseRules:
+    - type: docs
+      release: patch
+    - type: build
+      release: patch
 
 preset: conventionalcommits
 
