@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "Onboarding config preset used for @bfra-me repositories",
-  "onboardingConfigFileName": ".github/renovate.json",
+  "onboardingConfigFileName": ".github/renovate.json5",
   "onboardingPrTitle": "feat(deps): configure Renovate",
   "onboardingRebaseCheckbox": true
 }
