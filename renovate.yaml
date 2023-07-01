@@ -138,6 +138,9 @@ jobs:
                 'Use the global config preset for the @bfra-me organization.',
                 '_See the [renovate workflow](https://github.com/bfra-me/renovate-config/blob/main/.github/workflows/renovate.yaml) for details._',
               ],
+              onboardingConfigFileName: '.github/renovate.json5',
+              onboardingPrTitle: 'feat(deps): configure Renovate',
+              onboardingRebaseCheckbox: true,
               packageRules: [
                 {
                   matchPackagePatterns: ['*'],
