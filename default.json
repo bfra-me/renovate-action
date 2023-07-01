@@ -12,7 +12,6 @@
     "docker:pinDigests",
     "helpers:pinGitHubActionDigests",
     "github>whitesource/merge-confidence:beta",
-    "github>bfra-me/renovate-config:onboarding",
     "github>bfra-me/renovate-config:automerge/default",
     "github>bfra-me/renovate-config:group/default",
     "github>bfra-me/renovate-config:replacements/default",
