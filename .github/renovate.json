@@ -28,7 +28,10 @@
     },
     {
       "matchPaths": ["**/*.md"],
-      "extends": ["github>bfra-me/renovate-config:automerge/enabled"],
+      "extends": [
+        "schedule:daily",
+        "github>bfra-me/renovate-config:automerge/enabled"
+      ],
       "additionalBranchPrefix": "docs-",
       "commitMessageTopic": "references to {{{depName}}}",
       "semanticCommitType": "docs",
@@ -43,6 +46,15 @@
     }
   ],
   "regexManagers": [
+    {
+      "fileMatch": ["^README\\.md$"],
+      "matchStrings": [
+        "[\"']github>bfra-me/renovate-config#(?<currentValue>[^\"'])",
+        "uses: bfra-me/renovate-config/.github/workflows/renovate.yaml@(?<currentValue>[^\\s]+)"
+      ],
+      "depNameTemplate": "bfra-me/renovate-config",
+      "datasourceTemplate": "github-releases"
+    },
     {
       "datasourceTemplate": "npm",
       "depNameTemplate": "semantic-release",
