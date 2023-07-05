@@ -210,9 +210,8 @@ jobs:
         with:
           path: ${{ env.RENOVATE_CACHE_DIR }}
           key: >-
-            renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ github.repository_owner }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+            renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ github.repository_owner }}-${{ github.sha }}
           restore-keys: |
-            renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ github.repository_owner }}-${{ github.sha }}-
             renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ github.repository_owner }}-
             renovate-cache-${{ steps.configure.outputs.renovate-version }}-
             renovate-cache-
