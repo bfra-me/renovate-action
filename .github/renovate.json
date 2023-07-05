@@ -29,7 +29,7 @@
     {
       "matchPaths": ["**/*.md"],
       "extends": [
-        "schedule:daily",
+        "schedule:weekly",
         "github>bfra-me/renovate-config:automerge/enabled"
       ],
       "additionalBranchPrefix": "docs-",
