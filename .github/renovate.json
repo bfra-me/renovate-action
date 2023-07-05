@@ -27,6 +27,10 @@
       "semanticCommitType": "build"
     },
     {
+      "matchPaths": [".github/workflows/**"],
+      "semanticCommitType": "ci"
+    },
+    {
       "matchPaths": ["**/*.md"],
       "extends": [
         "schedule:weekly",
