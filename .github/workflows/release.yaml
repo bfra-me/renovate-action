@@ -2,8 +2,6 @@
 name: Release
 
 'on':
-  push:
-    branches: [main]
   workflow_dispatch:
     inputs:
       dry_run:
@@ -11,6 +9,10 @@ name: Release
         default: true
         required: false
         type: boolean
+  workflow_run:
+    workflows: [CI]
+    branches: [main]
+    types: [completed]
 
 jobs:
   release:
