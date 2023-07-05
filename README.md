@@ -38,4 +38,4 @@ To reuse the workflow from this repository, add it to your GitHub Actions workfl
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE.md)

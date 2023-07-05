@@ -49,7 +49,7 @@
     {
       "fileMatch": ["^README\\.md$"],
       "matchStrings": [
-        "[\"']github>bfra-me/renovate-config#(?<currentValue>[^\"'])",
+        "\"github>bfra-me/renovate-config#(?<currentValue>.+)\"",
         "uses: bfra-me/renovate-config/.github/workflows/renovate.yaml@(?<currentValue>[^\\s]+)"
       ],
       "depNameTemplate": "bfra-me/renovate-config",
