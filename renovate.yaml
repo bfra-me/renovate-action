@@ -124,6 +124,7 @@ jobs:
           is-org-account: ${{ github.event.organization && 'true' || 'false' }}
           log_level: ${{ inputs.log_level || 'debug' }}
           print_config: ${{ inputs.print_config || 'false' }}
+          renovate_git_author: ${{ inputs.renovate_git_author || vars.RENOVATE_GIT_AUTHOR || '' }}
           cache: ${{ inputs.cache && !inputs.dry_run && 'true' || github.event_name == 'schedule' && 'true' || 'false' }}
           zzglobal_config: |-
             {
@@ -173,6 +174,7 @@ jobs:
             is-org-account=${{ env.is-org-account }}
             log-level=${{ env.log_level }}
             print-config=${{ env.print_config }}
+            renovate-git-author=${{ env.renovate_git_author }}
             renovate-version=$(echo "${{ env.RENOVATE_VERSION }}" | tr -d '\-slim')
             repositories=${{ !fromJSON(env.autodiscover) && format('["{0}"]', github.repository) || '' }}
           EOF
@@ -235,8 +237,15 @@ jobs:
           RENOVATE_DEPENDENCY_DASHBOARD_FOOTER: >-
             - [ ] <!-- manual job -->Check here to trigger a Renovate run on this repository
           RENOVATE_DRY_RUN: ${{ fromJSON(steps.configure.outputs.dry-run) && 'full' || '' }}
-          RENOVATE_GIT_AUTHOR: ${{ inputs.renovate_git_author || vars.RENOVATE_GIT_AUTHOR || '' }}
-          RENOVATE_GIT_IGNORED_AUTHORS: '["bot@renovateapp.com","29139614+renovate[bot]@users.noreply.github.com","support@github.com","261136+bfra-me@users.noreply.github.com"]'
+          RENOVATE_GIT_AUTHOR: ${{ steps.configure.outputs.renovate-git-author }}
+          RENOVATE_GIT_IGNORED_AUTHORS: |-
+            [
+              "bot@renovateapp.com",
+              "29139614+renovate[bot]@users.noreply.github.com",
+              "support@github.com",
+              "261136+bfra-me@users.noreply.github.com",
+              "${{ steps.configure.outputs.renovate-git-author }}"
+            ]
           RENOVATE_HOST_RULES: |-
             [
               {
