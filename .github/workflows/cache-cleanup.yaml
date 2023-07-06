@@ -1,5 +1,5 @@
 ---
-name: Renovate Cache Cleanup
+name: Cache Cleanup
 'on':
   pull_request:
     types: [closed]
@@ -9,11 +9,14 @@ name: Renovate Cache Cleanup
 
 jobs:
   renovate-cache-cleanup:
+    name: Renovate Cache Cleanup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
 
-      - name: Install `gh-actions-cache` CLI extension
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        name: Install `gh-actions-cache` CLI extension
         run: gh extension install actions/gh-actions-cache
 
       - id: cache-info
@@ -38,6 +41,7 @@ jobs:
 
       - env:
           CACHE_KEYS: ${{ steps.cache-info.outputs.cache-keys }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: ${{ steps.cache-info.outputs.branch != '' }}
         name: Delete stale cache entries from ${{ steps.cache-info.outputs.branch }}
         run: |
