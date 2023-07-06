@@ -24,7 +24,7 @@ jobs:
         env:
           BRANCH: >-
             ${{
-              github.event_name == 'pull_request' && github.event.pull_request.merged && 'refs/pull/${{ github.event.pull_request.number }}/merge'
+              github.event_name == 'pull_request' && github.event.pull_request.merged && format('refs/pull/{0}/merge', github.event.pull_request.number)
               || github.event_name != 'pull_request' && github.ref
               || ''
             }}
@@ -36,7 +36,7 @@ jobs:
             # Get cache keys that don't include the branch's SHA (if not a PR)
             gh actions-cache list -R ${{ github.repository }} -B $BRANCH -L 100 --key $KEY --order asc --sort last-used | cut -f 1 > cache-keys.txt
             [ -z "${{ github.event.pull_request }}" ] && grep -v ${{ github.sha }} cache-keys.txt > cache-keys.txt.tmp && mv cache-keys.txt.tmp cache-keys.txt
-            echo "cache-keys=$(cat cache-keys.txt)" >> $GITHUB_OUTPUT
+            echo cache-keys="$(cat cache-keys.txt)" >> $GITHUB_OUTPUT
           fi
 
       - env:
