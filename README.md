@@ -16,7 +16,7 @@ This repository contains [Renovate](https://renovatebot.com/) configuration pres
 
 ```json
 {
-  "extends": ["github>bfra-me/renovate-config#v1.7.8"]
+  "extends": ["github>bfra-me/renovate-config#v1.7.9"]
 }
 ```
 
@@ -26,7 +26,7 @@ To reuse the workflow from this repository, add it to your GitHub Actions workfl
 
 ```yaml
 - name: Renovate
-  uses: bfra-me/renovate-config/.github/workflows/renovate.yaml@v1.7.8
+  uses: bfra-me/renovate-config/.github/workflows/renovate.yaml@v1.7.9
   with:
     dry_run: false
     renovate_git_author: 'fro-bot[bot] <109017866+fro-bot[bot]@users.noreply.github.com>'
