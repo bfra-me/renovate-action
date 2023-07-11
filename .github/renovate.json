@@ -6,7 +6,6 @@
   "semanticCommitScope": "deps",
   "postUpgradeTasks": {
     "commands": ["npx prettier --no-color --write ."],
-    "fileFilters": ["**/**"],
     "executionMode": "branch"
   },
   "packageRules": [
@@ -27,11 +26,11 @@
       "semanticCommitType": "build"
     },
     {
-      "matchPaths": [".github/workflows/**"],
+      "matchFileNames": [".github/workflows/**"],
       "semanticCommitType": "ci"
     },
     {
-      "matchPaths": ["**/*.md"],
+      "matchFileNames": ["**/*.md"],
       "extends": [
         "schedule:weekly",
         "github>bfra-me/renovate-config:automerge/enabled"
