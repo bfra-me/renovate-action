@@ -11,8 +11,6 @@ plugins:
 
 analyzeCommits:
   releaseRules:
-    - type: docs
-      release: patch
     - type: build
       release: patch
 
