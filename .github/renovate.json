@@ -41,11 +41,6 @@
       "semanticCommitScope": null,
       "separateMajorMinor": false,
       "minimumReleaseAge": null
-    },
-    {
-      "matchDatasources": ["docker"],
-      "matchDepNames": ["renovate"],
-      "extractVersion": "^(?<version>\\d+\\.\\d+\\.\\d+)-slim$"
     }
   ],
   "regexManagers": [

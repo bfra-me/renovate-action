@@ -166,7 +166,7 @@ jobs:
           sed 's/^[[:space:]]*//' <<EOF >> $GITHUB_OUTPUT
             autodiscover=${{ env.autodiscover }}
             base-branches=${base_branches}
-            docker-image=ghcr.io/renovatebot/renovate:${{ env.RENOVATE_VERSION }}-slim
+            docker-image=ghcr.io/renovatebot/renovate:${{ env.RENOVATE_VERSION }}
             dry-run=${{ env.dry_run }}
             enable-cache=${{ env.cache }}
             global-config=$(echo "${zzglobal_config}" | tr -d '\n')
@@ -174,7 +174,7 @@ jobs:
             log-level=${{ env.log_level }}
             print-config=${{ env.print_config }}
             renovate-git-author=${{ env.renovate_git_author }}
-            renovate-version=$(echo "${{ env.RENOVATE_VERSION }}" | tr -d '\-slim')
+            renovate-version=$(echo "${{ env.RENOVATE_VERSION }}")
             repositories=${{ !fromJSON(env.autodiscover) && format('["{0}"]', github.repository) || '' }}
           EOF
         shell: bash
@@ -224,7 +224,7 @@ jobs:
           [ -d /tmp/renovate ] && sudo chown -R 1000 /tmp/renovate || true
 
       - name: Renovate ${{ steps.configure.outputs.renovate-version }}
-        uses: renovatebot/github-action@8dd353442b603b79e9ad46ebd25bdac25d67ccfa # v38.1.13
+        uses: renovatebot/github-action@eb0ef0ca2efe27f0b0a70ca6cd1eee63fcfbb61a # v39.0.0
         env:
           FORCE_COLOR: 3
           LOG_LEVEL: ${{ steps.configure.outputs.log-level }}
