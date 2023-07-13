@@ -13,6 +13,8 @@
     "configMigration": true,
     "configWarningReuseIssue": false,
 
+    "dependencyDashboardTitle": "Renovate Dashboard",
+
     "prConcurrentLimit": 5,
     "recreateClosed": true,
 
