@@ -13,6 +13,9 @@ analyzeCommits:
   releaseRules:
     - type: build
       release: patch
+    - type: docs
+      release: patch
+      scope: readme.md
 
 preset: conventionalcommits
 

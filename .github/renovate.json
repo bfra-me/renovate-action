@@ -54,6 +54,14 @@
       "datasourceTemplate": "github-releases"
     },
     {
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "ghcr.io/renovatebot/renovate",
+      "fileMatch": ["^README\\.md$"],
+      "matchStrings": [
+        "https://github\\.com/renovatebot/renovate/releases/tag/(?<currentValue>[^\\s]+)"
+      ]
+    },
+    {
       "datasourceTemplate": "npm",
       "depNameTemplate": "semantic-release",
       "fileMatch": ["^\\.github\\/(actions|workflows)\\/[^/]+\\.ya?ml$"],
