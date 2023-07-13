@@ -47,15 +47,14 @@
     {
       "fileMatch": ["^README\\.md$"],
       "matchStrings": [
-        "\"github>bfra-me/renovate-config#(?<currentValue>.+)\"",
-        "uses: bfra-me/renovate-config/.github/workflows/renovate.yaml@(?<currentValue>[^\\s]+)"
+        "\"github>bfra-me/renovate-config#(?<currentValue>.+)\""
       ],
       "depNameTemplate": "bfra-me/renovate-config",
       "datasourceTemplate": "github-releases"
     },
     {
       "datasourceTemplate": "docker",
-      "depNameTemplate": "ghcr.io/renovatebot/renovate",
+      "depNameTemplate": "renovatebot/renovate",
       "fileMatch": ["^README\\.md$"],
       "matchStrings": [
         "https://github\\.com/renovatebot/renovate/releases/tag/(?<currentValue>[^\\s]+)"
