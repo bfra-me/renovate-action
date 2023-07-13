@@ -19,7 +19,7 @@
           "^renovate\\.json5?$"
         ],
         "matchStrings": [
-          "[^'\"]github>(?<depName>bfra-me/renovate-config)(?:[:\\/].*)?#(?<currentValue>[^'\"\\s\\(]+)"
+          "[^'\"]github>(?<depName>bfra-me/renovate-config)#(?<currentValue>[^'\"\\s\\(]+)"
         ]
       }
     ]
