@@ -209,13 +209,10 @@ jobs:
           RENOVATE_CACHE_DIR: ${{ env.RENOVATE_CACHE_DIR }}
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
+          enableCrossOsArchive: true
           path: ${{ env.RENOVATE_CACHE_DIR }}
           key: >-
-            renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ github.repository_owner }}-${{ github.sha }}
-          restore-keys: |
-            renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ github.repository_owner }}-
-            renovate-cache-${{ steps.configure.outputs.renovate-version }}-
-            renovate-cache-
+            ${{ github.repository_owner }}-renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ github.sha }}
 
       - name: Workaround Renovate cache permissions
         if: steps.configure.outputs.enable-cache == 'true'
