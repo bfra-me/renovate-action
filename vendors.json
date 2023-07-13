@@ -11,6 +11,7 @@
     "regexManagers": [
       {
         "datasourceTemplate": "github-releases",
+        "depNameTemplate": "bfra-me/renovate-config",
         "fileMatch": [
           "^\\.github/renovate\\.json5?$",
           "^\\.gitlab/renovate\\.json5?",
@@ -19,7 +20,7 @@
           "^renovate\\.json5?$"
         ],
         "matchStrings": [
-          "[^'\"]github>(?<depName>bfra-me/renovate-config)#(?<currentValue>[^'\"\\s\\(]+)"
+          "[^'\"]github>bfra-me/renovate-config#(?<currentValue>[^'\"\\s\\(]+)"
         ]
       }
     ]
