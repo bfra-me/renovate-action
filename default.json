@@ -8,8 +8,6 @@
     "config:recommended",
     ":semanticCommits",
     ":separateMultipleMajorReleases",
-    "docker:enableMajor",
-    "docker:pinDigests",
     "helpers:pinGitHubActionDigests",
     "github>whitesource/merge-confidence:beta",
     "github>bfra-me/renovate-config:automerge/default",
@@ -75,6 +73,11 @@
       "matchDepTypes": ["action"],
       "extractVersion": "^(?<version>v?\\d+\\.\\d+\\.\\d+)$",
       "versioning": "regex:^v?(?<major>\\d+)(\\.(?<minor>\\d+)\\.(?<patch>\\d+))?$"
+    },
+    {
+      "description": "Enable major version updates for Docker images and pin digests in Dockerfiles and docker-compose.yml",
+      "extends": ["docker:enableMajor", "docker:pinDigests"],
+      "matchManagers": ["dockerfile", "docker-compose"]
     }
   ],
   "regexManagers": [
