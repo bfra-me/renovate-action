@@ -1,6 +1,27 @@
 {
   "default": {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "description": "Use default vendor config presets."
+    "description": "Use default vendor config presets.",
+    "extends": ["github>bfra-me/renovate-config:vendors/bfra-me"]
+  },
+
+  "bfra-me": {
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "description": "Update dependencies for @bfra-me.",
+    "regexManagers": [
+      {
+        "datasourceTemplate": "github-releases",
+        "fileMatch": [
+          "^\\.github/renovate\\.json5?$",
+          "^\\.gitlab/renovate\\.json5?",
+          "^\\.renovaterc\\.json5?$",
+          "^\\.renovaterc$",
+          "^renovate\\.json5?$"
+        ],
+        "matchStrings": [
+          "[^'\"]github>(?<depName>bfra-me/renovate-config)(?:[:\\/].*)?#(?<currentValue>[^'\"\\s\\(]+)"
+        ]
+      }
+    ]
   }
 }
