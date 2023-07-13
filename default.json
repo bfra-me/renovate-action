@@ -13,7 +13,8 @@
     "github>bfra-me/renovate-config:automerge/default",
     "github>bfra-me/renovate-config:group/default",
     "github>bfra-me/renovate-config:replacements/default",
-    "github>bfra-me/renovate-config:maintenance/default"
+    "github>bfra-me/renovate-config:maintenance/default",
+    "github>bfra-me/renovate-config:vendors/default"
   ],
 
   "commitMessageLowerCase": "never",

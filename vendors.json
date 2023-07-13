@@ -1,0 +1,6 @@
+{
+  "default": {
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "description": "Use default vendor config presets."
+  }
+}
