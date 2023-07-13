@@ -54,7 +54,7 @@
     },
     {
       "datasourceTemplate": "docker",
-      "depNameTemplate": "renovatebot/renovate",
+      "depNameTemplate": "ghcr.io/renovatebot/renovate",
       "fileMatch": ["^README\\.md$"],
       "matchStrings": [
         "https://github\\.com/renovatebot/renovate/releases/tag/(?<currentValue>[^\\s]+)"
