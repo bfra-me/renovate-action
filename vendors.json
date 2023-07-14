@@ -8,6 +8,23 @@
   "bfra-me": {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "description": "Update dependencies for @bfra-me.",
+    "packageRules": [
+      {
+        "commitMessageTopic": "{{{depName}}} config preset",
+        "matchFileNames": [
+          ".github/renovate.json5",
+          ".github/renovate.json",
+          ".gitlab/renovate.json5",
+          ".gitlab/renovate.json",
+          ".renovaterc.json5",
+          ".renovaterc.json",
+          ".renovaterc",
+          "renovate.json5",
+          "renovate.json"
+        ],
+        "matchPackageNames": ["bfra-me/renovate-config"]
+      }
+    ],
     "regexManagers": [
       {
         "datasourceTemplate": "github-releases",
