@@ -20,8 +20,9 @@
           "^renovate\\.json5?$"
         ],
         "matchStrings": [
-          "[\"']github>bfra-me/renovate-config#(?<currentValue>.+?)[\"']"
-        ]
+          "[\"']github>(?<depName>bfra-me\\/renovate-config)(?:(?::|\\/\\/)(?<path>.+?))?#(?<currentValue>.+?)[\"']"
+        ],
+        "versioningTemplate": "semver"
       }
     ]
   }
