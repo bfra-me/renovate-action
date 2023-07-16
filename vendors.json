@@ -10,7 +10,7 @@
     "description": "Update dependencies for @bfra-me.",
     "packageRules": [
       {
-        "commitMessageTopic": "{{{depName}}} config preset",
+        "commitMessageTopic": "{{{depName}}} preset",
         "matchFileNames": [
           ".github/renovate.json5",
           ".github/renovate.json",
