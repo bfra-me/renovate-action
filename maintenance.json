@@ -15,6 +15,7 @@
 
     "dependencyDashboardTitle": "Renovate Dashboard",
 
+    "internalChecksAsSuccess": true,
     "prConcurrentLimit": 5,
     "recreateClosed": true,
 
