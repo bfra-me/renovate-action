@@ -2,7 +2,10 @@
   "default": {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "description": "Use default vendor config presets.",
-    "extends": ["github>bfra-me/renovate-config:vendors/bfra-me"]
+    "extends": [
+      "github>bfra-me/renovate-config:vendors/bfra-me",
+      "github>bfra-me/renovate-config:vendors/exivity"
+    ]
   },
 
   "bfra-me": {
@@ -40,6 +43,24 @@
           "[\"']github>(?<depName>bfra-me\\/renovate-config)(?:(?::|\\/\\/)(?<path>.+?))?#(?<currentValue>.+?)[\"']"
         ],
         "versioningTemplate": "semver"
+      }
+    ]
+  },
+
+  "exivity": {
+    "description": "Update @exivity/actions digests in GitHub actions and workflows.",
+    "regexManagers": [
+      {
+        "fileMatch": ["^\\.github/(?:workflows|actions)/.+\\.ya?ml$"],
+        "matchStrings": [
+          "uses:\\s+(?<depName>exivity\\/actions(?<path>\\/.*)?)@(?<currentDigest>[a-f0-9]+)",
+          "uses:\\s+(?<depName>exivity\\/actions(?<path>\\/.*)?)@(?<currentValue>main)"
+        ],
+        "currentValueTemplate": "main",
+        "autoReplaceStringTemplate": "uses: {{depName}}@{{#if newDigest}}{{newDigest}}{{#if newValue}} # {{newValue}}{{/if}}{{/if}}{{#unless newDigest}}{{newValue}}{{/unless}}",
+        "packageNameTemplate": "https://github.com/exivity/actions",
+        "depTypeTemplate": "action",
+        "datasourceTemplate": "git-refs"
       }
     ]
   }
