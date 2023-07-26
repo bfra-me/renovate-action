@@ -3,7 +3,7 @@ name: Renovate
 
 on:
   schedule:
-    - cron: '0/15 * * * *'
+    - cron: '0 * * * *'
   workflow_call:
     inputs:
       autodiscover:
