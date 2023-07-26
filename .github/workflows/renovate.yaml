@@ -129,7 +129,7 @@ jobs:
           zzglobal_config: |-
             {
               allowedPostUpgradeCommands: [
-                '^corepack enable',
+                '^(npx )?corepack enable$',
                 '^npm ci( --ignore-scripts)?$',
                 '^(npx|pnpm|yarn) prettier( --no-color)? --write \\.$',
                 '^(pnpm|yarn) install( --frozen-lockfile)?( --ignore-scripts)?$',
