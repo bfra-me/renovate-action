@@ -131,6 +131,7 @@ jobs:
               allowedPostUpgradeCommands: [
                 '^(npx )?corepack enable$',
                 '^npm ci( --ignore-scripts)?$',
+                '^npm install -g (npm|pnpm)(?:@\\d+(?:\\.\\d+\\.\\d+)?)?$',
                 '^(npx|pnpm|yarn) prettier( --no-color)? --write \\.$',
                 '^(pnpm|yarn) install( --frozen-lockfile)?( --ignore-scripts)?$',
                 '^yarn install( --immutable)?( --immutable-cache)?$',
