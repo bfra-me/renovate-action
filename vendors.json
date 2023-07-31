@@ -51,10 +51,10 @@
     "description": "Update @exivity/actions digests in GitHub actions and workflows.",
     "regexManagers": [
       {
-        "fileMatch": ["^\\.github/(?:workflows|actions)/.+\\.ya?ml$"],
+        "fileMatch": ["^(workflow-templates|\\.github/(?:workflows|actions))/[^/]+\\.ya?ml$", "(^|/)action\\.ya?ml$"],
         "matchStrings": [
-          "uses:\\s+(?<depName>exivity\\/actions(?<path>\\/.*)?)@(?<currentDigest>[a-f0-9]+)",
-          "uses:\\s+(?<depName>exivity\\/actions(?<path>\\/.*)?)@(?<currentValue>main)"
+          "uses:\\s+(?<depName>exivity\\/actions)(?<path>\\/.*)?@(?<currentDigest>[a-f0-9]+)",
+          "uses:\\s+(?<depName>exivity\\/actions)(?<path>\\/.*)?@(?<currentValue>main)"
         ],
         "currentValueTemplate": "main",
         "autoReplaceStringTemplate": "uses: {{depName}}@{{#if newDigest}}{{newDigest}}{{#if newValue}} # {{newValue}}{{/if}}{{/if}}{{#unless newDigest}}{{newValue}}{{/unless}}",
