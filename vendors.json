@@ -57,7 +57,10 @@
     ],
     "regexManagers": [
       {
-        "fileMatch": ["^(workflow-templates|\\.github/(?:workflows|actions))/[^/]+\\.ya?ml$", "(^|/)action\\.ya?ml$"],
+        "fileMatch": [
+          "^(workflow-templates|\\.github/(?:workflows|actions))/[^/]+\\.ya?ml$",
+          "(^|/)action\\.ya?ml$"
+        ],
         "matchStrings": [
           "uses:\\s+(?<depName>exivity\\/actions(?<path>\\/.*)?)@(?<currentDigest>[a-f0-9]+)",
           "uses:\\s+(?<depName>exivity\\/actions(?<path>\\/.*)?)@(?<currentValue>main)"
