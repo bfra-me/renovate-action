@@ -70,7 +70,9 @@
       "datasourceTemplate": "npm",
       "depNameTemplate": "conventional-changelog-conventionalcommits",
       "fileMatch": ["^\\.github\\/(actions|workflows)\\/[^/]+\\.ya?ml$"],
-      "matchStrings": ["\\snpm install conventional-changelog-conventionalcommits@(?<currentValue>.*?)\\s"]
+      "matchStrings": [
+        "\\snpm install conventional-changelog-conventionalcommits@(?<currentValue>.*?)\\s"
+      ]
     }
   ]
 }
