@@ -58,5 +58,5 @@ jobs:
           GITHUB_TOKEN: ${{ steps.get-workflow-access-token.outputs.token }}
         run: |
           # Run `semantic-release`
-          npm install conventional-changelog-conventionalcommits
+          npm install conventional-changelog-conventionalcommits@6.0.0
           npx semantic-release@21.0.9 --dry-run ${{ env.DRY_RUN }}
