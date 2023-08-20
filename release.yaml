@@ -59,4 +59,4 @@ jobs:
         run: |
           # Run `semantic-release`
           npm install conventional-changelog-conventionalcommits
-          npx semantic-release@21.0.8 --dry-run ${{ env.DRY_RUN }}
+          npx semantic-release@21.0.9 --dry-run ${{ env.DRY_RUN }}
