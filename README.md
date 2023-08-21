@@ -7,7 +7,7 @@
 </div>
 
 [release]: https://github.com/bfra-me/renovate-config/releases 'GitHub release'
-[renovate]: https://github.com/renovatebot/renovate/releases/tag/36.42.4 'Renovate release'
+[renovate]: https://github.com/renovatebot/renovate/releases/tag/36.52.2 'Renovate release'
 [ci-workflow]: https://github.com/bfra-me/renovate-config/actions?query=workflow%3Aci 'Search GitHub Actions for CI workflow runs'
 
 This repository contains [Renovate](https://renovatebot.com/) configuration presets used by [bfra.me](https://bfra.me) projects. It also hosts a reusable [GitHub Actions workflow](.github/workflows/renovate.yaml) that runs Renovate on a schedule.
