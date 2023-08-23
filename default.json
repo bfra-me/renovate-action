@@ -75,6 +75,9 @@
       "matchManagers": ["dockerfile", "docker-compose"]
     },
     {
+      "extends": [
+        "github>bfra-me/renovate-config:maintenance/pinGitHubActionDigestsToSemver"
+      ],
       "matchRepositories": ["bfra-me/**"]
     }
   ],
