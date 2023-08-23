@@ -38,6 +38,17 @@
     ]
   },
 
+  "pinGitHubActionDigestsToSemver": {
+    "description": "Pin GitHub Action digests to semver versions.",
+    "packageRules": [
+      {
+        "extends": ["helpers:pinGitHubActionDigests"],
+        "extractVersion": "^(?<version>v?\\d+\\.\\d+\\.\\d+)$",
+        "versioning": "regex:^v?(?<major>\\d+)(\\.(?<minor>\\d+)\\.(?<patch>\\d+))?$"
+      }
+    ]
+  },
+
   "security": {
     "description": "Enable security updates from vulnerability alerts.",
     "extends": [":enableVulnerabilityAlertsWithLabel(security)"],
