@@ -45,6 +45,7 @@
   ],
   "regexManagers": [
     {
+      "customType": "regex",
       "fileMatch": ["^README\\.md$"],
       "matchStrings": [
         "\"github>bfra-me/renovate-config#(?<currentValue>.+)\""
@@ -53,6 +54,7 @@
       "datasourceTemplate": "github-releases"
     },
     {
+      "customType": "regex",
       "datasourceTemplate": "docker",
       "depNameTemplate": "ghcr.io/renovatebot/renovate",
       "fileMatch": ["^README\\.md$"],
@@ -61,12 +63,14 @@
       ]
     },
     {
+      "customType": "regex",
       "datasourceTemplate": "npm",
       "depNameTemplate": "semantic-release",
       "fileMatch": ["^\\.github\\/(actions|workflows)\\/[^/]+\\.ya?ml$"],
       "matchStrings": ["\\snpx semantic-release@(?<currentValue>.*?)\\s"]
     },
     {
+      "customType": "regex",
       "datasourceTemplate": "npm",
       "depNameTemplate": "conventional-changelog-conventionalcommits",
       "fileMatch": ["^\\.github\\/(actions|workflows)\\/[^/]+\\.ya?ml$"],
