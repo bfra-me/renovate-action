@@ -1,20 +1,20 @@
 {
     "cSpell.words": [
-      "automerge",
-      "bfra",
-      "Buildpack",
-      "conventionalcommits",
-      "datasource",
-      "Datasources",
-      "Dockerfiles",
-      "exivity",
-      "gomod",
-      "lockfiles",
-      "noreply",
-      "renovatebot",
-      "renovaterc",
-      "unpublish",
-      "unpublishing",
-      "whitesource"
+        "automerge",
+        "bfra",
+        "Buildpack",
+        "conventionalcommits",
+        "datasource",
+        "Datasources",
+        "Dockerfiles",
+        "exivity",
+        "gomod",
+        "lockfiles",
+        "noreply",
+        "renovatebot",
+        "renovaterc",
+        "unpublish",
+        "unpublishing",
+        "whitesource"
     ]
 }
