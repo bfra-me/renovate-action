@@ -67,5 +67,12 @@
       },
       "extends": ["github>bfra-me/renovate-config:automerge/enabled"]
     }
+  },
+
+  "internal": {
+    "description": "Internal Renovate configuration for @bfra-me.",
+    "extends": [
+      "github>bfra-me/renovate-config:maintenance/pinGitHubActionDigestsToSemver"
+    ]
   }
 }
