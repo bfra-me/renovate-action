@@ -33,5 +33,14 @@
         "extends": ["github>bfra-me/renovate-config:automerge/enabled"]
       }
     ]
+  },
+
+  "prForCI": {
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "description": "Optimize settings for GitHub merge queues.",
+    "automergeType": "pr",
+    "prCreation": "immediate",
+    "rebaseWhen": "conflicted",
+    "platformAutomerge": true
   }
 }
