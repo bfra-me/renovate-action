@@ -134,7 +134,7 @@ jobs:
                 '^npm install -g (npm|pnpm)(?:@\\d+(?:\\.\\d+\\.\\d+)?)?$',
                 '^(npx|pnpm|yarn) prettier( --no-color)? --write \\.$',
                 '^(pnpm|yarn) install( --frozen-lockfile)?( --ignore-scripts)?$',
-                '^(pnpm|yarn) run (fix|format)$',
+                '^(pnpm|yarn) run (build|fix|format)$',
                 '^yarn install( --immutable)?( --immutable-cache)?$',
               ],
               description: [
