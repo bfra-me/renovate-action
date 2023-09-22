@@ -1,4 +1,4 @@
-name: Renovate
+name: Renovate Action
 description: Self-hosted Renovate GitHub Action
 author: bfra.me
 inputs:
