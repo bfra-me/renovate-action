@@ -1,0 +1,8 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: ['github>bfra-me/renovate-config#v1.24.0', 'github>bfra-me/renovate-config:automerge/prForCI#v1.24.0'],
+  postUpgradeTasks: {
+    commands: ['yarn install --immutable', 'yarn run build', 'yarn run format'],
+    executionMode: 'branch',
+  },
+}
