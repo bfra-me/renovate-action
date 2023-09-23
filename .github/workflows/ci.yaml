@@ -3,7 +3,6 @@ name: CI
 
 'on':
   pull_request:
-    branches: [main]
   push:
     branches: [main]
   workflow_dispatch:
@@ -32,6 +31,7 @@ jobs:
         with:
           cache: yarn
           node-version: ${{ env.NODE_VERSION }}
+      - run: yarn install --immutable
       - id: filter
         uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50 # v2.11.1
         with:
