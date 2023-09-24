@@ -1,6 +1,6 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: Renovate Action
+description: Self-hosted Renovate GitHub Action
+author: bfra.me
 inputs:
   milliseconds: # change this
     required: true

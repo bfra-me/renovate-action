@@ -2,18 +2,37 @@
 _extends: .github:common-settings.yaml
 
 repository:
-  name: github-action
-  description: GitHub Action template repository for @bfra-me.
-  topics: template, actions, github-actions, nodejs, typescript, github-actions
-  is_template: true
+  name: renovate-action
+  description: GitHub Action for Self-Hosted Renovate
+  topics: renovate, actions, github-action, composite, github-actions
+
+teams:
+  - name: actioneers
+    permission: push
+  - name: services
+    permission: maintain
+  - name: owners
+    permission: admin
 
 branches:
   - name: main
     protection:
+      enforce_admins: true
+      required_linear_history: true
+      required_pull_request_reviews: null
       required_status_checks:
         strict: true
         contexts: ['Build', 'Lint', 'Release', 'Test', 'Setup', 'CodeQL', 'Analyze (javascript)']
-      enforce_admins: true
-      required_pull_request_reviews: null
       restrictions: null
+
+  # The @bfra-me/actioneers team is allowed to push to the release branch.
+  - name: release
+    protection:
+      enforce_admins: true
       required_linear_history: true
+      required_pull_request_reviews: null
+      required_status_checks: null
+      restrictions:
+        apps: []
+        teams: ['actioneers']
+        users: []
