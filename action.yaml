@@ -1,11 +1,209 @@
+---
 name: Renovate Action
 description: Self-hosted Renovate GitHub Action
 author: bfra.me
+
 inputs:
-  milliseconds: # change this
-    required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  autodiscover:
+    description: Autodiscover all repositories.
+    required: false
+    default: 'false'
+  branch:
+    description: Run Renovate on this branch.
+    required: false
+  cache:
+    description: Enable the Renovate cache.
+    required: false
+    default: 'true'
+  dry_run:
+    description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
+    required: false
+    default: 'false'
+  log_level:
+    description: Set the log level.
+    required: false
+    default: 'debug'
+  print_config:
+    description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
+    required: false
+    default: 'false'
+  renovate_git_author:
+    description: Set the Git author name and email (used to set the `gitAuthor` Renovate configuration option).
+    required: false
+  renovate_username:
+    description: Set the Renovate username (used to set the `username` Renovate configuration option).
+    required: false
+
+outputs:
+  docker-image:
+    description: The name of the Renovate Docker image
+    value: ${{ jobs.renovate.outputs.docker-image }}
+  renovate-version:
+    description: The Renovate version
+    value: ${{ jobs.renovate.outputs.renovate-version }}
+
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  steps:
+    - name: Configure
+      id: configure
+      env:
+        RENOVATE_VERSION: 36.106.1 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate
+        autodiscover: ${{ inputs.autodiscover || contains(inputs.autodiscover, 'false') && 'false' || 'true' }}
+        dry_run: ${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' }}
+        # Check if this workflow was triggered from an organization account.
+        is-org-account: ${{ github.event.organization && 'true' || 'false' }}
+        log_level: ${{ inputs.log_level || 'debug' }}
+        print_config: ${{ inputs.print_config || 'false' }}
+        renovate_git_author: ${{ inputs.renovate_git_author || vars.RENOVATE_GIT_AUTHOR || '' }}
+        cache: ${{ inputs.cache && !inputs.dry_run && 'true' || github.event_name == 'schedule' && 'true' || 'false' }}
+        zzglobal_config: |-
+          {
+            allowedPostUpgradeCommands: [
+              '^(npx )?corepack enable$',
+              '^npm ci( --ignore-scripts)?$',
+              '^npm install -g (npm|pnpm)(?:@\\d+(?:\\.\\d+\\.\\d+)?)?$',
+              '^(npx|pnpm|yarn) prettier( --no-color)? --write \\.$',
+              '^(pnpm|yarn) install( --frozen-lockfile)?( --ignore-scripts)?$',
+              '^(pnpm|yarn) run (build|fix|format)$',
+              '^yarn install( --immutable)?( --immutable-cache)?$',
+            ],
+            description: [
+              'Use the global config preset for the @bfra-me organization.',
+              '_See the [renovate workflow](https://github.com/bfra-me/renovate-config/blob/main/.github/workflows/renovate.yaml) for details._',
+            ],
+            onboardingConfig: {
+              '$schema': 'https://docs.renovatebot.com/renovate-schema.json',
+              extends: ['github>bfra-me/renovate-config#v1.8.0'],
+            },
+            onboardingConfigFileName: '.github/renovate.json5',
+            onboardingPrTitle: 'feat(deps): configure Renovate',
+            onboardingRebaseCheckbox: true,
+            packageRules: [
+              {
+                matchPackagePatterns: ['*'],
+                rangeStrategy: 'pin',
+              },
+              {
+                matchDepTypes: ['engines', 'peerDependencies'],
+                rangeStrategy: 'update-lockfile',
+              },
+            ],
+          }
+
+      # Use the contains function to convert the boolean input to a string and compare it to 'false'. This is
+      # required when the workflow is triggered from workflow_call because the github context is that of the workflow
+      # that called this workflow.
+      run: |
+        # Create outputs for this configuration
+        [[ -n "${{ inputs.branch }}" ]] && base_branches=$(jq 'split(",")' -Rc <(echo '${{ inputs.branch }}'))
+        sed 's/^[[:space:]]*//' <<EOF >> $GITHUB_OUTPUT
+          autodiscover=${{ env.autodiscover }}
+          base-branches=${base_branches}
+          docker-image=ghcr.io/renovatebot/renovate:${{ env.RENOVATE_VERSION }}
+          dry-run=${{ env.dry_run }}
+          enable-cache=${{ env.cache }}
+          global-config=$(echo "${zzglobal_config}" | tr -d '\n')
+          is-org-account=${{ env.is-org-account }}
+          log-level=${{ env.log_level }}
+          print-config=${{ env.print_config }}
+          renovate-git-author=${{ env.renovate_git_author }}
+          renovate-version=$(echo "${{ env.RENOVATE_VERSION }}")
+          repositories=${{ !fromJSON(env.autodiscover) && format('["{0}"]', github.repository) || '' }}
+        EOF
+      shell: 'bash -euxo pipefail {0}'
+
+    - name: Get Workflow Token
+      id: get_workflow_token
+      uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
+      with:
+        application_id: ${{ secrets.APPLICATION_ID }}
+        application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+        organization: ${{ fromJSON(steps.configure.outputs.is-org-account) && github.repository_owner || '' }}
+        permissions: >
+          checks:write,
+          contents:write,
+          issues:write,
+          members:read,
+          metadata:read,
+          pull_requests:write,
+          statuses:write,
+          vulnerability_alerts:read,
+          workflows:write
+
+    - name: Configure Renovate cache
+      if: steps.configure.outputs.enable-cache == 'true'
+      run: |
+        echo "RENOVATE_CACHE_DIR=${RENOVATE_CACHE_DIR:-/tmp/renovate/cache}" >> $GITHUB_ENV
+      shell: 'bash -euxo pipefail {0}'
+    - id: renovate-cache
+      name: Cache Renovate
+      if: steps.configure.outputs.enable-cache == 'true'
+      env:
+        RENOVATE_CACHE_DIR: ${{ env.RENOVATE_CACHE_DIR }}
+      uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
+      with:
+        enableCrossOsArchive: true
+        path: ${{ env.RENOVATE_CACHE_DIR }}
+        key: >-
+          ${{ github.repository_owner }}-renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ github.sha }}
+
+    - name: Workaround Renovate cache permissions
+      if: steps.configure.outputs.enable-cache == 'true'
+      continue-on-error: true
+      run: >
+        [ -d /tmp/renovate ] && sudo chown -R 1000 /tmp/renovate || true
+      shell: 'bash -euxo pipefail {0}'
+
+    - name: Renovate ${{ steps.configure.outputs.renovate-version }}
+      uses: renovatebot/github-action@3cef36a9aba515d8726b491905b3bc766832e221 # v39.0.5
+      env:
+        FORCE_COLOR: '3'
+        LOG_LEVEL: ${{ steps.configure.outputs.log-level }}
+        RENOVATE_AUTODISCOVER: ${{ steps.configure.outputs.autodiscover }}
+        RENOVATE_BASE_BRANCHES: ${{ steps.configure.outputs.base-branches }}
+        RENOVATE_USE_BASE_BRANCH_CONFIG: ${{ steps.configure.outputs.base-branches && 'merge' || 'none' }}
+        RENOVATE_BRANCH_PREFIX_OLD: 'renovate-github/'
+        RENOVATE_CACHE_NPM_MINUTES: '30'
+        RENOVATE_CONFIG: ${{ steps.configure.outputs.global-config }}
+        RENOVATE_DEPENDENCY_DASHBOARD_FOOTER: '\n- [ ] <!-- manual job -->Check here to trigger a Renovate run on this repository\n'
+        RENOVATE_DRY_RUN: ${{ fromJSON(steps.configure.outputs.dry-run) && 'full' || '' }}
+        RENOVATE_GIT_AUTHOR: ${{ steps.configure.outputs.renovate-git-author }}
+        RENOVATE_GIT_IGNORED_AUTHORS: |-
+          [
+            "bot@renovateapp.com",
+            "29139614+renovate[bot]@users.noreply.github.com",
+            "support@github.com",
+            "261136+bfra-me@users.noreply.github.com",
+            "${{ steps.configure.outputs.renovate-git-author }}"
+          ]
+        RENOVATE_HOST_RULES: |-
+          [
+            {
+              "dnsCache": true
+            },
+            {
+              "hostType": "docker",
+              "matchHost": "ghcr.io",
+              "username": "${{ github.repository_owner }}",
+              "password": "${{ secrets.GITHUB_TOKEN }}"
+            }
+          ]
+        RENOVATE_PLATFORM: github
+        RENOVATE_PLATFORM_COMMIT: 'true'
+        RENOVATE_PRINT_CONFIG: ${{ steps.configure.outputs.print-config }}
+        RENOVATE_REPOSITORIES: ${{ steps.configure.outputs.repositories }}
+        RENOVATE_REPOSITORY_CACHE: ${{ steps.configure.outputs.enable-cache == 'true' && 'enabled' || 'disabled' }}
+        RENOVATE_USERNAME: ${{ inputs.renovate_username || vars.RENOVATE_USERNAME || '' }}
+      with:
+        env-regex: '^(?:CI|FORCE_COLOR|GITHUB_(?:(?!PATH|ENV).)+|(?:HTTPS?|NO)_PROXY|(?:https?|no)_proxy|LOG_LEVEL|NODE_OPTIONS|RENOVATE_\w+|RUNNER_\w+)$'
+        mount-docker-socket: true
+        renovate-version: ${{ env.RENOVATE_VERSION }}
+        token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
+
+    - name: Restore Renovate cache permissions
+      if: always() && steps.configure.outputs.enable-cache == 'true'
+      continue-on-error: true
+      run: >
+        [ -d /tmp/renovate ] && sudo chown -R $(whoami) /tmp/renovate
+      shell: 'bash -euxo pipefail {0}'
+  using: composite
