@@ -31,7 +31,4 @@ branches:
       required_linear_history: false
       required_pull_request_reviews: null
       required_status_checks: null
-      restrictions:
-        apps: []
-        teams: ['actioneers', 'services']
-        users: []
+      restrictions: null
