@@ -1,5 +1,5 @@
 {
-  "name": "renovate-action",
+  "name": "@bfra.me/renovate-action",
   "packageManager": "yarn@3.6.3",
   "version": "0.0.0-development",
   "private": true,
