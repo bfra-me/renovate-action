@@ -121,11 +121,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
       - run: yarn test
-
-      - name: Setup Node.js for integration tests
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
-        with:
-          node-version: 16
       - uses: ./
         with:
           milliseconds: 1000
@@ -172,6 +167,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
         with:
+          cache: yarn
           node-version: ${{ needs.setup.outputs.node-version }}
       - name: Enable corepack
         run: corepack enable
@@ -188,4 +184,5 @@ jobs:
         run: |
           export GITHUB_REF=refs/heads/release GITHUB_SHA=${{ steps.merge.outputs.commit }}
           yarn semantic-release --dry-run ${{ env.DRY_RUN }} --no-ci
+          echo '{version}={$SEMVER_VERSION}'
           echo '{version}={$SEMVER_VERSION}' >> $GITHUB_OUTPUT
