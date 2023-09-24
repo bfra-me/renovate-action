@@ -1,5 +1,5 @@
 {
-  "name": "github-action",
+  "name": "@bfra.me/renovate-action",
   "packageManager": "yarn@3.6.3",
   "version": "0.0.0-development",
   "private": true,
@@ -14,12 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bfra-me/github-action.git"
+    "url": "git+https://github.com/bfra-me/renovate-action.git"
   },
   "keywords": [
     "github-actions",
-    "nodejs",
-    "typescript"
+    "actions",
+    "github-action",
+    "composite",
+    "renovate"
   ],
   "author": "Marcus R. Brown <git@mrbro.dev>",
   "license": "MIT",
