@@ -38,19 +38,19 @@ name: Renovate
   pull_request:
   workflow_dispatch:
   schedule:
-    - cron:  '0 */6 * * *' # Run every 6 hours
+    - cron: '0 */6 * * *' # Run every 6 hours
 
 jobs:
   renovate:
     name: Renovate
     runs-on: ubuntu-latest
     steps:
-    - uses: bfra-me/renovate-action@v2.0.0
-      with:
-        dry_run: ${{ github.event_name == 'pull_request' }}
-        renovate_app_id: ${{ secrets.APPLICATION_ID }}
-        renovate_app_pem: ${{ secrets.APPLICATION_PRIVATE_KEY }}
-        renovate_app_slug: 'fro-bot'
+      - uses: bfra-me/renovate-action@v2.0.0
+        with:
+          dry_run: ${{ github.event_name == 'pull_request' }}
+          renovate_app_id: ${{ secrets.APPLICATION_ID }}
+          renovate_app_pem: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          renovate_app_slug: 'fro-bot'
 ```
 
 ### License
