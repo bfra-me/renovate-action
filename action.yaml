@@ -98,10 +98,9 @@ runs:
       # that called this workflow.
       run: |
         # Create outputs for this configuration
-        [[ -n "${{ inputs.branch }}" ]] && base_branches=$(jq 'split(",")' -Rc <(echo '${{ inputs.branch }}'))
         sed 's/^[[:space:]]*//' <<EOF >> $GITHUB_OUTPUT
           autodiscover=${{ env.autodiscover }}
-          base-branches=${base_branches}
+          base-branches=${{ inputs.branch && format('["{0}"]', inputs.branch) || '' }}
           docker-image=ghcr.io/renovatebot/renovate:${{ env.RENOVATE_VERSION }}
           dry-run=${{ env.dry_run }}
           enable-cache=${{ env.cache }}
@@ -115,7 +114,7 @@ runs:
           renovate-version=$(echo "${{ env.RENOVATE_VERSION }}")
           repositories=${{ !fromJSON(env.autodiscover) && format('["{0}"]', github.repository) || '' }}
         EOF
-      shell: 'bash -euxo pipefail {0}'
+      shell: 'bash -Eeuxo pipefail {0}'
 
     - name: Get Workflow Token
       id: get_workflow_token
@@ -139,7 +138,7 @@ runs:
       if: steps.configure.outputs.enable-cache == 'true'
       run: |
         echo "RENOVATE_CACHE_DIR=${RENOVATE_CACHE_DIR:-/tmp/renovate/cache}" >> $GITHUB_ENV
-      shell: 'bash -euxo pipefail {0}'
+      shell: 'bash -Eeuxo pipefail {0}'
     - id: renovate-cache
       name: Cache Renovate
       if: steps.configure.outputs.enable-cache == 'true'
@@ -157,7 +156,7 @@ runs:
       continue-on-error: true
       run: >
         [ -d /tmp/renovate ] && sudo chown -R 1000 /tmp/renovate || true
-      shell: 'bash -euxo pipefail {0}'
+      shell: 'bash -Eeuxo pipefail {0}'
 
     - name: Renovate ${{ steps.configure.outputs.renovate-version }}
       uses: renovatebot/github-action@3cef36a9aba515d8726b491905b3bc766832e221 # v39.0.5
@@ -204,5 +203,5 @@ runs:
       continue-on-error: true
       run: >
         [ -d /tmp/renovate ] && sudo chown -R $(whoami) /tmp/renovate
-      shell: 'bash -euxo pipefail {0}'
+      shell: 'bash -Eeuxo pipefail {0}'
   using: composite

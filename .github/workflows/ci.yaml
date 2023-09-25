@@ -13,7 +13,7 @@ concurrency:
 
 defaults:
   run:
-    shell: 'bash -euxo pipefail {0}'
+    shell: 'bash -Eeuxo pipefail {0}'
 
 jobs:
   setup:
@@ -45,14 +45,15 @@ jobs:
               - jest.config.js
               - '**.json5?'
               - '**.md'
-              - '**.ya?ml'
+              - '**.yaml'
+              - '**.yml'
             dist-changed:
               - added|modified: 'dist/**'
             src-changed: &src-changed
               - __tests__/**
               - src/**
               - .yarnrc.yml
-              - action.ya?ml
+              - action.yaml
               - package.json
             should-lint:
               - added|modified: *config
