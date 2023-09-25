@@ -51,14 +51,14 @@ runs:
       id: configure
       env:
         RENOVATE_VERSION: 36.107.1 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate
-        autodiscover: ${{ inputs.autodiscover || contains(inputs.autodiscover, 'false') && 'false' || 'true' }}
-        dry_run: ${{ inputs.dry_run || contains(inputs.dry_run, 'false') && 'false' }}
+        autodiscover: ${{ inputs.autodiscover != '' && inputs.autodiscover || 'false' }}
+        dry_run: ${{ inputs.dry_run != '' && inputs.dry_run || 'false' }}
         # Check if this workflow was triggered from an organization account.
         is-org-account: ${{ github.event.organization && 'true' || 'false' }}
-        log_level: ${{ inputs.log_level || 'debug' }}
-        print_config: ${{ inputs.print_config || 'false' }}
+        log_level: ${{ inputs.log_level != '' && inputs.log_level || 'debug' }}
+        print_config: ${{ inputs.print_config != '' && inputs.print_config || 'false' }}
         renovate_git_author_email: ${{ format('{0}+{1}[bot]@users.noreply.github.com', inputs.renovate_app_id, inputs.renovate_app_slug) }}
-        cache: ${{ inputs.cache && !inputs.dry_run && 'true' || github.event_name == 'schedule' && 'true' || 'false' }}
+        cache: ${{ inputs.cache == 'true' && (inputs.dry_run == 'false' && 'true' || github.event_name == 'schedule' && 'true' || 'false') }}
         zzglobal_config: |-
           {
             allowedPostUpgradeCommands: [
