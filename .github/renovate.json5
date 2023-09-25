@@ -33,6 +33,10 @@
       matchFileNames: ['.github/workflows/**'],
       semanticCommitType: 'ci',
     },
+    {
+      matchPackageNames: ['bfra-me/renovate-action'],
+      semanticCommitType: 'chore',
+    },
   ],
   postUpgradeTasks: {
     commands: ['yarn install --immutable', 'yarn run format', 'yarn run build'],
