@@ -123,7 +123,10 @@ jobs:
       - run: yarn test
       - uses: ./
         with:
-          milliseconds: 1000
+          dry_run: true
+          renovate_app_id: ${{ secrets.APPLICATION_ID }}
+          renovate_app_pem: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          renovate_app_slug: ${{ github.repository_owner }}
 
   release:
     env:

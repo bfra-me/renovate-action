@@ -27,20 +27,23 @@ inputs:
     description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
     required: false
     default: 'false'
-  renovate_git_author:
-    description: Set the Git author name and email (used to set the `gitAuthor` Renovate configuration option).
-    required: false
-  renovate_username:
-    description: Set the Renovate username (used to set the `username` Renovate configuration option).
-    required: false
+  renovate_app_id:
+    description: The ID of the GitHub App that will be used to run Renovate.
+    required: true
+  renovate_app_pem:
+    description: The private key of the GitHub App that will be used to run Renovate.
+    required: true
+  renovate_app_slug:
+    description: The slug of the GitHub app to use for authentication.
+    required: true
 
 outputs:
   docker-image:
     description: The name of the Renovate Docker image
-    value: ${{ jobs.renovate.outputs.docker-image }}
+    value: ${{ steps.configure.outputs.docker-image }}
   renovate-version:
     description: The Renovate version
-    value: ${{ jobs.renovate.outputs.renovate-version }}
+    value: ${{ steps.configure.outputs.renovate-version }}
 
 runs:
   steps:
@@ -54,7 +57,7 @@ runs:
         is-org-account: ${{ github.event.organization && 'true' || 'false' }}
         log_level: ${{ inputs.log_level || 'debug' }}
         print_config: ${{ inputs.print_config || 'false' }}
-        renovate_git_author: ${{ inputs.renovate_git_author || vars.RENOVATE_GIT_AUTHOR || '' }}
+        renovate_git_author_email: ${{ format('{0}+{1}[bot]@users.noreply.github.com', inputs.renovate_app_id, inputs.renovate_app_slug) }}
         cache: ${{ inputs.cache && !inputs.dry_run && 'true' || github.event_name == 'schedule' && 'true' || 'false' }}
         zzglobal_config: |-
           {
@@ -106,7 +109,9 @@ runs:
           is-org-account=${{ env.is-org-account }}
           log-level=${{ env.log_level }}
           print-config=${{ env.print_config }}
-          renovate-git-author=${{ env.renovate_git_author }}
+          renovate-git-author-email=${{ env.renovate_git_author_email }}
+          renovate-git-author=${{ format('{0} <{1}>', inputs.renovate_app_slug, env.renovate_git_author_email) }}
+          renovate-username=${{ format('{0}[bot]', inputs.renovate_app_slug) }}
           renovate-version=$(echo "${{ env.RENOVATE_VERSION }}")
           repositories=${{ !fromJSON(env.autodiscover) && format('["{0}"]', github.repository) || '' }}
         EOF
@@ -116,8 +121,8 @@ runs:
       id: get_workflow_token
       uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
       with:
-        application_id: ${{ secrets.APPLICATION_ID }}
-        application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+        application_id: ${{ inputs.renovate_app_id }}
+        application_private_key: ${{ inputs.renovate_app_pem }}
         organization: ${{ fromJSON(steps.configure.outputs.is-org-account) && github.repository_owner || '' }}
         permissions: >
           checks:write,
@@ -174,18 +179,12 @@ runs:
             "29139614+renovate[bot]@users.noreply.github.com",
             "support@github.com",
             "261136+bfra-me@users.noreply.github.com",
-            "${{ steps.configure.outputs.renovate-git-author }}"
+            "${{ steps.configure.outputs.renovate-git-author-email }}"
           ]
         RENOVATE_HOST_RULES: |-
           [
             {
               "dnsCache": true
-            },
-            {
-              "hostType": "docker",
-              "matchHost": "ghcr.io",
-              "username": "${{ github.repository_owner }}",
-              "password": "${{ secrets.GITHUB_TOKEN }}"
             }
           ]
         RENOVATE_PLATFORM: github
@@ -193,11 +192,11 @@ runs:
         RENOVATE_PRINT_CONFIG: ${{ steps.configure.outputs.print-config }}
         RENOVATE_REPOSITORIES: ${{ steps.configure.outputs.repositories }}
         RENOVATE_REPOSITORY_CACHE: ${{ steps.configure.outputs.enable-cache == 'true' && 'enabled' || 'disabled' }}
-        RENOVATE_USERNAME: ${{ inputs.renovate_username || vars.RENOVATE_USERNAME || '' }}
+        RENOVATE_USERNAME: ${{ steps.configure.outputs.renovate-username }}
       with:
         env-regex: '^(?:CI|FORCE_COLOR|GITHUB_(?:(?!PATH|ENV).)+|(?:HTTPS?|NO)_PROXY|(?:https?|no)_proxy|LOG_LEVEL|NODE_OPTIONS|RENOVATE_\w+|RUNNER_\w+)$'
         mount-docker-socket: true
-        renovate-version: ${{ env.RENOVATE_VERSION }}
+        renovate-version: ${{ steps.configure.outputs.renovate-version }}
         token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
 
     - name: Restore Renovate cache permissions
