@@ -23,36 +23,43 @@ name: Renovate
 permissions: {}
 
 jobs:
-  renovate:
-    name: Renovate
+  should-renovate:
+    name: Check if Renovate should run
+    if: >-
+      (github.event_name != 'issues' && github.event_name != 'pull_request') ||
+      (
+        contains(join(github.event.*.body, ''), '- [x] <!-- approve-all-pending-prs -->') ||
+        contains(join(github.event.*.body, ''), '- [x] <!-- approve-branch=') ||
+        contains(join(github.event.*.body, ''), '- [x] <!-- approvePr-branch=') ||
+        contains(join(github.event.*.body, ''), '- [x] <!-- create-all-rate-limited-prs -->') ||
+        contains(join(github.event.*.body, ''), '- [x] <!-- manual job -->') ||
+        contains(join(github.event.*.body, ''), '- [x] <!-- other-branch=') ||
+        contains(join(github.event.*.body, ''), '- [x] <!-- rebase-all-open-prs -->') ||
+        contains(join(github.event.*.body, ''), '- [x] <!-- rebase-branch=') ||
+        contains(join(github.event.*.body, ''), '- [x] <!-- rebase-check -->') ||
+        contains(join(github.event.*.body, ''), '- [x] <!-- recreate-branch=') ||
+        contains(join(github.event.*.body, ''), '- [x] <!-- retry-branch=') ||
+        contains(join(github.event.*.body, ''), '- [x] <!-- unlimit-branch=') ||
+        contains(join(github.event.*.body, ''), '- [x] <!-- unschedule-branch=')
+      )
+    outputs:
+      renovate: ${{ steps.create-output.outputs.renovate }}
     runs-on: ubuntu-latest
     steps:
-      - id: should-renovate
-        if: >-
-          (github.event_name != 'issues' && github.event_name != 'pull_request') ||
-          (
-            contains(join(github.event.*.body, ''), '- [x] <!-- approve-all-pending-prs -->') ||
-            contains(join(github.event.*.body, ''), '- [x] <!-- approve-branch=') ||
-            contains(join(github.event.*.body, ''), '- [x] <!-- approvePr-branch=') ||
-            contains(join(github.event.*.body, ''), '- [x] <!-- create-all-rate-limited-prs -->') ||
-            contains(join(github.event.*.body, ''), '- [x] <!-- manual job -->') ||
-            contains(join(github.event.*.body, ''), '- [x] <!-- other-branch=') ||
-            contains(join(github.event.*.body, ''), '- [x] <!-- rebase-all-open-prs -->') ||
-            contains(join(github.event.*.body, ''), '- [x] <!-- rebase-branch=') ||
-            contains(join(github.event.*.body, ''), '- [x] <!-- rebase-check -->') ||
-            contains(join(github.event.*.body, ''), '- [x] <!-- recreate-branch=') ||
-            contains(join(github.event.*.body, ''), '- [x] <!-- retry-branch=') ||
-            contains(join(github.event.*.body, ''), '- [x] <!-- unlimit-branch=') ||
-            contains(join(github.event.*.body, ''), '- [x] <!-- unschedule-branch=')
-          )
-        name: Check if Renovate should run
+      - id: create-output
         run: echo "renovate=true" >> $GITHUB_OUTPUT
 
-      - if: steps.should-renovate.outputs.renovate == 'true'
-        name: Renovate
+  renovate:
+    if: needs.should-renovate.outputs.renovate == 'true'
+    name: Renovate
+    needs: should-renovate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Renovate
         uses: bfra-me/renovate-action@7a3e9a0235f6b4c702a559c5212e0c17940b5446 # v2.1.8
+
         with:
-          print_config: ${{ inputs.print_config || false }}
+          print_config: ${{ inputs.print_config || 'false' }}
           renovate_app_id: ${{ secrets.APPLICATION_ID }}
           renovate_app_pem: ${{ secrets.APPLICATION_PRIVATE_KEY }}
           renovate_app_slug: ${{ github.repository_owner }}
