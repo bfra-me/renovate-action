@@ -189,5 +189,3 @@ jobs:
         run: |
           export GITHUB_REF=refs/heads/release GITHUB_SHA=${{ steps.merge.outputs.commit }}
           yarn semantic-release --dry-run ${{ env.DRY_RUN }}
-          echo '{version}={$SEMVER_VERSION}'
-          echo '{version}={$SEMVER_VERSION}' >> $GITHUB_OUTPUT
