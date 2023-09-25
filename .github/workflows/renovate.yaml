@@ -8,7 +8,7 @@ name: Renovate
   pull_request:
     types: [edited]
   push:
-    branches: ['**']
+    branches: [main]
     paths:
       - '.github/workflows/renovate.yaml'
       - '.github/renovate.json5?'
