@@ -77,9 +77,9 @@ jobs:
       - run: yarn lint
 
   build:
-    if: ${{ needs.setup.outputs.src-changed == 'true' }}
+    if: ${{ github.ref == 'refs/heads/main' ||  needs.setup.outputs.src-changed == 'true' }}
     name: Build
-    needs: setup
+    needs: [setup, lint]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
@@ -110,7 +110,7 @@ jobs:
 
   test:
     name: Test
-    needs: setup
+    needs: [setup, lint]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
@@ -134,7 +134,7 @@ jobs:
       DRY_RUN: ${{ github.ref_name != github.event.repository.default_branch }}
       FORCE_COLOR: true
     name: Release
-    needs: [setup, lint, test, build]
+    needs: [setup, test, build]
     outputs:
       commit: ${{ steps.merge.outputs.commit }}
       version: ${{ steps.semantic-release.outputs.version }}
