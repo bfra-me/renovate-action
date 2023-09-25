@@ -20,20 +20,37 @@
   This action runs a self-hosted Renovate bot to keep your dependencies up-to-date.
 </p>
 
-### Reusable Workflow
+### Usage
 
-To reuse the workflow from this repository, add it to your GitHub Actions workflow:
+Include the following workflow in your repository:
 
 ```yaml
-- name: Renovate
-  uses: bfra-me/renovate-config/.github/workflows/renovate.yaml@v1.24.0
-  with:
-    dry_run: false
-    renovate_git_author: 'fro-bot[bot] <109017866+fro-bot[bot]@users.noreply.github.com>'
-    renovate_username: 'fro-bot[bot]'
-  secrets:
-    APPLICATION_ID: ${{ secrets.APPLICATION_ID }}
-    APPLICATION_PRIVATE_KEY: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+# .github/workflows/renovate.yaml
+---
+name: Renovate
+
+'on':
+  push:
+    branches:
+      - main
+      # Remove this filter if Renovate is configured to automerge via PR
+      - 'renovate/**'
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *' # Run every 6 hours
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: bfra-me/renovate-action@v2.0.0
+        with:
+          dry_run: ${{ github.event_name == 'pull_request' }}
+          renovate_app_id: ${{ secrets.APPLICATION_ID }}
+          renovate_app_pem: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          renovate_app_slug: 'fro-bot'
 ```
 
 ### License
