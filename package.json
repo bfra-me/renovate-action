@@ -1,7 +1,7 @@
 {
   "name": "@bfra.me/renovate-action",
   "packageManager": "yarn@3.6.3",
-  "version": "2.1.9",
+  "version": "2.1.10",
   "private": true,
   "description": "GitHub Action for Self-Hosted Renovate",
   "main": "dist/index.js",
