@@ -9,7 +9,7 @@
     <img alt="GitHub Release" src="https://img.shields.io/github/v/release/bfra-me/renovate-action?sort=semver&style=for-the-badge&logo=github&label=release">
   </a>
   <a href="https://github.com/renovatebot/renovate/releases/tag/36.107.2" title="Renovate release">
-    <img alt="Renovate" src="https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbfra-me%2Frenovate-config%2Fmain%2F.github%2Fworkflows%2Frenovate.yaml&query=%24.env.RENOVATE_VERSION&style=for-the-badge&logo=renovatebot&label=renovate&color=377D9D">
+    <img alt="Renovate" src="https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbfra-me%2Frenovate-action%2Fmain%2Faction.yaml&query=%24.runs.steps.0.env.RENOVATE_VERSION&style=for-the-badge&logo=renovatebot&label=renovate&color=377D9D">
   </a>
   <a href="https://github.com/bfra-me/renovate-action/actions?query=workflow%3Aci" title="Search GitHub Actions for CI workflow runs" >
     <img alt="GitHub Workflow CI Status" src="https://img.shields.io/github/actions/workflow/status/bfra-me/renovate-action/ci.yaml?branch=main&style=for-the-badge&logo=github%20actions&logoColor=white&label=ci">
