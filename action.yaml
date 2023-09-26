@@ -109,7 +109,7 @@ runs:
           log-level=${{ env.log_level }}
           print-config=${{ env.print_config }}
           renovate-git-author-email=${{ env.renovate_git_author_email }}
-          renovate-git-author=${{ format('{0}[bot] <{1}>', inputs.renovate_app_slug, env.renovate_git_author_email) }}
+          renovate-git-author=${{ format('"{0}[bot]" <{1}>', inputs.renovate_app_slug, env.renovate_git_author_email) }}
           renovate-username=${{ format('{0}[bot]', inputs.renovate_app_slug) }}
           renovate-version=$(echo "${{ env.RENOVATE_VERSION }}")
           repositories=${{ !fromJSON(env.autodiscover) && format('["{0}"]', github.repository) || '' }}
@@ -177,7 +177,8 @@ runs:
             "bot@renovateapp.com",
             "29139614+renovate[bot]@users.noreply.github.com",
             "support@github.com",
-            "261136+bfra-me@users.noreply.github.com"
+            "261136+bfra-me@users.noreply.github.com",
+            "${{ steps.configure.outputs.renovate-git-author-email }}"
           ]
         RENOVATE_HOST_RULES: |-
           [
