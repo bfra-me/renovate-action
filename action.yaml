@@ -109,7 +109,7 @@ runs:
           log-level=${{ env.log_level }}
           print-config=${{ env.print_config }}
           renovate-git-author-email=${{ env.renovate_git_author_email }}
-          renovate-git-author=${{ format('{0} <{1}>', inputs.renovate_app_slug, env.renovate_git_author_email) }}
+          renovate-git-author=${{ format('{0}[bot] <{1}>', inputs.renovate_app_slug, env.renovate_git_author_email) }}
           renovate-username=${{ format('{0}[bot]', inputs.renovate_app_slug) }}
           renovate-version=$(echo "${{ env.RENOVATE_VERSION }}")
           repositories=${{ !fromJSON(env.autodiscover) && format('["{0}"]', github.repository) || '' }}
