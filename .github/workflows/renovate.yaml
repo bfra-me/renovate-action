@@ -1,5 +1,5 @@
 ---
-# Renovate this repository if this workflow file or the Renovate configuration file is changed.
+# Renovate this repository if Renovate-specific tasks are checked or if dispatched.
 name: Renovate
 
 'on':
