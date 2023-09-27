@@ -72,7 +72,7 @@ runs:
             ],
             description: [
               'Use the global config preset for the @bfra-me organization.',
-              '_See the [renovate workflow](https://github.com/bfra-me/renovate-config/blob/main/.github/workflows/renovate.yaml) for details._',
+              '_See the [self-hosted Renovate action](https://github.com/bfra-me/renovate-action/blob/main/action.yaml) for details._',
             ],
             onboardingConfig: {
               '$schema': 'https://docs.renovatebot.com/renovate-schema.json',
@@ -114,7 +114,7 @@ runs:
           renovate-version=$(echo "${{ env.RENOVATE_VERSION }}")
           repositories=${{ !fromJSON(env.autodiscover) && format('["{0}"]', github.repository) || '' }}
         EOF
-      shell: 'bash -Eeuxo pipefail {0}'
+      shell: 'bash -Eeuo pipefail {0}'
 
     - name: Get Workflow Token
       id: get_workflow_token
@@ -138,7 +138,7 @@ runs:
       if: steps.configure.outputs.enable-cache == 'true'
       run: |
         echo "RENOVATE_CACHE_DIR=${RENOVATE_CACHE_DIR:-/tmp/renovate/cache}" >> $GITHUB_ENV
-      shell: 'bash -Eeuxo pipefail {0}'
+      shell: 'bash -Eeuo pipefail {0}'
     - id: renovate-cache
       name: Cache Renovate
       if: steps.configure.outputs.enable-cache == 'true'
@@ -156,7 +156,7 @@ runs:
       continue-on-error: true
       run: >
         [ -d /tmp/renovate ] && sudo chown -R 1000 /tmp/renovate || true
-      shell: 'bash -Eeuxo pipefail {0}'
+      shell: 'bash -Eeuo pipefail {0}'
 
     - name: Renovate ${{ steps.configure.outputs.renovate-version }}
       uses: renovatebot/github-action@3cef36a9aba515d8726b491905b3bc766832e221 # v39.0.5
@@ -178,6 +178,7 @@ runs:
             "29139614+renovate[bot]@users.noreply.github.com",
             "support@github.com",
             "261136+bfra-me@users.noreply.github.com",
+            "***+bfra-me[bot]@users.noreply.github.com",
             "${{ steps.configure.outputs.renovate-git-author-email }}"
           ]
         RENOVATE_HOST_RULES: |-
@@ -203,5 +204,5 @@ runs:
       continue-on-error: true
       run: >
         [ -d /tmp/renovate ] && sudo chown -R $(whoami) /tmp/renovate
-      shell: 'bash -Eeuxo pipefail {0}'
+      shell: 'bash -Eeuo pipefail {0}'
   using: composite
