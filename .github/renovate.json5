@@ -1,6 +1,6 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
-  extends: ['github>bfra-me/renovate-config#v1.25.0', 'github>bfra-me/renovate-config:automerge/prForCI#v1.25.0'],
+  extends: ['github>bfra-me/renovate-config#v2.0.0', 'github>bfra-me/renovate-config:automerge/prForCI#v2.0.0'],
   customManagers: [
     {
       customType: 'regex',
@@ -32,10 +32,6 @@
     {
       matchFileNames: ['.github/workflows/**'],
       semanticCommitType: 'ci',
-    },
-    {
-      matchPackageNames: ['bfra-me/renovate-action'],
-      semanticCommitType: 'chore',
     },
   ],
   postUpgradeTasks: {
