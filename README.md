@@ -47,7 +47,7 @@ jobs:
     name: Renovate
     runs-on: ubuntu-latest
     steps:
-      - uses: bfra-me/renovate-action@v2.1.22
+      - uses: bfra-me/renovate-action@v2.1.23
         with:
           dry_run: ${{ github.event_name == 'pull_request' }}
           renovate_app_id: ${{ secrets.APPLICATION_ID }}
