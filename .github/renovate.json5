@@ -5,9 +5,10 @@
     {
       customType: 'regex',
       datasourceTemplate: 'docker',
-      depNameTemplate: 'ghcr.io/renovatebot/renovate',
+      description: 'Update references to Renovate releases in README.md',
       fileMatch: ['^README\\.md$'],
-      matchStrings: ['https://github\\.com/renovatebot/renovate/releases/tag/(?<currentValue>[0-9\\.]+)'],
+      matchStrings: ['https://github\\.com/(?<depName>renovatebot/renovate)/releases/tag/(?<currentValue>[0-9\\.]+)'],
+      versioningTemplate: 'docker',
     },
   ],
   packageRules: [
