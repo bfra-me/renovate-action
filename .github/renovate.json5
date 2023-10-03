@@ -35,6 +35,10 @@
       matchFileNames: ['.github/workflows/**'],
       semanticCommitType: 'ci',
     },
+    {
+      matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate'],
+      semanticCommitType: 'chore',
+    },
   ],
   postUpgradeTasks: {
     commands: ['yarn install --immutable', 'yarn run format', 'yarn run build'],
