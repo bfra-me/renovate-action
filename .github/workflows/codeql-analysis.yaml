@@ -9,6 +9,9 @@ name: CodeQL
   schedule:
     - cron: '31 7 * * 3' # Every Wednesday at 7:31am UTC
 
+permissions:
+  contents: read
+
 jobs:
   analyze:
     name: Analyze
@@ -25,6 +28,11 @@ jobs:
         language: ['javascript']
 
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@1b05615854632b887b69ae1be8cbefe72d3ae423 # v2.6.0
+        with:
+          egress-policy: audit
+
       - name: Checkout repository
         uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
 
