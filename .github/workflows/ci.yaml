@@ -34,7 +34,7 @@ jobs:
 
       - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - env:
-          NODE_VERSION: 18.18.1 # renovate: datasource=node depName=node
+          NODE_VERSION: 18.18.2 # renovate: datasource=node depName=node
         id: set-node-version
         uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
         with:
