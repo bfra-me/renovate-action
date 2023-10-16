@@ -159,7 +159,7 @@ runs:
       shell: 'bash -Eeuo pipefail {0}'
 
     - name: Renovate ${{ steps.configure.outputs.renovate-version }}
-      uses: renovatebot/github-action@3cef36a9aba515d8726b491905b3bc766832e221 # v39.0.5
+      uses: renovatebot/github-action@0dbf03d3f50da30b8e523f51b628d2743c4934dc # v39.0.6
       env:
         FORCE_COLOR: '3'
         LOG_LEVEL: ${{ steps.configure.outputs.log-level }}
