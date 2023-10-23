@@ -41,7 +41,7 @@
     },
   ],
   postUpgradeTasks: {
-    commands: ['yarn install --immutable', 'yarn run format', 'yarn run build'],
+    commands: ['yarn install', 'yarn run format', 'yarn run build'],
     executionMode: 'branch',
   },
 }
