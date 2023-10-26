@@ -450,7 +450,7 @@ __metadata:
     "@vercel/ncc": "npm:0.38.1"
     conventional-changelog-conventionalcommits: "npm:7.0.2"
     eslint: "npm:8.52.0"
-    eslint-plugin-jest: "npm:27.4.3"
+    eslint-plugin-jest: "npm:27.5.0"
     jest: "npm:29.7.0"
     js-yaml: "npm:4.1.0"
     prettier: "npm:3.0.3"
@@ -3043,9 +3043,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:27.4.3":
-  version: 27.4.3
-  resolution: "eslint-plugin-jest@npm:27.4.3"
+"eslint-plugin-jest@npm:27.5.0":
+  version: 27.5.0
+  resolution: "eslint-plugin-jest@npm:27.5.0"
   dependencies:
     "@typescript-eslint/utils": "npm:^5.10.0"
   peerDependencies:
@@ -3057,7 +3057,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: 289bda4156ce791085ae0cbde2df1cf556567a7a2493240ba71486a3f630c46dd6f5a890afc850c1f8651b99fc86997556be78766b0d02a40d49e86820e07f75
+  checksum: c99eb192a84bb396b7ad3c9e4d2db37afe523e2ca2e71f6b8fff300924013f5d714eddadc88412be8887fc19859f417607840e4beb3ba670d397b78851e2296d
   languageName: node
   linkType: hard
 
