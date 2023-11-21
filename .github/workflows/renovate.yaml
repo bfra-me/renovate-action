@@ -61,7 +61,7 @@ jobs:
           egress-policy: audit
 
       - name: Renovate
-        uses: bfra-me/renovate-action@8ebdb09ad98914a528479f4bd2f0ea3e966a42f6 # v2.1.31
+        uses: bfra-me/renovate-action@ea82af9a8bbfa4e747d78e949a5ff1362a4d10d7 # v2.1.32
 
         with:
           print_config: ${{ inputs.print_config || 'false' }}
