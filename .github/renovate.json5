@@ -36,6 +36,8 @@
       semanticCommitType: 'ci',
     },
     {
+      extends: ['schedule:daily'],
+      groupName: 'Renovate',
       matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate'],
       semanticCommitType: 'chore',
     },
