@@ -1,6 +1,6 @@
 * text=auto eol=lf
 
 .yarn/plugins/**/* binary linguist-vendored
-.yarn/releases/* biunary linguist-vendored
+.yarn/releases/* binary linguist-vendored
 
 dist/** -diff linguist-generated=true
