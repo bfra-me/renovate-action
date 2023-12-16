@@ -1,6 +1,6 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
-  extends: ['github>bfra-me/renovate-config#v2.2.3', 'github>bfra-me/renovate-config:automerge/prForCI#v2.2.3'],
+  extends: ['github>bfra-me/renovate-config#v2.2.4', 'github>bfra-me/renovate-config:automerge/prForCI#v2.2.4'],
   customManagers: [
     {
       customType: 'regex',
