@@ -1,6 +1,6 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
-  extends: ['github>bfra-me/renovate-config#v2.3.2', 'github>bfra-me/renovate-config:automerge/prForCI#v2.3.2'],
+  extends: [':prImmediately', 'github>bfra-me/renovate-config#v2.3.6'],
   customManagers: [
     {
       customType: 'regex',
@@ -13,6 +13,10 @@
     },
   ],
   packageRules: [
+    {
+      matchFileNames: ['.github/workflows/**'],
+      semanticCommitType: 'ci',
+    },
     {
       matchDatasources: ['docker'],
       semanticCommitType: 'build',
@@ -30,10 +34,6 @@
       ],
       matchPackagePrefixes: ['@semantic-release/'],
       semanticCommitType: 'build',
-    },
-    {
-      matchFileNames: ['.github/workflows/**'],
-      semanticCommitType: 'ci',
     },
     {
       extends: ['schedule:daily'],
