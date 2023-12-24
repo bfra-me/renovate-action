@@ -3,11 +3,15 @@ name: CodeQL
 
 'on':
   pull_request:
-    branches: [main]
+    types: [opened, synchronize]
   push:
-    branches: [main]
+    branches: [main, 'renovate/**']
   schedule:
     - cron: '31 7 * * 3' # Every Wednesday at 7:31am UTC
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
