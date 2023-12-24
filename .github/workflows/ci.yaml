@@ -3,12 +3,13 @@ name: CI
 
 'on':
   pull_request:
+    types: [opened, synchronize]
   push:
-    branches: [main]
+    branches: [main, 'renovate/**']
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
   cancel-in-progress: true
 
 defaults:
@@ -19,10 +20,10 @@ jobs:
   setup:
     name: Setup
     outputs:
-      dist-changed: ${{ steps.filter.outputs.dist-changed }}
+      dist-changed: ${{ contains(steps.filter.outputs.changes, 'dist-changed') }}
       node-version: ${{ steps.set-node-version.outputs.node-version }}
-      should-lint: ${{ steps.filter.outputs.should-lint }}
-      src-changed: ${{ steps.filter.outputs.src-changed }}
+      should-lint: ${{ contains(steps.filter.outputs.changes, 'should-lint') }}
+      src-changed: ${{ contains(steps.filter.outputs.changes, 'src-changed') }}
     permissions:
       pull-requests: read
     runs-on: ubuntu-latest
