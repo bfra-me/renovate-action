@@ -36,7 +36,6 @@ jobs:
         with:
           filters: |
             changes:
-              - 'common-settings.yaml'
               - '.github/settings.yml'
               - '.github/workflows/update-repo-settings.yaml'
 
@@ -53,4 +52,4 @@ jobs:
           GITHUB_TOKEN: ${{ steps.get-workflow-access-token.outputs.token }}
         if: github.event_name != 'push' || steps.filter.outputs.changes == 'true'
         name: Update Repository Settings
-        uses: elstudio/actions-settings@2c3fbed35fa2692a1625b1360de608906fc5c103 # v3-beta
+        uses: elstudio/actions-settings@v3-beta
