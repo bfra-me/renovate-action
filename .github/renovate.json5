@@ -22,10 +22,6 @@
       semanticCommitType: 'build',
     },
     {
-      matchDepTypes: ['dependencies'],
-      semanticCommitType: 'build',
-    },
-    {
       matchPackageNames: [
         '@vercel/ncc',
         'conventional-changelog-conventionalcommits',
@@ -39,7 +35,6 @@
       extends: ['schedule:daily'],
       groupName: 'Renovate',
       matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate'],
-      semanticCommitType: 'chore',
     },
   ],
   postUpgradeTasks: {
