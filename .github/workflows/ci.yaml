@@ -33,7 +33,7 @@ jobs:
         uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
         with:
           cache: yarn
-          node-version: '.node-version'
+          node-version-file: '.node-version'
       - run: yarn install --immutable
       - id: filter
         uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50 # v2.11.1
