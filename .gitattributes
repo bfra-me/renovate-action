@@ -1,6 +1,8 @@
-* text=auto eol=lf
+* text=auto
 
 .yarn/plugins/**/* binary linguist-vendored
 .yarn/releases/* binary linguist-vendored
 
 dist/** -diff linguist-generated=true
+
+*.json text linguist-language=JSON-with-comments
