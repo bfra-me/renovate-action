@@ -14,10 +14,6 @@
   ],
   packageRules: [
     {
-      matchFileNames: ['.github/workflows/**'],
-      semanticCommitType: 'ci',
-    },
-    {
       matchDatasources: ['docker'],
       semanticCommitType: 'build',
     },
@@ -38,7 +34,12 @@
     },
   ],
   postUpgradeTasks: {
-    commands: ['yarn install', 'yarn run format', 'yarn run build'],
+    commands: [
+      'corepack enable',
+      'pnpm install --frozen-lockfile --ignore-scripts',
+      'git checkout -- .npmrc',
+      'pnpm run format',
+    ],
     executionMode: 'branch',
   },
 }
