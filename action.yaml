@@ -181,6 +181,7 @@ runs:
             "261136+bfra-me@users.noreply.github.com",
             "118100583+bfra-me[bot]@users.noreply.github.com",
             "137683033+mrbro-bot[bot]@users.noreply.github.com",
+            "109017866+fro-bot[bot]@users.noreply.github.com",
             "${{ steps.configure.outputs.renovate-git-author-email }}"
           ]
         RENOVATE_HOST_RULES: |-
