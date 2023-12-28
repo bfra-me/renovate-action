@@ -1,6 +1,7 @@
 ---
 arrowParens: avoid
 bracketSpacing: false
+jsxSingleQuote: true
 overrides:
   - files:
       - '.vscode/**/*.json'
