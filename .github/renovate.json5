@@ -35,7 +35,7 @@
   ],
   postUpgradeTasks: {
     commands: [
-      'corepack enable',
+      'npm install -g pnpm@8',
       'pnpm install --frozen-lockfile --ignore-scripts',
       'git checkout -- .npmrc',
       'pnpm run format',
