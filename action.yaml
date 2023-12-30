@@ -190,6 +190,10 @@ runs:
               "dnsCache": true
             }
           ]
+        RENOVATE_MIGRATE_PRESETS: |-
+          {
+            'github>bfra-me/renovate-config:automerge/enabled': 'github>bfra-me/renovate-config:automerge(enable)'
+          }
         RENOVATE_PLATFORM: github
         RENOVATE_PLATFORM_COMMIT: 'true'
         RENOVATE_PRINT_CONFIG: ${{ steps.configure.outputs.print-config }}
