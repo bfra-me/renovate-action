@@ -9,36 +9,8 @@ name: Update Repo Settings
     - cron: '51 8 * * *' # 8:51am UTC every day
   workflow_dispatch:
 
-concurrency:
-  cancel-in-progress: false
-  group: ${{ github.workflow }}-${{ github.ref }}
-
-permissions:
-  contents: read
-
 jobs:
-  check-workflow-event:
-    if: github.event_name == 'push'
-    name: Check Workflow Event
-    outputs:
-      changes: ${{ steps.filter.outputs.changes }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - id: filter
-        if: github.event_name == 'push'
-        name: Filter Changed Files
-        uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50 # v2.11.1
-        with:
-          filters: |
-            changes:
-              - '.github/settings.yml'
-              - '.github/workflows/update-repo-settings.yaml'
-
   update-repo-settings:
-    if: github.event_name != 'push' || needs.check-workflow-event.outputs.changes == 'true'
     name: Update Repo Settings
-    needs: check-workflow-event
     secrets: inherit
     uses: bfra-me/.github/.github/workflows/update-repo-settings.yaml@0f87da9c405855396974b3b5e21530d35df954ef # v1.1.0
