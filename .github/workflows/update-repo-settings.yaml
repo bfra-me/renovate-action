@@ -1,6 +1,6 @@
 # Update repository settings to match the definitions in .github/settings.yml.
 ---
-name: Update Repository Settings
+name: Update Repo Settings
 
 'on':
   push:
@@ -9,21 +9,21 @@ name: Update Repository Settings
     - cron: '51 8 * * *' # 8:51am UTC every day
   workflow_dispatch:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
-  update-repo-settings:
-    name: Update Repository Settings
+  check-workflow-event:
+    if: github.event_name == 'push'
+    name: Check Workflow Event
+    outputs:
+      changes: ${{ steps.filter.outputs.changes }}
     runs-on: ubuntu-latest
     steps:
-      - if: github.event_name == 'push'
-        name: Checkout Repository
+      - name: Checkout Repository
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-
       - id: filter
         if: github.event_name == 'push'
         name: Filter Changed Files
@@ -34,17 +34,9 @@ jobs:
               - '.github/settings.yml'
               - '.github/workflows/update-repo-settings.yaml'
 
-      - id: get-workflow-access-token
-        if: github.event_name != 'push' || steps.filter.outputs.changes == 'true'
-        uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
-        name: Get Workflow Access Token
-        with:
-          application_id: ${{ secrets.APPLICATION_ID }}
-          application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
-          permissions: 'administration:write, contents:read, issues:write'
-
-      - env:
-          GITHUB_TOKEN: ${{ steps.get-workflow-access-token.outputs.token }}
-        if: github.event_name != 'push' || steps.filter.outputs.changes == 'true'
-        name: Update Repository Settings
-        uses: elstudio/actions-settings@v3-beta
+  update-repo-settings:
+    if: github.event_name != 'push' || needs.check-workflow-event.outputs.changes == 'true'
+    name: Update Repo Settings
+    needs: check-workflow-event
+    secrets: inherit
+    uses: bfra-me/.github/.github/workflows/update-repo-settings.yaml@v1
