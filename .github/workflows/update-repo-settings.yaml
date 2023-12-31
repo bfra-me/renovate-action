@@ -9,7 +9,9 @@ name: Update Repo Settings
     - cron: '51 8 * * *' # 8:51am UTC every day
   workflow_dispatch:
 
-concurrency: ${{ github.workflow }}-${{ github.ref }}
+concurrency:
+  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.ref }}
 
 permissions:
   contents: read
