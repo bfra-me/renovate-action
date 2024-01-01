@@ -171,7 +171,7 @@ runs:
         RENOVATE_CACHE_NPM_MINUTES: '30'
         RENOVATE_CONFIG: ${{ steps.configure.outputs.global-config }}
         RENOVATE_DEPENDENCY_DASHBOARD_FOOTER: '\n- [ ] <!-- manual job -->Check here to trigger a Renovate run on this repository\n'
-        RENOVATE_DRY_RUN: ${{ fromJSON(steps.configure.outputs.dry-run) && 'full' || '' }}
+        RENOVATE_DRY_RUN: ${{ fromJSON(steps.configure.outputs.dry-run) && 'extract' || '' }}
         RENOVATE_GIT_AUTHOR: ${{ steps.configure.outputs.renovate-git-author }}
         RENOVATE_GIT_IGNORED_AUTHORS: |-
           [
@@ -193,7 +193,7 @@ runs:
           ]
         RENOVATE_MIGRATE_PRESETS: |-
           {
-            'github>bfra-me/renovate-config:automerge/enabled': 'github>bfra-me/renovate-config:automerge(enable)'
+            'github>bfra-me/renovate-config:automerge/enabled': 'github>bfra-me/renovate-config:automerge/_enable'
           }
         RENOVATE_PLATFORM: github
         RENOVATE_PLATFORM_COMMIT: 'true'
