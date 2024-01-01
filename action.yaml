@@ -187,9 +187,7 @@ runs:
         RENOVATE_HOST_RULES: |-
           [
             {
-              "abortOnError": true
-            },
-            {
+              "abortOnError": true,
               "dnsCache": true
             }
           ]
