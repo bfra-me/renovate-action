@@ -187,6 +187,7 @@ runs:
         RENOVATE_HOST_RULES: |-
           [
             {
+              "abortIgnoreStatusCodes": [404],
               "abortOnError": true,
               "dnsCache": true
             }
