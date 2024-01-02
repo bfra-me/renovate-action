@@ -28,6 +28,7 @@
       semanticCommitType: 'build',
     },
     {
+      automergeType: 'pr',
       extends: ['schedule:daily'],
       groupName: 'Renovate',
       matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate'],
