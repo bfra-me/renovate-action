@@ -56,6 +56,7 @@ jobs:
             changes:
               - '.github/workflows/renovate.yaml'
               - '.github/renovate.json5'
+              - 'action.yaml'
       - if: github.event_name != 'push' || steps.filter.outputs.changes == 'true'
         name: Renovate
         uses: ./
