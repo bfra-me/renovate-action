@@ -19,7 +19,7 @@ name: Renovate
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -64,7 +64,7 @@ jobs:
           branch: ${{ github.ref != 'refs/heads/main' && github.ref_name || '' }}
           cache: >-
             ${{ contains('["push", "workflow_dispatch"]', github.event_name) && github.ref == 'refs/heads/main' || startsWith(github.ref_name, 'renovate/') }}
-          dry_run: ${{ github.event_name == 'push' && github.ref != 'refs/heads/main' }}
+          dry_run: ${{ github.event_name == 'push' && !contains('["main", "renovate/reconfigure"]', github.ref_name) }}
           print_config: ${{ inputs.print_config }}
           renovate_app_id: ${{ secrets.APPLICATION_ID }}
           renovate_app_pem: ${{ secrets.APPLICATION_PRIVATE_KEY }}
