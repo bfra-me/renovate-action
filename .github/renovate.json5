@@ -32,6 +32,7 @@
       extends: ['schedule:daily'],
       groupName: 'Renovate',
       matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate'],
+      prCreation: 'immediate',
     },
   ],
   postUpgradeTasks: {
