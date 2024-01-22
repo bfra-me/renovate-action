@@ -1,7 +1,7 @@
 {
   "name": "@bfra.me/renovate-action",
   "packageManager": "pnpm@8.14.1",
-  "version": "2.6.26",
+  "version": "2.6.27",
   "private": true,
   "description": "GitHub Action for Self-Hosted Renovate",
   "main": "dist/index.js",
