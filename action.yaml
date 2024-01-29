@@ -151,6 +151,7 @@ runs:
         path: ${{ env.RENOVATE_CACHE_DIR }}
         key: >-
           ${{ github.repository_owner }}-renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ github.sha }}
+        save-always: true
 
     - name: Workaround Renovate cache permissions
       if: steps.configure.outputs.enable-cache == 'true'
