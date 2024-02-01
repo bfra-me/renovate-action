@@ -77,7 +77,7 @@ runs:
             ],
             onboardingConfig: {
               '$schema': 'https://docs.renovatebot.com/renovate-schema.json',
-              extends: ['github>bfra-me/renovate-config#v2.3.7'],
+              extends: ['github>bfra-me/renovate-config#v2.6.6'],
             },
             onboardingConfigFileName: '.github/renovate.json5',
             onboardingPrTitle: 'feat(deps): configure Renovate',
