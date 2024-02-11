@@ -21,6 +21,7 @@
       matchPackageNames: [
         '@vercel/ncc',
         'conventional-changelog-conventionalcommits',
+        'renovatebot/github-action',
         'semantic-release',
         'typescript',
       ],
@@ -33,6 +34,11 @@
       groupName: 'Renovate',
       matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate'],
       prCreation: 'immediate',
+    },
+    {
+      extends: [':automergePr', ':prImmediately', 'schedule:daily'],
+      commitMessageTopic: '{{{depName}}}',
+      matchPackageNames: ['renovatebot/github-action'],
     },
   ],
   postUpgradeTasks: {
