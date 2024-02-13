@@ -23,4 +23,4 @@ jobs:
     secrets: inherit
     uses: bfra-me/.github/.github/workflows/renovate.yaml@v1.2.0
     with:
-      print_config: ${{ inputs.print_config }}
+      print_config: ${{ github.event.inputs.print_config }}
