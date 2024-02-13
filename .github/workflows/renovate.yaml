@@ -17,54 +17,10 @@ name: Renovate
         type: boolean
         default: false
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
-
-permissions:
-  contents: read
-
 jobs:
   renovate:
-    if: >-
-      (github.event_name != 'issues' && github.event_name != 'pull_request') ||
-      (
-        contains(join(github.event.*.body, ''), '- [x] <!-- approve-all-pending-prs -->') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- approve-branch=') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- approvePr-branch=') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- create-all-rate-limited-prs -->') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- manual job -->') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- other-branch=') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- rebase-all-open-prs -->') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- rebase-branch=') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- rebase-check -->') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- recreate-branch=') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- retry-branch=') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- unlimit-branch=') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- unschedule-branch=')
-      )
     name: Renovate
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - id: filter
-        if: github.event_name == 'push'
-        uses: dorny/paths-filter@0bc4621a3135347011ad047f9ecf449bf72ce2bd # v3.0.0
-        with:
-          filters: |
-            changes:
-              - '.github/workflows/renovate.yaml'
-              - '.github/renovate.json5'
-              - 'action.yaml'
-      - if: github.event_name != 'push' || steps.filter.outputs.changes == 'true'
-        name: Renovate
-        uses: ./
-        with:
-          branch: ${{ github.ref != 'refs/heads/main' && github.ref_name || '' }}
-          cache: >-
-            ${{ contains('["push", "workflow_dispatch"]', github.event_name) && github.ref == 'refs/heads/main' || startsWith(github.ref_name, 'renovate/') }}
-          dry_run: ${{ github.event_name == 'push' && !contains('["main", "renovate/reconfigure"]', github.ref_name) }}
-          print_config: ${{ inputs.print_config }}
-          renovate_app_id: ${{ secrets.APPLICATION_ID }}
-          renovate_app_pem: ${{ secrets.APPLICATION_PRIVATE_KEY }}
-          renovate_app_slug: ${{ github.repository_owner }}
+    secrets: inherit
+    uses: bfra-me/.github/.github/workflows/renovate.yaml@v1.2.0
+    with:
+      print_config: ${{ inputs.print_config || false }}
