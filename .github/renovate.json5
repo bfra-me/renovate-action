@@ -12,6 +12,7 @@
       versioningTemplate: 'docker',
     },
   ],
+  ignorePresets: ['github>bfra-me/renovate-config:group/github-actions'],
   packageRules: [
     {
       matchDatasources: ['docker'],
