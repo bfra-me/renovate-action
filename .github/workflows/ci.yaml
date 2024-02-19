@@ -76,7 +76,7 @@ jobs:
       - run: pnpm lint
 
   build:
-    if: ${{ github.event == 'push' || needs.setup.outputs.src-changed == 'true' }}
+    if: ${{ github.event_name == 'push' || needs.setup.outputs.src-changed == 'true' }}
     name: Build
     needs: [setup]
     runs-on: ubuntu-latest
