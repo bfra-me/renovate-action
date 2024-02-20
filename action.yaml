@@ -14,7 +14,7 @@ inputs:
   cache:
     description: Enable the Renovate cache.
     required: false
-    default: 'true'
+    default: 'false'
   dry_run:
     description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
     required: false
@@ -22,7 +22,7 @@ inputs:
   log_level:
     description: Set the log level.
     required: false
-    default: 'debug'
+    default: 'info'
   print_config:
     description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
     required: false
@@ -55,7 +55,7 @@ runs:
         dry_run: ${{ inputs.dry_run != '' && inputs.dry_run || 'false' }}
         # Check if this workflow was triggered from an organization account.
         is-org-account: ${{ github.event.organization && 'true' || 'false' }}
-        log_level: ${{ inputs.log_level != '' && inputs.log_level || 'debug' }}
+        log_level: ${{ inputs.log_level != '' && inputs.log_level || 'info' }}
         print_config: ${{ inputs.print_config != '' && inputs.print_config || 'false' }}
         renovate_git_author_email: ${{ format('{0}+{1}[bot]@users.noreply.github.com', inputs.renovate_app_id, inputs.renovate_app_slug) }}
         cache: ${{ inputs.cache == 'true' }}
@@ -67,7 +67,7 @@ runs:
               '^npm install -g (npm|pnpm)(?:@\\d+(?:\\.\\d+\\.\\d+)?)?$',
               '^(npx|pnpm|yarn) prettier(?:@\\d+(?:\\.\\d+\\.\\d+)?)?( --no-color)? --write \\.$',
               '^(pnpm|yarn) install( --frozen-lockfile)?( --ignore-scripts)?$',
-              '^(npm|pnpm|yarn) run (build|fix|format|update-snapshots)$',
+              '^(npm|pnpm|yarn) run (build(-release)?|fix|format|update-snapshots)$',
               '^yarn install( --immutable)?( --immutable-cache)?$',
               '^git checkout -- .npmrc$',
             ],
@@ -77,21 +77,11 @@ runs:
             ],
             onboardingConfig: {
               '$schema': 'https://docs.renovatebot.com/renovate-schema.json',
-              extends: ['github>bfra-me/renovate-config#v2.6.6'],
+              extends: ['github>bfra-me/renovate-config'],
             },
             onboardingConfigFileName: '.github/renovate.json5',
             onboardingPrTitle: 'feat(deps): configure Renovate',
             onboardingRebaseCheckbox: true,
-            packageRules: [
-              {
-                matchPackagePatterns: ['*'],
-                rangeStrategy: 'pin',
-              },
-              {
-                matchDepTypes: ['engines', 'peerDependencies'],
-                rangeStrategy: 'update-lockfile',
-              },
-            ],
           }
 
       # Use the contains function to convert the boolean input to a string and compare it to 'false'. This is
