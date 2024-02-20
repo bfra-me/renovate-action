@@ -3,6 +3,7 @@
   "packageManager": "pnpm@8.15.3",
   "version": "0.0.0-development",
   "private": true,
+  "type": "module",
   "description": "GitHub Action for Self-Hosted Renovate",
   "main": "dist/index.js",
   "scripts": {
