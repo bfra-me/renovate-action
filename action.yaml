@@ -77,21 +77,11 @@ runs:
             ],
             onboardingConfig: {
               '$schema': 'https://docs.renovatebot.com/renovate-schema.json',
-              extends: ['github>bfra-me/renovate-config#v2.6.6'],
+              extends: ['github>bfra-me/renovate-config'],
             },
             onboardingConfigFileName: '.github/renovate.json5',
             onboardingPrTitle: 'feat(deps): configure Renovate',
             onboardingRebaseCheckbox: true,
-            packageRules: [
-              {
-                matchPackagePatterns: ['*'],
-                rangeStrategy: 'pin',
-              },
-              {
-                matchDepTypes: ['engines', 'peerDependencies'],
-                rangeStrategy: 'update-lockfile',
-              },
-            ],
           }
 
       # Use the contains function to convert the boolean input to a string and compare it to 'false'. This is
