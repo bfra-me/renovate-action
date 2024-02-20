@@ -43,7 +43,6 @@ jobs:
           filters: |
             config: &config
               - .github/**
-              - jest.config.js
               - '**.json5?'
               - '**.md'
               - '**.yaml'
