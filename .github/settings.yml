@@ -4,7 +4,7 @@ _extends: .github:common-settings.yaml
 repository:
   name: renovate-action
   description: GitHub Action for Self-Hosted Renovate
-  topics: renovate, actions, github-action, composite, github-actions
+  topics: renovate, actions, github-action, composite, nodejs, typescript, github-actions
 
 teams:
   - name: actioneers

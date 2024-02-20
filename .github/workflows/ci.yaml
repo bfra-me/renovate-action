@@ -29,7 +29,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - run: corepack enable
+      - name: Enable corepack
+        run: corepack enable
       - id: set-node-version
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
@@ -65,7 +66,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - run: corepack enable
+      - name: Enable corepack
+        run: corepack enable
       - name: Setup Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
@@ -82,7 +84,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - run: corepack enable
+      - name: Enable corepack
+        run: corepack enable
       - name: Setup Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
@@ -91,7 +94,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Rebuild the dist/ directory
-        run: pnpm build
+        run: pnpm build-release
       - if: ${{ needs.setup.outputs.dist-changed == 'true' }}
         name: Compare the expected and actual dist/ directories
         run: |
@@ -114,7 +117,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - run: corepack enable
+      - name: Enable corepack
+        run: corepack enable
       - name: Setup Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
@@ -167,8 +171,11 @@ jobs:
         run: |
           git merge --no-ff -Xtheirs -m 'skip: merge (${{ github.sha }}) [skip release]' ${{ github.sha }}
           echo "commit=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-      - name: Setup pnpm
-        uses: pnpm/action-setup@a3252b78c470c02df07e9d59298aecedc3ccdd6d # v3.0.0
+      - if: env.DRY_RUN != 'true'
+        name: Push `${{ env.RELEASE_BRANCH }}` release branch
+        run: git push origin ${{ env.RELEASE_BRANCH }}:${{ env.RELEASE_BRANCH }}
+      - name: Enable corepack
+        run: corepack enable
       - name: Setup Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
@@ -177,8 +184,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - if: env.DRY_RUN != 'true'
-        name: Push `${{ env.RELEASE_BRANCH }}` release branch
-        run: git push origin ${{ env.RELEASE_BRANCH }}:${{ env.RELEASE_BRANCH }}
+        name: Build release
+        run: pnpm build-release
       - env:
           GIT_AUTHOR_EMAIL: '118100583+bfra-me[bot]@users.noreply.github.com'
           GIT_AUTHOR_NAME: 'bfra-me[bot]'

@@ -67,7 +67,7 @@ runs:
               '^npm install -g (npm|pnpm)(?:@\\d+(?:\\.\\d+\\.\\d+)?)?$',
               '^(npx|pnpm|yarn) prettier(?:@\\d+(?:\\.\\d+\\.\\d+)?)?( --no-color)? --write \\.$',
               '^(pnpm|yarn) install( --frozen-lockfile)?( --ignore-scripts)?$',
-              '^(npm|pnpm|yarn) run (build|fix|format|update-snapshots)$',
+              '^(npm|pnpm|yarn) run (build(-release)?|fix|format|update-snapshots)$',
               '^yarn install( --immutable)?( --immutable-cache)?$',
               '^git checkout -- .npmrc$',
             ],

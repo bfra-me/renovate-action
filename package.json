@@ -6,7 +6,8 @@
   "description": "GitHub Action for Self-Hosted Renovate",
   "main": "dist/index.js",
   "scripts": {
-    "build": "ncc build --license licenses.txt -o dist src/main.ts",
+    "build": "ncc build src/main.ts --license licenses.txt -o dist",
+    "build-release": "ncc build src/main.ts --license licenses.txt -o dist --minify --no-cache --no-source-map-register",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
@@ -21,7 +22,9 @@
     "actions",
     "github-action",
     "composite",
-    "renovate"
+    "renovate",
+    "nodejs",
+    "typescript"
   ],
   "author": "Marcus R. Brown <git@mrbro.dev>",
   "license": "MIT",
