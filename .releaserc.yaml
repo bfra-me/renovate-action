@@ -1,4 +1,4 @@
-branches: ['main', {name: 'v[0-9]+', prerelease: false}]
+branches: [{name: 'v[0-9]+', channel: '', range: ''}]
 
 plugins:
   - '@semantic-release/commit-analyzer'
