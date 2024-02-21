@@ -1,4 +1,6 @@
-branches: [{name: 'v[0-9]+', channel: ''}]
+branches:
+  - 'v[0-9]+'
+  - 'main'
 
 plugins:
   - '@semantic-release/commit-analyzer'
