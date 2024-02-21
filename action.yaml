@@ -150,6 +150,9 @@ runs:
         [ -d /tmp/renovate ] && sudo chown -R 1000 /tmp/renovate || true
       shell: 'bash -Eeuo pipefail {0}'
 
+    - name: Checkout
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
     - name: Renovate ${{ steps.configure.outputs.renovate-version }}
       uses: renovatebot/github-action@8f6b0f762415909f60b0efb1817c4dee029ea806 # v40.1.1
       env:
@@ -196,6 +199,8 @@ runs:
         RENOVATE_USERNAME: ${{ steps.configure.outputs.renovate-username }}
       with:
         env-regex: '^(?:CI|FORCE_COLOR|GITHUB_(?:(?!PATH|ENV).)+|(?:HTTPS?|NO)_PROXY|(?:https?|no)_proxy|LOG_LEVEL|NODE_OPTIONS|RENOVATE_\w+|RUNNER_\w+)$'
+        docker-cmd-file: 'docker/entrypoint.sh'
+        docker-user: root
         mount-docker-socket: true
         renovate-version: ${{ steps.configure.outputs.renovate-version }}
         token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
@@ -204,6 +209,6 @@ runs:
       if: always() && steps.configure.outputs.enable-cache == 'true'
       continue-on-error: true
       run: >
-        [ -d /tmp/renovate ] && sudo chown -R $(whoami) /tmp/renovate
+        ls /tmp/renovate && [ -d /tmp/renovate ] && sudo chown -R $(whoami) /tmp/renovate
       shell: 'bash -Eeuo pipefail {0}'
   using: composite
