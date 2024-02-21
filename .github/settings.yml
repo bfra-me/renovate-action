@@ -25,7 +25,7 @@ branches:
         contexts: ['Build', 'Lint', 'Release', 'Test', 'Setup', 'Renovate', 'Analyze']
       restrictions: null
 
-  - name: 'v?'
+  - name: 'release'
     protection:
       enforce_admins: true
       required_linear_history: false
