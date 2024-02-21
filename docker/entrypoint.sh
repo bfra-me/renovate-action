@@ -1,9 +1,9 @@
 #!/bin/bash
 
-set -euo pipefail
+set -Eeuo pipefail
 
-# renovate: datasource=github-tags depName=mikefarah/yq
-export YQ_VERSION=v4
+# renovate: datasource=github-releases depName=mikefarah/yq
+export YQ_VERSION=v4.40.7
 
 apt update
 
