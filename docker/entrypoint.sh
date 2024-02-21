@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 # renovate: datasource=github-tags depName=mikefarah/yq
 export YQ_VERSION=v4
 
