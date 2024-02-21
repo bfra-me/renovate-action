@@ -5,11 +5,19 @@
     {
       customType: 'regex',
       datasourceTemplate: 'docker',
-      description: 'Update references to Renovate releases in README.md',
-      fileMatch: ['^README\\.md$'],
+      description: 'Update references to Renovate releases in README.md.',
+      fileMatch: ['^(?:README|readme)\\.md$'],
       matchStrings: ['https://github\\.com/renovatebot/(?<depName>renovate)/releases/tag/(?<currentValue>[0-9\\.]+)'],
       packageNameTemplate: 'ghcr.io/renovatebot/{{{depName}}}',
       versioningTemplate: 'docker',
+    },
+    {
+      description: 'Update _VERSION variables in shell scripts.',
+      fileMatch: ['\\.sh$'],
+      matchStrings: [
+        '# renovate: datasource=(?<datasource>[a-z-]+?) depName=(?<depName>.+?)(?: (?:packageName|lookupName)=(?<packageName>.+?))?(?: versioning=(?<versioning>[a-z-]+?))?\\s+?.+?_VERSION=(?<currentValue>.+?)\\s',
+      ],
+      versioningTemplate: '{{#if versioning}}{{versioning}}{{else}}semver{{/if}}',
     },
   ],
   ignorePresets: ['github>bfra-me/renovate-config:group/github-actions'],
