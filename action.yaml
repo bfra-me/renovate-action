@@ -75,9 +75,7 @@ runs:
               'Use the global config preset for the @bfra-me organization.',
               '_See the [self-hosted Renovate action](https://github.com/bfra-me/renovate-action/blob/main/action.yaml) for details._',
             ],
-            force: {
-              ${{ startsWith(github.repository, 'bfra-me/') && "{ description: 'Use internal presets for @bfra-me organization repositories.', extends: ['github>bfra-me/renovate-config:internal.json5']}" || '' }}
-            },
+            force: ${{ startsWith(github.repository, 'bfra-me/') && "{ description: 'Use internal presets for @bfra-me organization repositories.', extends: ['github>bfra-me/renovate-config:internal.json5'] }" || '{}' }},
             onboardingConfig: {
               '$schema': 'https://docs.renovatebot.com/renovate-schema.json',
               extends: ['github>bfra-me/renovate-config'],
