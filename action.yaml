@@ -75,6 +75,16 @@ runs:
               'Use the global config preset for the @bfra-me organization.',
               '_See the [self-hosted Renovate action](https://github.com/bfra-me/renovate-action/blob/main/action.yaml) for details._',
             ],
+            force: {
+              packageRules: [
+                  {
+                    description: 'Use internal presets for @bfra-me organization repositories.',
+                    extends: ['github>bfra-me/renovate-config:internal.json5'],
+                    matchRepositories: ['bfra-me/**'],
+                    platformAutomerge: true,
+                  },
+              ],
+            },
             onboardingConfig: {
               '$schema': 'https://docs.renovatebot.com/renovate-schema.json',
               extends: ['github>bfra-me/renovate-config'],
