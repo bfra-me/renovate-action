@@ -1,6 +1,6 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
-  extends: ['github>bfra-me/renovate-config#v2.11.0'],
+  extends: ['github>bfra-me/renovate-config#v3.0.0'],
   customManagers: [
     {
       customType: 'regex',
@@ -11,17 +11,7 @@
       packageNameTemplate: 'ghcr.io/renovatebot/{{{depName}}}',
       versioningTemplate: 'docker',
     },
-    {
-      customType: 'regex',
-      description: 'Update _VERSION variables in shell scripts.',
-      fileMatch: ['\\.sh$'],
-      matchStrings: [
-        '# renovate: datasource=(?<datasource>[a-z-]+?) depName=(?<depName>.+?)(?: (?:packageName|lookupName)=(?<packageName>.+?))?(?: versioning=(?<versioning>[a-z-]+?))?\\s+?.+?_VERSION=(?<currentValue>.+?)\\s',
-      ],
-      versioningTemplate: '{{#if versioning}}{{versioning}}{{else}}semver{{/if}}',
-    },
   ],
-  ignorePresets: ['github>bfra-me/renovate-config:group/github-actions'],
   packageRules: [
     {
       matchDatasources: ['docker'],
@@ -39,14 +29,11 @@
       semanticCommitType: 'build',
     },
     {
-      automergeType: 'pr',
-      extends: ['schedule:daily'],
-      groupName: 'Renovate',
+      extends: ['github>bfra-me/renovate-config:maintenance/automergeForCI', 'schedule:daily'],
       matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate'],
-      prCreation: 'immediate',
     },
     {
-      extends: [':automergePr', ':prImmediately', 'schedule:daily'],
+      extends: ['schedule:daily'],
       commitMessageTopic: '{{{depName}}}',
       matchPackageNames: ['renovatebot/github-action'],
     },
