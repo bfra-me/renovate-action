@@ -12,6 +12,7 @@
       versioningTemplate: 'docker',
     },
     {
+      customType: 'regex',
       description: 'Update _VERSION variables in shell scripts.',
       fileMatch: ['\\.sh$'],
       matchStrings: [
