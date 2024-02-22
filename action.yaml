@@ -76,14 +76,7 @@ runs:
               '_See the [self-hosted Renovate action](https://github.com/bfra-me/renovate-action/blob/main/action.yaml) for details._',
             ],
             force: {
-              packageRules: [
-                  {
-                    description: 'Use internal presets for @bfra-me organization repositories.',
-                    extends: ['github>bfra-me/renovate-config:internal.json5'],
-                    matchRepositories: ['bfra-me/**'],
-                    platformAutomerge: true,
-                  },
-              ],
+              ${{ startsWith(github.repository, 'bfra-me/') && "{ description: 'Use internal presets for @bfra-me organization repositories.', extends: ['github>bfra-me/renovate-config:internal.json5']}" || '' }}
             },
             onboardingConfig: {
               '$schema': 'https://docs.renovatebot.com/renovate-schema.json',
