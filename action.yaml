@@ -53,6 +53,7 @@ runs:
         RENOVATE_VERSION: 37.207.0 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate
         autodiscover: ${{ inputs.autodiscover != '' && inputs.autodiscover || 'false' }}
         dry_run: ${{ inputs.dry_run != '' && inputs.dry_run || 'false' }}
+        force_config: ${{ startsWith(github.repository, 'bfra-me/') && '{}' || '{}' }}
         # Check if this workflow was triggered from an organization account.
         is-org-account: ${{ github.event.organization && 'true' || 'false' }}
         log_level: ${{ inputs.log_level != '' && inputs.log_level || 'info' }}
@@ -75,7 +76,7 @@ runs:
               'Use the global config preset for the @bfra-me organization.',
               '_See the [self-hosted Renovate action](https://github.com/bfra-me/renovate-action/blob/main/action.yaml) for details._',
             ],
-            force: ${{ startsWith(github.repository, 'bfra-me/') && "{ description: 'Use internal presets for @bfra-me organization repositories.', extends: ['github>bfra-me/renovate-config:internal.json5'] }" || '{}' }},
+            force: ${{ env.force_config }},
             onboardingConfig: {
               '$schema': 'https://docs.renovatebot.com/renovate-schema.json',
               extends: ['github>bfra-me/renovate-config'],
