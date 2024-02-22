@@ -196,7 +196,7 @@ runs:
         RENOVATE_USERNAME: ${{ steps.configure.outputs.renovate-username }}
       with:
         env-regex: '^(?:CI|FORCE_COLOR|GITHUB_(?:(?!PATH|ENV).)+|(?:HTTPS?|NO)_PROXY|(?:https?|no)_proxy|LOG_LEVEL|NODE_OPTIONS|RENOVATE_\w+|RUNNER_\w+)$'
-        docker-cmd-file: '${GITHUB_ACTION_PATH}/docker/entrypoint.sh'
+        docker-cmd-file: '${{ env.GITHUB_ACTION_PATH }}/docker/entrypoint.sh'
         docker-user: root
         mount-docker-socket: true
         renovate-version: ${{ steps.configure.outputs.renovate-version }}
