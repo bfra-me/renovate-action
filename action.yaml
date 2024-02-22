@@ -53,7 +53,7 @@ runs:
         RENOVATE_VERSION: 37.207.0 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate
         autodiscover: ${{ inputs.autodiscover != '' && inputs.autodiscover || 'false' }}
         dry_run: ${{ inputs.dry_run != '' && inputs.dry_run || 'false' }}
-        force_config: ${{ startsWith(github.repository, 'bfra-me/') && '{}' || '{}' }}
+        force_config: ${{ startsWith(github.repository, 'bfra-me/') && '{"description":"Use internal presets for @bfra-me organization repositories.","extends":["github>bfra-me/renovate-config:internal.json5"]}' || '{}' }}
         # Check if this workflow was triggered from an organization account.
         is-org-account: ${{ github.event.organization && 'true' || 'false' }}
         log_level: ${{ inputs.log_level != '' && inputs.log_level || 'info' }}
@@ -76,7 +76,6 @@ runs:
               'Use the global config preset for the @bfra-me organization.',
               '_See the [self-hosted Renovate action](https://github.com/bfra-me/renovate-action/blob/main/action.yaml) for details._',
             ],
-            force: ${{ env.force_config }},
             onboardingConfig: {
               '$schema': 'https://docs.renovatebot.com/renovate-schema.json',
               extends: ['github>bfra-me/renovate-config'],
@@ -97,6 +96,7 @@ runs:
           docker-image=ghcr.io/renovatebot/renovate:${{ env.RENOVATE_VERSION }}
           dry-run=${{ env.dry_run }}
           enable-cache=${{ env.cache }}
+          force-config=$(echo "${force_config}" | tr -d '\n')
           global-config=$(echo "${zzglobal_config}" | tr -d '\n')
           is-org-account=${{ env.is-org-account }}
           log-level=${{ env.log_level }}
@@ -165,6 +165,7 @@ runs:
         RENOVATE_CONFIG: ${{ steps.configure.outputs.global-config }}
         RENOVATE_DEPENDENCY_DASHBOARD_FOOTER: '\n- [ ] <!-- manual job -->Check here to trigger a Renovate run on this repository\n'
         RENOVATE_DRY_RUN: ${{ fromJSON(steps.configure.outputs.dry-run) && 'extract' || '' }}
+        RENOVATE_FORCE: ${{ steps.configure.outputs.force-config }}
         RENOVATE_GIT_AUTHOR: ${{ steps.configure.outputs.renovate-git-author }}
         RENOVATE_GIT_IGNORED_AUTHORS: |-
           [
