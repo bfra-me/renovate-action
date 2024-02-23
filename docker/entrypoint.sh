@@ -2,10 +2,6 @@
 
 set -Eeuo pipefail
 
-# TODO: Remove debugging
-env | sort
-[ -d /tmp/renovate ] && ls -al /tmp/renovate
-
 # renovate: datasource=github-releases depName=mikefarah/yq
 export YQ_VERSION=v4.41.1
 
