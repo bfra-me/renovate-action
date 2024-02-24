@@ -53,7 +53,6 @@ runs:
         RENOVATE_VERSION: 37.212.0 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate
         autodiscover: ${{ inputs.autodiscover != '' && inputs.autodiscover || 'false' }}
         dry_run: ${{ inputs.dry_run != '' && inputs.dry_run || 'false' }}
-        force_config: ${{ startsWith(github.repository, 'bfra-me/') && '{"description":"Use internal presets for @bfra-me organization repositories.","extends":["github>bfra-me/renovate-config:internal.json5"]}' || '{}' }}
         # Check if this workflow was triggered from an organization account.
         is-org-account: ${{ github.event.organization && 'true' || 'false' }}
         log_level: ${{ inputs.log_level != '' && inputs.log_level || 'info' }}
@@ -96,7 +95,6 @@ runs:
           docker-image=ghcr.io/renovatebot/renovate:${{ env.RENOVATE_VERSION }}
           dry-run=${{ env.dry_run }}
           enable-cache=${{ env.cache }}
-          force-config=$(echo "${force_config}" | tr -d '\n')
           global-config=$(echo "${zzglobal_config}" | tr -d '\n')
           is-org-account=${{ env.is-org-account }}
           log-level=${{ env.log_level }}
@@ -149,7 +147,7 @@ runs:
       if: steps.configure.outputs.enable-cache == 'true'
       continue-on-error: true
       run: >
-        [ -d /tmp/renovate ] && sudo chown -R 1000 /tmp/renovate || true
+        [ -d /tmp/renovate ] && ls -al /tmp/renovate && sudo chown -R 1000 /tmp/renovate || true
       shell: 'bash -Eeuo pipefail {0}'
 
     - name: Renovate ${{ steps.configure.outputs.renovate-version }}
@@ -165,7 +163,6 @@ runs:
         RENOVATE_CONFIG: ${{ steps.configure.outputs.global-config }}
         RENOVATE_DEPENDENCY_DASHBOARD_FOOTER: '\n- [ ] <!-- manual job -->Check here to trigger a Renovate run on this repository\n'
         RENOVATE_DRY_RUN: ${{ fromJSON(steps.configure.outputs.dry-run) && 'extract' || '' }}
-        RENOVATE_FORCE: ${{ steps.configure.outputs.force-config }}
         RENOVATE_GIT_AUTHOR: ${{ steps.configure.outputs.renovate-git-author }}
         RENOVATE_GIT_IGNORED_AUTHORS: |-
           [
@@ -209,6 +206,6 @@ runs:
       if: always() && steps.configure.outputs.enable-cache == 'true'
       continue-on-error: true
       run: >
-        ls /tmp/renovate && [ -d /tmp/renovate ] && sudo chown -R $(whoami) /tmp/renovate
+        ls -al /tmp/renovate && [ -d /tmp/renovate ] && sudo chown -R $(whoami) /tmp/renovate
       shell: 'bash -Eeuo pipefail {0}'
   using: composite
