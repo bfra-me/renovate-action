@@ -18,24 +18,37 @@
       semanticCommitType: 'build',
     },
     {
-      matchPackageNames: [
-        '@vercel/ncc',
-        'conventional-changelog-conventionalcommits',
-        'renovatebot/github-action',
-        'semantic-release',
-        'typescript',
-      ],
-      matchPackagePrefixes: ['@semantic-release/'],
+      matchPackageNames: ['@vercel/ncc', 'typescript'],
       semanticCommitType: 'build',
     },
     {
-      extends: ['github>bfra-me/renovate-config:automergeNonMajorUpdates.json5', 'schedule:daily'],
-      matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate'],
+      matchUpdateTypes: ['lockFileMaintenance'],
+      semanticCommitType: 'build',
     },
     {
+      matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate'],
+      extends: ['schedule:daily'],
+      automergeType: 'pr',
+      minor: {
+        semanticCommitType: 'feat',
+      },
+      patch: {
+        semanticCommitType: 'fix',
+      },
+      platformAutomerge: true,
+      prCreation: 'immediate',
+      rebaseWhen: 'conflicted',
+    },
+    {
+      matchPackageNames: ['renovatebot/github-action'],
       extends: ['schedule:daily'],
       commitMessageTopic: '{{{depName}}}',
-      matchPackageNames: ['renovatebot/github-action'],
+      minor: {
+        semanticCommitType: 'feat',
+      },
+      patch: {
+        semanticCommitType: 'fix',
+      },
     },
   ],
   postUpgradeTasks: {
