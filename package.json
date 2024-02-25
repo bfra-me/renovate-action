@@ -19,13 +19,14 @@
     "url": "git+https://github.com/bfra-me/renovate-action.git"
   },
   "keywords": [
-    "github-actions",
-    "actions",
+    "renovate",
+    "self-hosted",
+    "action",
     "github-action",
     "composite",
-    "renovate",
     "nodejs",
-    "typescript"
+    "typescript",
+    "github-actions"
   ],
   "author": "Marcus R. Brown <git@mrbro.dev>",
   "license": "MIT",
