@@ -103,7 +103,6 @@ runs:
           renovate-git-author=${{ format('{0}[bot] <{1}>', inputs.renovate_app_slug, env.renovate_git_author_email) }}
           renovate-username=${{ format('{0}[bot]', inputs.renovate_app_slug) }}
           renovate-version=$(echo "${{ env.RENOVATE_VERSION }}")
-          repositories=${{ !fromJSON(env.autodiscover) && format('["{0}"]', github.repository) || '' }}
         EOF
       shell: 'bash -Eeuo pipefail {0}'
 
@@ -155,7 +154,8 @@ runs:
       env:
         FORCE_COLOR: '3'
         LOG_LEVEL: ${{ steps.configure.outputs.log-level }}
-        RENOVATE_AUTODISCOVER: ${{ steps.configure.outputs.autodiscover }}
+        RENOVATE_AUTODISCOVER: 'true'
+        RENOVATE_AUTODISCOVER_FILTER: ${{ steps.configure.outputs.autodiscover == 'false' && github.repository || '' }}
         RENOVATE_BASE_BRANCHES: ${{ steps.configure.outputs.base-branches }}
         RENOVATE_USE_BASE_BRANCH_CONFIG: ${{ steps.configure.outputs.base-branches && 'merge' || 'none' }}
         RENOVATE_BRANCH_PREFIX_OLD: 'renovate-github/'
@@ -191,7 +191,6 @@ runs:
         RENOVATE_PLATFORM_COMMIT: 'true'
         RENOVATE_PRESET_CACHE_PERSISTENCE: ${{ steps.configure.outputs.enable-cache == 'true' }}
         RENOVATE_PRINT_CONFIG: ${{ steps.configure.outputs.print-config }}
-        RENOVATE_REPOSITORIES: ${{ steps.configure.outputs.repositories }}
         RENOVATE_REPOSITORY_CACHE: ${{ steps.configure.outputs.enable-cache == 'true' && 'enabled' || 'disabled' }}
         RENOVATE_USERNAME: ${{ steps.configure.outputs.renovate-username }}
       with:
