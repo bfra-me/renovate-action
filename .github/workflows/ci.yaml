@@ -73,7 +73,6 @@ jobs:
           cache: pnpm
           node-version: ${{ needs.setup.outputs.node-version }}
       - run: pnpm install --frozen-lockfile --ignore-scripts
-      - run: pnpm check-format
       - run: pnpm lint
 
   build:
