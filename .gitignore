@@ -93,3 +93,6 @@ typings/
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# TypeScript type declarations and maps under `dist/`
+dist/**/*.d.ts*
