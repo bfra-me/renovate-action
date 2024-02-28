@@ -129,8 +129,9 @@ runs:
       run: |
         echo "RENOVATE_CACHE_DIR=${RENOVATE_CACHE_DIR:-/tmp/renovate/cache}" >> $GITHUB_ENV
       shell: 'bash -Eeuo pipefail {0}'
-    - id: renovate-cache
-      name: Cache Renovate
+
+    - name: Cache Renovate
+      id: renovate-cache
       if: steps.configure.outputs.enable-cache == 'true'
       env:
         RENOVATE_CACHE_DIR: ${{ env.RENOVATE_CACHE_DIR }}
@@ -139,7 +140,7 @@ runs:
         enableCrossOsArchive: true
         path: ${{ env.RENOVATE_CACHE_DIR }}
         key: >-
-          ${{ github.repository_owner }}-renovate-cache-${{ steps.configure.outputs.renovate-version }}-${{ github.sha }}
+          ${{ github.repository_owner }}-renovate-cache-${{ steps.configure.outputs.renovate-version }}
         save-always: true
 
     - name: Workaround Renovate cache permissions
@@ -207,4 +208,14 @@ runs:
       run: >
         ls -al /tmp/renovate && [ -d /tmp/renovate ] && sudo chown -R $(whoami) /tmp/renovate
       shell: 'bash -Eeuo pipefail {0}'
+
+    - name: Save Renovate cache
+      if: always() && steps.renovate-cache.outputs.cache-hit == 'true'
+      env:
+        RENOVATE_CACHE_DIR: ${{ env.RENOVATE_CACHE_DIR }}
+      uses: actions/cache/save@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
+      with:
+        path: ${{ env.RENOVATE_CACHE_DIR }}
+        key: >-
+          ${{ github.repository_owner }}-renovate-cache-${{ steps.configure.outputs.renovate-version }}
   using: composite
