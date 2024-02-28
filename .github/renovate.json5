@@ -1,6 +1,6 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
-  extends: ['github>bfra-me/renovate-config#v3.4.1', 'github>bfra-me/renovate-config:internal.json5#v3.4.1'],
+  extends: ['github>bfra-me/renovate-config#v3.4.2', 'github>bfra-me/renovate-config:internal.json5#v3.4.2'],
   customManagers: [
     {
       customType: 'regex',
