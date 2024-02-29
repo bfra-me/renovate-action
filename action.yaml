@@ -83,15 +83,13 @@ runs:
             onboardingPrTitle: 'feat(deps): configure Renovate',
             onboardingRebaseCheckbox: true,
           }
-
-      # Use the contains function to convert the boolean input to a string and compare it to 'false'. This is
-      # required when the workflow is triggered from workflow_call because the github context is that of the workflow
-      # that called this workflow.
       run: |
         # Create outputs for this configuration
         sed 's/^[[:space:]]*//' <<EOF >> $GITHUB_OUTPUT
           autodiscover=${{ env.autodiscover }}
           base-branches=${{ inputs.branch && format('["{0}"]', inputs.branch) || '' }}
+          cache-dir=${RENOVATE_CACHE_DIR:-/tmp/renovate/cache}
+          cache-key=renovate-cache-v${{ env.RENOVATE_VERSION }}
           docker-image=ghcr.io/renovatebot/renovate:${{ env.RENOVATE_VERSION }}
           dry-run=${{ env.dry_run }}
           enable-cache=${{ env.cache }}
@@ -102,9 +100,9 @@ runs:
           renovate-git-author-email=${{ env.renovate_git_author_email }}
           renovate-git-author=${{ format('{0}[bot] <{1}>', inputs.renovate_app_slug, env.renovate_git_author_email) }}
           renovate-username=${{ format('{0}[bot]', inputs.renovate_app_slug) }}
-          renovate-version=$(echo "${{ env.RENOVATE_VERSION }}")
+          renovate-version=${{ env.RENOVATE_VERSION }}
         EOF
-      shell: 'bash -Eeuo pipefail {0}'
+      shell: 'bash -Eeuxo pipefail {0}'
 
     - name: Get Workflow Token
       id: get_workflow_token
@@ -124,31 +122,21 @@ runs:
           vulnerability_alerts:read,
           workflows:write
 
-    - name: Configure Renovate cache
-      if: steps.configure.outputs.enable-cache == 'true'
-      run: |
-        echo "RENOVATE_CACHE_DIR=${RENOVATE_CACHE_DIR:-/tmp/renovate/cache}" >> $GITHUB_ENV
-      shell: 'bash -Eeuo pipefail {0}'
-
-    - name: Cache Renovate
+    - name: Restore Renovate Cache
       id: renovate-cache
       if: steps.configure.outputs.enable-cache == 'true'
-      env:
-        RENOVATE_CACHE_DIR: ${{ env.RENOVATE_CACHE_DIR }}
-      uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
+      uses: actions/cache/restore@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
       with:
         enableCrossOsArchive: true
-        path: ${{ env.RENOVATE_CACHE_DIR }}
-        key: >-
-          ${{ github.repository_owner }}-renovate-cache-${{ steps.configure.outputs.renovate-version }}
-        save-always: true
+        key: ${{ steps.configure.outputs.cache-key }}
+        path: ${{ steps.configure.outputs.cache-dir }}
 
-    - name: Workaround Renovate cache permissions
+    - name: Prepare Renovate Cache
       if: steps.configure.outputs.enable-cache == 'true'
-      continue-on-error: true
-      run: >
-        [ -d /tmp/renovate ] && ls -al /tmp/renovate && sudo chown -R 1000 /tmp/renovate || true
-      shell: 'bash -Eeuo pipefail {0}'
+      run: |
+        [ -d /tmp/renovate ] &&
+          sudo chown -R runneradmin:root /tmp/renovate && ls -R ${{ steps.configure.outputs.cache-dir }} || true
+      shell: 'bash -Eeuxo pipefail {0}'
 
     - name: Renovate ${{ steps.configure.outputs.renovate-version }}
       uses: renovatebot/github-action@a6e57359b32af9a54d5b3b6603011f50629a0a05 # v40.1.2
@@ -160,7 +148,8 @@ runs:
         RENOVATE_BASE_BRANCHES: ${{ steps.configure.outputs.base-branches }}
         RENOVATE_USE_BASE_BRANCH_CONFIG: ${{ steps.configure.outputs.base-branches && 'merge' || 'none' }}
         RENOVATE_BRANCH_PREFIX_OLD: 'renovate-github/'
-        RENOVATE_CACHE_NPM_MINUTES: '30'
+        RENOVATE_CACHE_DIR: ${{ steps.configure.outputs.cache-dir }}
+        RENOVATE_CACHE_NPM_MINUTES: '60'
         RENOVATE_CONFIG: ${{ steps.configure.outputs.global-config }}
         RENOVATE_DEPENDENCY_DASHBOARD_FOOTER: '\n- [ ] <!-- manual job -->Check here to trigger a Renovate run on this repository\n'
         RENOVATE_DRY_RUN: ${{ fromJSON(steps.configure.outputs.dry-run) && 'extract' || '' }}
@@ -202,20 +191,29 @@ runs:
         renovate-version: ${{ steps.configure.outputs.renovate-version }}
         token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
 
-    - name: Restore Renovate cache permissions
-      if: always() && steps.configure.outputs.enable-cache == 'true'
-      continue-on-error: true
-      run: >
-        ls -al /tmp/renovate && [ -d /tmp/renovate ] && sudo chown -R $(whoami) /tmp/renovate
-      shell: 'bash -Eeuo pipefail {0}'
+    - name: Finalize Renovate Cache
+      if: |
+        (success() || failure()) &&
+        steps.configure.outputs.enable-cache == 'true' &&
+        steps.renovate-cache.outputs.cache-hit != 'true' || github.event_name == 'push'
+      env:
+        GH_REPO: ${{ github.event.repository.full_name }}
+        GH_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
+      run: |
+        [ -d /tmp/renovate ] &&
+          ls ${{ steps.configure.outputs.cache-dir }} && sudo chown -R $(whoami) /tmp/renovate
+        gh api -X DELETE /repos/{owner}/{repo}/actions/caches?key=${{ steps.configure.outputs.cache-key }} ||
+          echo "Could not delete cache for $GH_REPO"
+      shell: 'bash -Eeuxo pipefail {0}'
 
     - name: Save Renovate cache
-      if: always() && steps.renovate-cache.outputs.cache-hit == 'true'
-      env:
-        RENOVATE_CACHE_DIR: ${{ env.RENOVATE_CACHE_DIR }}
+      if: |
+        (success() || failure()) &&
+        steps.configure.outputs.enable-cache == 'true' &&
+        steps.renovate-cache.outputs.cache-hit != 'true' || github.event_name == 'push'
       uses: actions/cache/save@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
       with:
-        path: ${{ env.RENOVATE_CACHE_DIR }}
-        key: >-
-          ${{ github.repository_owner }}-renovate-cache-${{ steps.configure.outputs.renovate-version }}
+        enableCrossOsArchive: true
+        key: ${{ steps.configure.outputs.cache-key }}
+        path: ${{ steps.configure.outputs.cache-dir }}
   using: composite
