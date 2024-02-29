@@ -102,7 +102,7 @@ runs:
           renovate-username=${{ format('{0}[bot]', inputs.renovate_app_slug) }}
           renovate-version=${{ env.RENOVATE_VERSION }}
         EOF
-      shell: 'bash -Eeuxo pipefail {0}'
+      shell: 'bash -Eeuo pipefail {0}'
 
     - name: Get Workflow Token
       id: get_workflow_token
@@ -112,6 +112,7 @@ runs:
         application_private_key: ${{ inputs.renovate_app_pem }}
         organization: ${{ fromJSON(steps.configure.outputs.is-org-account) && github.repository_owner || '' }}
         permissions: >
+          actions:write,
           checks:write,
           contents:write,
           issues:write,
@@ -136,7 +137,7 @@ runs:
       run: |
         [ -d /tmp/renovate ] &&
           sudo chown -R runneradmin:root /tmp/renovate && ls -R ${{ steps.configure.outputs.cache-dir }} || true
-      shell: 'bash -Eeuxo pipefail {0}'
+      shell: 'bash -Eeuo pipefail {0}'
 
     - name: Renovate ${{ steps.configure.outputs.renovate-version }}
       uses: renovatebot/github-action@a6e57359b32af9a54d5b3b6603011f50629a0a05 # v40.1.2
@@ -189,7 +190,7 @@ runs:
         docker-user: root
         mount-docker-socket: true
         renovate-version: ${{ steps.configure.outputs.renovate-version }}
-        token: 'x-access-token:${{ steps.get_workflow_token.outputs.token }}'
+        token: ${{ steps.get_workflow_token.outputs.token }}
 
     - name: Finalize Renovate Cache
       if: |
@@ -204,7 +205,7 @@ runs:
           ls ${{ steps.configure.outputs.cache-dir }} && sudo chown -R $(whoami) /tmp/renovate
         gh api -X DELETE /repos/{owner}/{repo}/actions/caches?key=${{ steps.configure.outputs.cache-key }} ||
           echo "Could not delete cache for $GH_REPO"
-      shell: 'bash -Eeuxo pipefail {0}'
+      shell: 'bash -Eeuo pipefail {0}'
 
     - name: Save Renovate cache
       if: |
