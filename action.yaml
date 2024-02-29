@@ -135,8 +135,7 @@ runs:
     - name: Prepare Renovate Cache
       if: steps.configure.outputs.enable-cache == 'true'
       run: |
-        [ -d /tmp/renovate ] &&
-          sudo chown -R runneradmin:root /tmp/renovate && ls -R ${{ steps.configure.outputs.cache-dir }} || true
+        [ -d /tmp/renovate ] && sudo chown -R runneradmin:root /tmp/renovate || true
       shell: 'bash -Eeuo pipefail {0}'
 
     - name: Renovate ${{ steps.configure.outputs.renovate-version }}
@@ -201,8 +200,7 @@ runs:
         GH_REPO: ${{ github.event.repository.full_name }}
         GH_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
       run: |
-        [ -d /tmp/renovate ] &&
-          ls ${{ steps.configure.outputs.cache-dir }} && sudo chown -R $(whoami) /tmp/renovate
+        [ -d /tmp/renovate ] && sudo chown -R $(whoami) /tmp/renovate
         gh api -X DELETE /repos/{owner}/{repo}/actions/caches?key=${{ steps.configure.outputs.cache-key }} ||
           echo "Could not delete cache for $GH_REPO"
       shell: 'bash -Eeuo pipefail {0}'
