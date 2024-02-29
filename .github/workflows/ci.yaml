@@ -129,6 +129,7 @@ jobs:
         uses: ./
         with:
           dry_run: true
+          log_level: debug
           renovate_app_id: ${{ secrets.APPLICATION_ID }}
           renovate_app_pem: ${{ secrets.APPLICATION_PRIVATE_KEY }}
           renovate_app_slug: ${{ github.repository_owner }}
