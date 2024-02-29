@@ -26,9 +26,9 @@
       semanticCommitType: 'build',
     },
     {
-      matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate'],
-      extends: ['schedule:daily'],
+      matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate', 'renovatebot/github-action'],
       automergeType: 'pr',
+      commitMessageTopic: '{{{depName}}}',
       minor: {
         semanticCommitType: 'feat',
       },
@@ -38,17 +38,7 @@
       platformAutomerge: true,
       prCreation: 'immediate',
       rebaseWhen: 'conflicted',
-    },
-    {
-      matchPackageNames: ['renovatebot/github-action'],
-      extends: ['schedule:daily'],
-      commitMessageTopic: '{{{depName}}}',
-      minor: {
-        semanticCommitType: 'feat',
-      },
-      patch: {
-        semanticCommitType: 'fix',
-      },
+      schedule: ['before 6am', 'after 6pm'],
     },
   ],
   postUpgradeTasks: {
