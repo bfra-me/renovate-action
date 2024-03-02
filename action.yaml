@@ -89,7 +89,7 @@ runs:
           autodiscover=${{ env.autodiscover }}
           base-branches=${{ inputs.branch && format('["{0}"]', inputs.branch) || '' }}
           cache-dir=${RENOVATE_CACHE_DIR:-/tmp/renovate/cache}
-          cache-key=renovate-cache-v${{ env.RENOVATE_VERSION | cut -d. -f1 }}
+          cache-key=renovate-cache-v$(echo ${{ env.RENOVATE_VERSION }} | cut -d. -f1)
           docker-image=ghcr.io/renovatebot/renovate:${{ env.RENOVATE_VERSION }}
           dry-run=${{ env.dry_run }}
           enable-cache=${{ env.cache }}
