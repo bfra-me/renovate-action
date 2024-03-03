@@ -30,6 +30,7 @@
       semanticCommitType: 'build',
     },
     {
+      description: 'bfra-me/renovate-action configuration for Renovate dependencies.',
       matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate', 'renovatebot/github-action'],
       automergeType: 'pr',
       commitMessageTopic: '{{{depName}}}',
@@ -42,7 +43,7 @@
       platformAutomerge: true,
       prCreation: 'immediate',
       rebaseWhen: 'conflicted',
-      schedule: ['before 6am', 'after 6pm'],
+      schedule: ['after 6pm every weekday', 'before 6am every weekday', 'every weekend'],
     },
   ],
   postUpgradeTasks: {
