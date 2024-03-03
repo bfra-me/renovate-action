@@ -33,12 +33,13 @@
       description: 'bfra-me/renovate-action configuration for Renovate dependencies.',
       matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate', 'renovatebot/github-action'],
       automergeType: 'pr',
+      commitBody: '{{#if hasReleaseNotes}}{{{body}}}{{/if}}',
       commitMessageTopic: '{{{depName}}}',
       minor: {
         semanticCommitType: 'feat',
       },
       patch: {
-        semanticCommitType: 'fix',
+        semanticCommitType: 'build',
       },
       platformAutomerge: true,
       prCreation: 'immediate',
