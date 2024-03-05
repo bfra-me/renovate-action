@@ -69,7 +69,7 @@ runs:
               '^(pnpm|yarn) install( --frozen-lockfile)?( --ignore-scripts)?$',
               '^(npm|pnpm|yarn) run (build(-release)?|fix|format|update-snapshots)$',
               '^yarn install( --immutable)?( --immutable-cache)?$',
-              '^git checkout -- .npmrc$',
+              '^(?:\\[ -w \\.npmrc \\] && )?git checkout -- \\.npmrc$',
             ],
             description: [
               'Use the global config preset for the @bfra-me organization.',
