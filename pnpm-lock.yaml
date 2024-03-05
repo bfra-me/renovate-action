@@ -11,8 +11,8 @@ dependencies:
 
 devDependencies:
   '@bfra.me/tsconfig':
-    specifier: 0.2.2
-    version: 0.2.2(@tsconfig/strictest@2.0.3)
+    specifier: 0.2.3
+    version: 0.2.3(@tsconfig/strictest@2.0.3)
   '@semantic-release/git':
     specifier: 10.0.1
     version: 10.0.1(semantic-release@23.0.2)
@@ -97,8 +97,8 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /@bfra.me/tsconfig@0.2.2(@tsconfig/strictest@2.0.3):
-    resolution: {integrity: sha512-2tPcnlqU6y/N/I7ExB1YgTY5dKV2WsBlSQSW7oMFUH7atVRuuNa2OsKSxMUhQmpl/AjjztA9cJUaD9OUfNzyiQ==}
+  /@bfra.me/tsconfig@0.2.3(@tsconfig/strictest@2.0.3):
+    resolution: {integrity: sha512-XvLvk63rjy8gdD0tVgqUu6mKAKyxEQYXaVyM6rK7xRW1X2sqLaeqdeJ9m3XU7UASLhrK+T4wC6ZF+GloFgkkNw==}
     peerDependencies:
       '@tsconfig/strictest': '*'
     dependencies:
