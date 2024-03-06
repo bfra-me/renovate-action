@@ -44,16 +44,16 @@
       platformAutomerge: true,
       prCreation: 'immediate',
       rebaseWhen: 'conflicted',
-      schedule: ['after 6pm every weekday', 'before 6am every weekday', 'every weekend'],
+      schedule: ['after 8pm every weekday', 'before 8am every weekday', 'every weekend'],
     },
   ],
   postUpgradeTasks: {
     commands: [
       'npm install -g pnpm@8',
       'pnpm install --frozen-lockfile --ignore-scripts',
-      'git checkout -- .npmrc',
       'pnpm run build-release',
       'pnpm run format',
+      'git checkout -- .npmrc',
     ],
     executionMode: 'branch',
   },
