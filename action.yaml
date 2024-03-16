@@ -152,7 +152,7 @@ runs:
         RENOVATE_CACHE_NPM_MINUTES: '60'
         RENOVATE_CONFIG: ${{ steps.configure.outputs.global-config }}
         RENOVATE_DEPENDENCY_DASHBOARD_FOOTER: '\n- [ ] <!-- manual job -->Check here to trigger a Renovate run on this repository\n'
-        RENOVATE_DRY_RUN: ${{ fromJSON(steps.configure.outputs.dry-run) && 'extract' || '' }}
+        RENOVATE_DRY_RUN: ${{ fromJSON(steps.configure.outputs.dry-run) && 'full' || '' }}
         RENOVATE_GIT_AUTHOR: ${{ steps.configure.outputs.renovate-git-author }}
         RENOVATE_GIT_IGNORED_AUTHORS: |-
           [
