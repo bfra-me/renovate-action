@@ -1,7 +1,7 @@
 {
   "name": "@bfra.me/renovate-action",
   "packageManager": "pnpm@8.15.4",
-  "version": "3.36.0",
+  "version": "3.37.0",
   "private": true,
   "type": "module",
   "description": "GitHub Action for Self-Hosted Renovate",
