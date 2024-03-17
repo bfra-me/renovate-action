@@ -49,7 +49,7 @@
     "rimraf": "5.0.5",
     "semantic-release": "23.0.4",
     "semantic-release-export-data": "1.0.1",
-    "typescript": "5.3.3",
+    "typescript": "5.4.2",
     "vitest": "1.4.0"
   }
 }
