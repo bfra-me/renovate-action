@@ -5,6 +5,7 @@
     'github>bfra-me/renovate-config#v3',
     'github>bfra-me/renovate-config:internal.json5#v3',
   ],
+  automergeType: 'pr',
   customManagers: [
     {
       customType: 'regex',
@@ -32,7 +33,6 @@
     {
       description: 'bfra-me/renovate-action configuration for Renovate dependencies.',
       matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate', 'renovatebot/github-action'],
-      automergeType: 'pr',
       commitBody: '{{#if hasReleaseNotes}}{{{body}}}{{/if}}',
       commitMessageTopic: '{{{depName}}}',
       minor: {
@@ -41,12 +41,10 @@
       patch: {
         semanticCommitType: 'build',
       },
-      platformAutomerge: true,
-      prCreation: 'immediate',
-      rebaseWhen: 'conflicted',
       schedule: ['after 8pm every weekday', 'before 8am every weekday', 'every weekend'],
     },
   ],
+  platformAutomerge: true,
   postUpgradeTasks: {
     commands: [
       'npm install -g pnpm@8',
@@ -57,4 +55,6 @@
     ],
     executionMode: 'branch',
   },
+  prCreation: 'immediate',
+  rebaseWhen: 'conflicted',
 }
