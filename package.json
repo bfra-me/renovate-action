@@ -38,7 +38,7 @@
   "devDependencies": {
     "@bfra.me/tsconfig": "0.3.1",
     "@semantic-release/git": "10.0.1",
-    "@types/node": "20.12.1",
+    "@types/node": "20.12.2",
     "@typescript-eslint/eslint-plugin": "7.4.0",
     "@typescript-eslint/parser": "7.4.0",
     "@vercel/ncc": "0.38.1",
