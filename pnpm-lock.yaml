@@ -11,8 +11,8 @@ dependencies:
 
 devDependencies:
   '@bfra.me/tsconfig':
-    specifier: 0.4.1
-    version: 0.4.1(@tsconfig/strictest@2.0.5)
+    specifier: 0.5.0
+    version: 0.5.0(@tsconfig/strictest@2.0.5)
   '@semantic-release/git':
     specifier: 10.0.1
     version: 10.0.1(semantic-release@23.0.8)
@@ -98,8 +98,8 @@ packages:
       picocolors: 1.0.0
     dev: true
 
-  /@bfra.me/tsconfig@0.4.1(@tsconfig/strictest@2.0.5):
-    resolution: {integrity: sha512-J/wijrR4YxenJDwmVLdVQbKQN/0MBVxVyY1WrTOCzu5s9q2S3npGgwGzOBZKoVG7uJoG5DWVoMA8z3qhfrtHZA==}
+  /@bfra.me/tsconfig@0.5.0(@tsconfig/strictest@2.0.5):
+    resolution: {integrity: sha512-0uaeKrGRG0STTq+eqvTN95ZWNhiPlwZm100iiC3TVlEZFTQwwQozQrGb/MFsjNchwbfN7Sn7oaNVWDD0AFoOmQ==}
     peerDependencies:
       '@tsconfig/strictest': '*'
     dependencies:
