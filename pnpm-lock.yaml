@@ -3090,7 +3090,7 @@ packages:
     dependencies:
       '@babel/code-frame': 7.24.2
       index-to-position: 0.1.2
-      type-fest: 4.17.0
+      type-fest: 4.18.0
     dev: true
 
   /parse5-htmlparser2-tree-adapter@6.0.1:
@@ -3259,7 +3259,7 @@ packages:
     dependencies:
       find-up-simple: 1.0.0
       read-pkg: 9.0.1
-      type-fest: 4.17.0
+      type-fest: 4.18.0
     dev: true
 
   /read-pkg-up@11.0.0:
@@ -3269,7 +3269,7 @@ packages:
     dependencies:
       find-up-simple: 1.0.0
       read-pkg: 9.0.1
-      type-fest: 4.17.0
+      type-fest: 4.18.0
     dev: true
 
   /read-pkg@9.0.1:
@@ -3279,7 +3279,7 @@ packages:
       '@types/normalize-package-data': 2.4.4
       normalize-package-data: 6.0.0
       parse-json: 8.1.0
-      type-fest: 4.17.0
+      type-fest: 4.18.0
       unicorn-magic: 0.1.0
     dev: true
 
@@ -3866,8 +3866,8 @@ packages:
     engines: {node: '>=12.20'}
     dev: true
 
-  /type-fest@4.17.0:
-    resolution: {integrity: sha512-9flrz1zkfLRH3jO3bLflmTxryzKMxVa7841VeMgBaNQGY6vH4RCcpN/sQLB7mQQYh1GZ5utT2deypMuCy4yicw==}
+  /type-fest@4.18.0:
+    resolution: {integrity: sha512-+dbmiyliDY/2TTcjCS7NpI9yV2iEFlUDk5TKnsbkN7ZoRu5s7bT+zvYtNFhFXC2oLwURGT2frACAZvbbyNBI+w==}
     engines: {node: '>=16'}
     dev: true
 
