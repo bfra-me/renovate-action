@@ -47,8 +47,8 @@
   platformAutomerge: true,
   postUpgradeTasks: {
     commands: [
-      'npm install -g pnpm@8',
-      'pnpm install --frozen-lockfile --ignore-scripts',
+      'npm install -g pnpm@9',
+      'pnpm install --force --frozen-lockfile --ignore-scripts',
       'pnpm run build-release',
       'pnpm run format',
       'git checkout -- .npmrc',
