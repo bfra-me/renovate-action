@@ -63,12 +63,12 @@ runs:
           {
             allowedPostUpgradeCommands: [
               '^(npx )?corepack(?:@\\d+(?:\\.\\d+\\.\\d+)?)? enable$',
-              '^npm ci( --ignore-scripts)?$',
+              '^npm ci( --force)?( --ignore-scripts)?$',
               '^npm install -g (npm|pnpm)(?:@\\d+(?:\\.\\d+\\.\\d+)?)?$',
               '^(npx|pnpm|yarn) prettier(?:@\\d+(?:\\.\\d+\\.\\d+)?)?( --no-color)? --write \\.$',
-              '^(pnpm|yarn) install( --frozen-lockfile)?( --ignore-scripts)?$',
+              '^(pnpm|yarn) install( --force)?( --frozen-lockfile)?( --ignore-scripts)?$',
               '^(npm|pnpm|yarn) run (bootstrap|build(-release)?|fix|format|update-snapshots)$',
-              '^yarn install( --immutable)?( --immutable-cache)?$',
+              '^yarn install( --force)?( --immutable)?( --immutable-cache)?$',
               '^(?:\\[ -w \\.npmrc \\] && )?git checkout -- \\.npmrc(?: \\|\\| true)?$',
             ],
             description: [
