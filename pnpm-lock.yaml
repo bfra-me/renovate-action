@@ -15,6 +15,9 @@ importers:
       '@bfra.me/tsconfig':
         specifier: 0.5.0
         version: 0.5.0(@tsconfig/strictest@2.0.5)
+      '@eslint-types/import':
+        specifier: 2.29.1
+        version: 2.29.1
       '@eslint-types/typescript-eslint':
         specifier: 7.5.0
         version: 7.5.0
@@ -387,6 +390,9 @@ packages:
   '@eslint-community/regexpp@4.10.1':
     resolution: {integrity: sha512-Zm2NGpWELsQAD1xsJzGQpYfvICSsFkEpU0jxBjfdC6uNEWXcHnfs9hScFWtXVDVl+rBQJGrl4g1vcKIejpH9dA==}
     engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
+
+  '@eslint-types/import@2.29.1':
+    resolution: {integrity: sha512-22yG9mnWk/mC6rQwtgzEbE/in7H7eA36v1eBVrVdYDeapylP/N0Qw0WPq83YSlQ1kM0B72az9FCZvlMfmwQ+YA==}
 
   '@eslint-types/typescript-eslint@7.5.0':
     resolution: {integrity: sha512-zKvsPBDq6o0L4p2sRtq8fxOtGc+mm37aZSXLsiD4DIRl2kYUxKNO9CKDTAgmuMYUzih9J7lbLxAomreLrdAiVQ==}
@@ -2787,6 +2793,8 @@ snapshots:
       eslint-visitor-keys: 3.4.3
 
   '@eslint-community/regexpp@4.10.1': {}
+
+  '@eslint-types/import@2.29.1': {}
 
   '@eslint-types/typescript-eslint@7.5.0': {}
 
