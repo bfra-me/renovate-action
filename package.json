@@ -13,7 +13,7 @@
     "lint": "pnpm run check-format && pnpm run check-types && pnpm run lint-source",
     "check-format": "prettier --check .",
     "check-types": "tsc",
-    "lint-source": "eslint . --report-unused-disable-directives --max-warnings 0",
+    "lint-source": "eslint .",
     "test": "vitest"
   },
   "repository": {
@@ -37,19 +37,24 @@
   },
   "devDependencies": {
     "@bfra.me/tsconfig": "0.5.0",
+    "@eslint-types/typescript-eslint": "7.5.0",
+    "@eslint/js": "8.56.0",
     "@semantic-release/git": "10.0.1",
+    "@types/eslint__js": "8.42.3",
     "@types/node": "20.14.2",
-    "@typescript-eslint/eslint-plugin": "7.13.0",
-    "@typescript-eslint/parser": "7.13.0",
     "@vercel/ncc": "0.38.1",
     "conventional-changelog-conventionalcommits": "8.0.0",
-    "eslint": "8.57.0",
+    "eslint": "npm:eslint-ts-patch@8.57.0-0",
+    "eslint-define-config": "2.1.0",
+    "eslint-ts-patch": "8.57.0-0",
     "js-yaml": "4.1.0",
     "prettier": "3.3.2",
     "rimraf": "5.0.7",
     "semantic-release": "24.0.0",
     "semantic-release-export-data": "1.0.1",
+    "tsx": "4.15.2",
     "typescript": "5.4.5",
+    "typescript-eslint": "7.13.0",
     "vitest": "1.6.0"
   }
 }
