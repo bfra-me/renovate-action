@@ -6,15 +6,18 @@ import tseslint from 'typescript-eslint'
 /// <reference types="@eslint-types/import" />
 /// <reference types="@eslint-types/typescript-eslint" />
 
-// @ts-ignore
+// @ts-expect-error - TODO: Need to cast to the return type of `tseslint.config`
 export default defineFlatConfig([
+  {ignores: ['dist/**', '**/*.test.ts']},
   ...tseslint.config(js.configs.recommended, ...tseslint.configs.recommended),
-  {ignores: ['dist/**', '**/*.test.ts', 'eslint.config.js']},
   {
     languageOptions: {
       ecmaVersion: 2018,
       parserOptions: {
-        project: true,
+        projectService: {
+          allowDefaultProject: ['./*.js'],
+          defaultProject: './tsconfig.json',
+        },
         tsconfigRootDir: import.meta.dirname,
       },
       sourceType: 'module',
@@ -33,7 +36,9 @@ export default defineFlatConfig([
       camelcase: 'off',
       '@typescript-eslint/consistent-type-assertions': 'error',
       '@typescript-eslint/explicit-function-return-type': ['error', {allowExpressions: true}],
-      '@typescript-eslint/func-call-spacing': ['error', 'never'],
+      // https://github.com/typescript-eslint/typescript-eslint/issues/8074
+      // Moved to https://eslint.style
+      // '@typescript-eslint/func-call-spacing': ['error', 'never'],
       '@typescript-eslint/no-array-constructor': 'error',
       '@typescript-eslint/no-empty-interface': 'error',
       '@typescript-eslint/no-explicit-any': 'error',
@@ -55,8 +60,10 @@ export default defineFlatConfig([
       '@typescript-eslint/require-array-sort-compare': 'error',
       '@typescript-eslint/restrict-plus-operands': 'error',
       semi: 'off',
-      '@typescript-eslint/semi': ['error', 'never'],
-      '@typescript-eslint/type-annotation-spacing': 'error',
+      // https://github.com/typescript-eslint/typescript-eslint/issues/8074
+      // Moved to https://eslint.style
+      // '@typescript-eslint/semi': ['error', 'never'],
+      // '@typescript-eslint/type-annotation-spacing': 'error',
       '@typescript-eslint/unbound-method': 'error',
     },
   },
