@@ -52,7 +52,7 @@
     "rimraf": "5.0.7",
     "semantic-release": "24.0.0",
     "semantic-release-export-data": "1.1.0",
-    "tsx": "4.15.4",
+    "tsx": "4.15.5",
     "typescript": "5.4.5",
     "typescript-eslint": "8.0.0-alpha.30",
     "vitest": "1.6.0"
