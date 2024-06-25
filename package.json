@@ -54,7 +54,7 @@
     "semantic-release-export-data": "1.1.0",
     "tsx": "4.15.7",
     "typescript": "5.4.5",
-    "typescript-eslint": "8.0.0-alpha.31",
+    "typescript-eslint": "8.0.0-alpha.32",
     "vitest": "1.6.0"
   }
 }
