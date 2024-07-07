@@ -47,7 +47,7 @@
   platformAutomerge: true,
   postUpgradeTasks: {
     commands: [
-      'npm install -g pnpm@9.5.0-beta.3',
+      'npm install -g pnpm@9.5.0',
       'pnpm install --force --frozen-lockfile --ignore-scripts',
       'pnpm run build-release',
       'pnpm run format',
