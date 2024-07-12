@@ -45,7 +45,7 @@
     "@types/node": "20.14.10",
     "@vercel/ncc": "0.38.1",
     "conventional-changelog-conventionalcommits": "8.0.0",
-    "eslint": "9.6.0",
+    "eslint": "9.7.0",
     "eslint-define-config": "2.1.0",
     "js-yaml": "4.1.0",
     "prettier": "3.3.2",
