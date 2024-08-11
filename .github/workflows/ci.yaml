@@ -44,6 +44,9 @@ jobs:
           filters: |
             config: &config
               - .github/**
+              - .node-version
+              - .npmrc
+              - eslint.config.js
               - '**.json5?'
               - '**.md'
               - '**.yaml'
@@ -51,10 +54,15 @@ jobs:
             dist-changed:
               - added|modified: 'dist/**'
             src-changed: &src-changed
+              - .github/workflows/**
+              - .node-version
               - __tests__/**
+              - docker/**
               - src/**
               - action.yaml
               - package.json
+              - pnpm-lock.yaml
+              - tsconfig.json
             should-lint:
               - added|modified: *config
               - added|modified: *src-changed
@@ -129,11 +137,10 @@ jobs:
       - if: ${{ github.repository_owner == 'bfra-me' && github.ref_name != github.event.repository.default_branch }}
         uses: ./
         with:
-          dry_run: true
-          log_level: debug
-          renovate_app_id: ${{ secrets.APPLICATION_ID }}
-          renovate_app_pem: ${{ secrets.APPLICATION_PRIVATE_KEY }}
-          renovate_app_slug: ${{ github.repository_owner }}
+          dry-run: true
+          log-level: debug
+          renovate-app-id: ${{ secrets.APPLICATION_ID }}
+          renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
 
   release:
     env:
