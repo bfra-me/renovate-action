@@ -32,7 +32,12 @@
     },
     {
       description: 'bfra-me/renovate-action configuration for Renovate dependencies.',
-      matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate', 'renovatebot/github-action'],
+      matchPackageNames: [
+        'ghcr.io/renovatebot/renovate',
+        'renovatebot/renovate',
+        'renovatebot/github-action',
+        'renovate',
+      ],
       commitBody: '{{#if hasReleaseNotes}}{{{body}}}{{/if}}',
       commitMessageTopic: '{{{depName}}}',
       major: {
