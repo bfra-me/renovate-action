@@ -64,5 +64,4 @@
     executionMode: 'branch',
   },
   prCreation: 'immediate',
-  rebaseWhen: 'conflicted',
 }
