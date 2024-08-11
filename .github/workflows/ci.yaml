@@ -181,7 +181,6 @@ jobs:
         with:
           fetch-depth: 0
           filter: blob:none
-          persist-credentials: false
           ref: ${{ env.RELEASE_BRANCH }}
           show-progress: false
           token: ${{ steps.get-app-token.outputs.token }}
