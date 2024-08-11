@@ -35,6 +35,9 @@
       matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate', 'renovatebot/github-action'],
       commitBody: '{{#if hasReleaseNotes}}{{{body}}}{{/if}}',
       commitMessageTopic: '{{{depName}}}',
+      major: {
+        semanticCommitType: 'feat!',
+      },
       minor: {
         semanticCommitType: 'feat',
       },
