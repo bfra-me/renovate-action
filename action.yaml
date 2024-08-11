@@ -16,26 +16,50 @@ inputs:
     required: false
     default: 'false'
   dry_run:
+    deprecationMessage: Use the `dry-run` input instead. This input will be removed in a future major release.
+    description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
+    required: false
+    default: 'false'
+  dry-run:
     description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
     required: false
     default: 'false'
   log_level:
+    deprecationMessage: Use the `log-level` input instead. This input will be removed in a future major release.
+    description: Set the log level.
+    required: false
+    default: 'info'
+  log-level:
     description: Set the log level.
     required: false
     default: 'info'
   print_config:
+    deprecationMessage: Use the `print-config` input instead. This input will be removed in a future major release.
+    description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
+    required: false
+    default: 'false'
+  print-config:
     description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
     required: false
     default: 'false'
   renovate_app_id:
+    deprecationMessage: Use the `renovate-app-id` input instead. This input will be removed in a future major release.
+    description: The ID of the GitHub App that will be used to run Renovate.
+    required: false
+  renovate-app-id:
     description: The ID of the GitHub App that will be used to run Renovate.
     required: true
   renovate_app_pem:
+    deprecationMessage: Use the `renovate-app-private-key` input instead. This input will be removed in a future major release.
+    description: The private key of the GitHub App that will be used to run Renovate.
+    required: false
+  renovate-app-private-key:
     description: The private key of the GitHub App that will be used to run Renovate.
     required: true
   renovate_app_slug:
+    deprecationMessage: The `renovate_app_slug` input is deprecated and will be removed in a future major release.
     description: The slug of the GitHub app to use for authentication.
-    required: true
+    required: false
 
 outputs:
   docker-image:
@@ -47,17 +71,24 @@ outputs:
 
 runs:
   steps:
+    - id: get-renovate-app
+      name: Get Renovate GitHub App Installation
+      uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1.10.3
+      with:
+        app-id: ${{ inputs.renovate-app-id || inputs.renovate_app_id }}
+        private-key: ${{ inputs.renovate-app-private-key || inputs.renovate_app_pem }}
+        owner: ${{ github.repository_owner }}
+
     - name: Configure
       id: configure
       env:
         RENOVATE_VERSION: 38.25.0 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate
         autodiscover: ${{ inputs.autodiscover != '' && inputs.autodiscover || 'false' }}
-        dry_run: ${{ inputs.dry_run != '' && inputs.dry_run || 'false' }}
-        # Check if this workflow was triggered from an organization account.
-        is-org-account: ${{ github.event.organization && 'true' || 'false' }}
-        log_level: ${{ inputs.log_level != '' && inputs.log_level || 'info' }}
-        print_config: ${{ inputs.print_config != '' && inputs.print_config || 'false' }}
-        renovate_git_author_email: ${{ format('{0}+{1}[bot]@users.noreply.github.com', inputs.renovate_app_id, inputs.renovate_app_slug) }}
+        dry_run: ${{ inputs.dry-run != '' && inputs.dry-run || inputs.dry_run != '' && inputs.dry_run || 'false' }}
+        log_level: ${{ inputs.log-level != '' && inputs.log-level || inputs.log_level != '' && inputs.log_level || 'info' }}
+        print_config: ${{ inputs.print-config != '' && inputs.print-config || inputs.print_config != '' && inputs.print_config || 'false' }}
+        renovate_app_id: ${{ inputs.renovate-app-id || inputs.renovate_app_id }}
+        renovate_app_slug: ${{ steps.get-renovate-app.outputs.app-slug }}
         cache: ${{ inputs.cache == 'true' }}
         zzglobal_config: |-
           {
@@ -84,6 +115,9 @@ runs:
             onboardingRebaseCheckbox: true,
           }
       run: |
+        renovate_username="${{ env.renovate_app_slug }}[bot]"
+        renovate_git_author_email="${{ env.renovate_app_id }}+${renovate_username}@users.noreply.github.com"
+        renovate_git_author="${renovate_username} <${renovate_git_author_email}>"
         # Create outputs for this configuration
         sed 's/^[[:space:]]*//' <<EOF >> $GITHUB_OUTPUT
           autodiscover=${{ env.autodiscover }}
@@ -94,34 +128,14 @@ runs:
           dry-run=${{ env.dry_run }}
           enable-cache=${{ env.cache }}
           global-config=$(echo "${zzglobal_config}" | tr -d '\n')
-          is-org-account=${{ env.is-org-account }}
           log-level=${{ env.log_level }}
           print-config=${{ env.print_config }}
-          renovate-git-author-email=${{ env.renovate_git_author_email }}
-          renovate-git-author=${{ format('{0}[bot] <{1}>', inputs.renovate_app_slug, env.renovate_git_author_email) }}
-          renovate-username=${{ format('{0}[bot]', inputs.renovate_app_slug) }}
+          renovate-git-author-email=${renovate_git_author_email}
+          renovate-git-author=${renovate_git_author}
+          renovate-username=${renovate_username}
           renovate-version=${{ env.RENOVATE_VERSION }}
         EOF
       shell: 'bash -Eeuo pipefail {0}'
-
-    - name: Get Workflow Token
-      id: get_workflow_token
-      uses: peter-murray/workflow-application-token-action@dc0413987a085fa17d19df9e47d4677cf81ffef3 # v3.0.0
-      with:
-        application_id: ${{ inputs.renovate_app_id }}
-        application_private_key: ${{ inputs.renovate_app_pem }}
-        organization: ${{ fromJSON(steps.configure.outputs.is-org-account) && github.repository_owner || '' }}
-        permissions: >
-          actions:write,
-          checks:write,
-          contents:write,
-          issues:write,
-          members:read,
-          metadata:read,
-          pull_requests:write,
-          statuses:write,
-          vulnerability_alerts:read,
-          workflows:write
 
     - name: Restore Renovate Cache
       id: renovate-cache
@@ -182,7 +196,7 @@ runs:
         docker-user: root
         mount-docker-socket: true
         renovate-version: ${{ steps.configure.outputs.renovate-version }}
-        token: ${{ steps.get_workflow_token.outputs.token }}
+        token: ${{ steps.get-renovate-app.outputs.token }}
 
     - name: Finalize Renovate Cache
       if: |
@@ -191,7 +205,7 @@ runs:
         steps.renovate-cache.outputs.cache-hit != 'true' || github.event_name == 'push'
       env:
         GH_REPO: ${{ github.event.repository.full_name }}
-        GH_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
+        GH_TOKEN: ${{ steps.get-renovate-app.outputs.token }}
       run: |
         [ -d /tmp/renovate ] && sudo chown -R $(whoami) /tmp/renovate
         gh api -X DELETE /repos/{owner}/{repo}/actions/caches?key=${{ steps.configure.outputs.cache-key }} ||

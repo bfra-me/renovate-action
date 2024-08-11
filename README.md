@@ -41,12 +41,11 @@ jobs:
     name: Renovate
     runs-on: ubuntu-latest
     steps:
-      - uses: bfra-me/renovate-action@v3
+      - uses: bfra-me/renovate-action@v4
         with:
-          dry_run: ${{ github.event_name == 'pull_request' }}
-          renovate_app_id: ${{ secrets.APPLICATION_ID }}
-          renovate_app_pem: ${{ secrets.APPLICATION_PRIVATE_KEY }}
-          renovate_app_slug: 'fro-bot'
+          dry-run: ${{ github.event_name == 'pull_request' }}
+          renovate-app-id: ${{ secrets.APPLICATION_ID }}
+          renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
 ```
 
 ### License
