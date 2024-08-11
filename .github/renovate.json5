@@ -32,14 +32,22 @@
     },
     {
       description: 'bfra-me/renovate-action configuration for Renovate dependencies.',
-      matchPackageNames: ['ghcr.io/renovatebot/renovate', 'renovatebot/renovate', 'renovatebot/github-action'],
+      matchPackageNames: [
+        'ghcr.io/renovatebot/renovate',
+        'renovatebot/renovate',
+        'renovatebot/github-action',
+        'renovate',
+      ],
       commitBody: '{{#if hasReleaseNotes}}{{{body}}}{{/if}}',
       commitMessageTopic: '{{{depName}}}',
+      major: {
+        semanticCommitType: 'feat!',
+      },
       minor: {
         semanticCommitType: 'feat',
       },
       patch: {
-        semanticCommitType: 'build',
+        semanticCommitType: 'fix',
       },
       schedule: ['after 8pm every weekday', 'before 8am every weekday', 'every weekend'],
     },

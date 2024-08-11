@@ -149,7 +149,6 @@ runs:
         RENOVATE_USE_BASE_BRANCH_CONFIG: ${{ steps.configure.outputs.base-branches && 'merge' || 'none' }}
         RENOVATE_BRANCH_PREFIX_OLD: 'renovate-github/'
         RENOVATE_CACHE_DIR: ${{ steps.configure.outputs.cache-dir }}
-        RENOVATE_CACHE_NPM_MINUTES: '60'
         RENOVATE_CONFIG: ${{ steps.configure.outputs.global-config }}
         RENOVATE_DEPENDENCY_DASHBOARD_FOOTER: '\n- [ ] <!-- manual job -->Check here to trigger a Renovate run on this repository\n'
         RENOVATE_DRY_RUN: ${{ fromJSON(steps.configure.outputs.dry-run) && 'full' || '' }}
@@ -169,12 +168,10 @@ runs:
           [
             {
               "abortIgnoreStatusCodes": [404],
-              "abortOnError": true,
-              "dnsCache": true
+              "abortOnError": true
             }
           ]
         RENOVATE_PLATFORM: github
-        RENOVATE_PLATFORM_COMMIT: 'true'
         RENOVATE_PRESET_CACHE_PERSISTENCE: ${{ steps.configure.outputs.enable-cache == 'true' }}
         RENOVATE_PRINT_CONFIG: ${{ steps.configure.outputs.print-config }}
         RENOVATE_REPOSITORY_CACHE: ${{ steps.configure.outputs.enable-cache == 'true' && 'enabled' || 'disabled' }}
