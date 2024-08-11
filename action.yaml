@@ -77,6 +77,7 @@ runs:
       with:
         app-id: ${{ inputs.renovate-app-id || inputs.renovate_app_id }}
         private-key: ${{ inputs.renovate-app-private-key || inputs.renovate_app_pem }}
+        owner: ${{ github.repository_owner }}
 
     - name: Configure
       id: configure
@@ -86,6 +87,8 @@ runs:
         dry_run: ${{ inputs.dry-run != '' && inputs.dry-run || inputs.dry_run != '' && inputs.dry_run || 'false' }}
         log_level: ${{ inputs.log-level != '' && inputs.log-level || inputs.log_level != '' && inputs.log_level || 'info' }}
         print_config: ${{ inputs.print-config != '' && inputs.print-config || inputs.print_config != '' && inputs.print_config || 'false' }}
+        renovate_app_id: ${{ inputs.renovate-app-id || inputs.renovate_app_id }}
+        renovate_app_slug: ${{ steps.get-renovate-app.outputs.app-slug }}
         cache: ${{ inputs.cache == 'true' }}
         zzglobal_config: |-
           {
@@ -112,8 +115,9 @@ runs:
             onboardingRebaseCheckbox: true,
           }
       run: |
-        renovate_app_slug="${{ steps.get-renovate-app.outputs.app-slug }}"
-        renovate_git_author_email="${{ format('{0}+{1}[bot]@users.noreply.github.com', inputs.renovate-app-id || inputs.renovate_app_id, steps.get-renovate-app.outputs.app-slug) }}"
+        renovate_username="${{ env.renovate_app_slug }}[bot]"
+        renovate_git_author_email="${{ env.renovate_app_id }}+${renovate_username}@users.noreply.github.com"
+        renovate_git_author="${renovate_username} <${renovate_git_author_email}>"
         # Create outputs for this configuration
         sed 's/^[[:space:]]*//' <<EOF >> $GITHUB_OUTPUT
           autodiscover=${{ env.autodiscover }}
@@ -127,8 +131,8 @@ runs:
           log-level=${{ env.log_level }}
           print-config=${{ env.print_config }}
           renovate-git-author-email=${renovate_git_author_email}
-          renovate-git-author="${renovate_app_slug}[bot] <${renovate_git_author_email}>"
-          renovate-username="${renovate_app_slug}[bot]"
+          renovate-git-author=${renovate_git_author}
+          renovate-username=${renovate_username}
           renovate-version=${{ env.RENOVATE_VERSION }}
         EOF
       shell: 'bash -Eeuo pipefail {0}'
