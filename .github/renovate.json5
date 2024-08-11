@@ -47,7 +47,7 @@
         semanticCommitType: 'feat',
       },
       patch: {
-        semanticCommitType: 'build',
+        semanticCommitType: 'fix',
       },
       schedule: ['after 8pm every weekday', 'before 8am every weekday', 'every weekend'],
     },
