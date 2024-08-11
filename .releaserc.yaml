@@ -9,12 +9,11 @@ plugins:
   - '@semantic-release/npm'
 
   - - '@semantic-release/git'
-    - assets: ['dist', 'package.json']
-      message: 'ci(release): build action for v${nextRelease.version} [skip ci]'
+    - assets: ['dist/*', 'package.json']
+      message: 'chore(release): build action for ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}'
 
   - - '@semantic-release/github'
     - releasedLabels: false
-      successComment: false
 
   - 'semantic-release-export-data'
 
@@ -34,7 +33,7 @@ presetConfig:
   types:
     - type: feat
       section: 'Features'
-    - type: features
+    - type: feature
       section: 'Features'
     - type: build
       section: 'Build System'

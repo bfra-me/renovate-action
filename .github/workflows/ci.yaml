@@ -144,25 +144,40 @@ jobs:
     outputs:
       commit: ${{ steps.merge.outputs.commit }}
       version: ${{ steps.semantic-release.outputs.version }}
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
-      - id: get-workflow-access-token
-        name: Get Workflow Access Token
-        uses: peter-murray/workflow-application-token-action@dc0413987a085fa17d19df9e47d4677cf81ffef3 # v3.0.0
+      - id: get-app-token
+        name: Get GitHub App Installation Token
+        uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1.10.3
         with:
-          application_id: ${{ secrets.APPLICATION_ID }}
-          application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
-          permissions: 'contents:write, issues:write, pull_requests:write'
-      - name: Setup Git user
+          app-id: ${{ secrets.APPLICATION_ID }}
+          private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+      - id: get-user-id
+        name: Get GitHub App User ID and Setup Git user
+        env:
+          GH_TOKEN: ${{ steps.get-app-token.outputs.token }}
         run: |
-          git config --global user.email '118100583+bfra-me[bot]@users.noreply.github.com'
-          git config --global user.name 'bfra-me[bot]'
+          name="${{ steps.get-app-token.outputs.app-slug }}[bot]"
+          user_id=$(gh api "/users/${name}" --jq .id)
+          email="${user_id}+${name}@users.noreply.github.com"
+          echo "user-email=${email}" >> "$GITHUB_OUTPUT"
+          echo "user-name=${name}" >> "$GITHUB_OUTPUT"
+          git config --global user.email "${email}"
+          git config --global user.name "${name}"
       - name: Checkout `${{ env.RELEASE_BRANCH }}` release branch
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           fetch-depth: 0
+          filter: blob:none
+          persist-credentials: false
           ref: ${{ env.RELEASE_BRANCH }}
-          token: ${{ steps.get-workflow-access-token.outputs.token }}
+          show-progress: false
+          token: ${{ steps.get-app-token.outputs.token }}
       - if: ${{ github.event_name == 'pull_request' }}
         name: Fetch PR
         run: git fetch origin +${{ github.sha }}:${{ github.ref }}
@@ -189,11 +204,11 @@ jobs:
       - name: Semantic Release
         id: semantic-release
         env:
-          GIT_AUTHOR_EMAIL: '118100583+bfra-me[bot]@users.noreply.github.com'
-          GIT_AUTHOR_NAME: 'bfra-me[bot]'
-          GIT_COMMITTER_EMAIL: '118100583+bfra-me[bot]@users.noreply.github.com'
-          GIT_COMMITTER_NAME: 'bfra-me[bot]'
-          GITHUB_TOKEN: ${{ steps.get-workflow-access-token.outputs.token }}
+          GIT_AUTHOR_EMAIL: ${{ steps.get-user-id.outputs.user-email }}
+          GIT_AUTHOR_NAME: ${{ steps.get-user-id.outputs.user-name }}
+          GIT_COMMITTER_EMAIL: ${{ steps.get-user-id.outputs.user-email }}
+          GIT_COMMITTER_NAME: ${{ steps.get-user-id.outputs.user-name }}
+          GITHUB_TOKEN: ${{ steps.get-app-token.outputs.token }}
           LOG_LEVEL: debug
         run: |
           export GITHUB_REF=refs/heads/${{ env.RELEASE_BRANCH }} GITHUB_SHA=${{ steps.merge.outputs.commit }}
@@ -203,7 +218,7 @@ jobs:
         if: ${{ env.DRY_RUN != 'true' && steps.semantic-release.outputs.new-release-published == 'true' }}
         env:
           GH_REPO: ${{ github.repository }}
-          GH_TOKEN: ${{ steps.get-workflow-access-token.outputs.token }}
+          GH_TOKEN: ${{ steps.get-app-token.outputs.token }}
         run: |
           # Update the major branch reference to the new release tag
           version=${{ steps.semantic-release.outputs.new-release-version }}
