@@ -6,6 +6,7 @@ repository:
   description: GitHub Action for Self-Hosted Renovate
   topics: renovate, self-hosted, action, github-action, composite, nodejs, typescript, github-actions
 
+  squash_merge_commit_title: COMMIT_OR_PR_TITLE
   squash_merge_commit_messages: COMMIT_MESSAGES
 
 teams:
