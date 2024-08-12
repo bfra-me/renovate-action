@@ -9,4 +9,8 @@ curl -fsSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/downloa
 chmod a+x /usr/local/bin/yq
 yq --version
 
+# renovate: datasource=npm depName=pnpm
+export PNPM_VERSION=9.7.0
+install-tool pnpm $PNPM_VERSION
+
 runuser -u ubuntu renovate
