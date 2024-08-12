@@ -10,6 +10,6 @@ chmod a+x /usr/local/bin/yq
 yq --version
 
 # renovate: datasource=npm depName=pnpm
-curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=9.7.0 sh -
+curl -fsSL https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" PNPM_VERSION=9.7.0 bash -
 
 runuser -u ubuntu renovate
