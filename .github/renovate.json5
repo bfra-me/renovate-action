@@ -54,13 +54,7 @@
   ],
   platformAutomerge: true,
   postUpgradeTasks: {
-    commands: [
-      'npm install -g pnpm@9.7.0',
-      'pnpm install --force --frozen-lockfile --ignore-scripts',
-      'pnpm run build-release',
-      'pnpm run format',
-      'git checkout -- .npmrc',
-    ],
+    commands: ['pnpm run bootstrap'],
     executionMode: 'branch',
   },
   prCreation: 'immediate',
