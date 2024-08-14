@@ -48,14 +48,14 @@ inputs:
     required: false
   renovate-app-id:
     description: The ID of the GitHub App that will be used to run Renovate.
-    required: false
+    required: true
   renovate_app_pem:
     deprecationMessage: Use the `renovate-app-private-key` input instead. This input will be removed in a future major release.
     description: The private key of the GitHub App that will be used to run Renovate.
     required: false
   renovate-app-private-key:
     description: The private key of the GitHub App that will be used to run Renovate.
-    required: false
+    required: true
   renovate_app_slug:
     deprecationMessage: The `renovate_app_slug` input is deprecated and will be removed in a future major release.
     description: The slug of the GitHub app to use for authentication.
@@ -171,7 +171,9 @@ runs:
           [
             "bot@renovateapp.com",
             "29139614+renovate[bot]@users.noreply.github.com",
-            "support@github.com"
+            "support@github.com",
+            "261136+bfra-me@users.noreply.github.com",
+            "${{ steps.configure.outputs.renovate-git-author-email }}"
           ]
         RENOVATE_HOST_RULES: |-
           [
