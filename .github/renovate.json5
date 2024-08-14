@@ -2,8 +2,8 @@
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
     'security:openssf-scorecard',
-    'github>bfra-me/renovate-config#v3.7.10',
-    'github>bfra-me/renovate-config:internal.json5#v3.7.10',
+    'github>bfra-me/renovate-config#3.8.0',
+    'github>bfra-me/renovate-config:internal.json5#3.8.0',
   ],
   automergeType: 'pr',
   customManagers: [
