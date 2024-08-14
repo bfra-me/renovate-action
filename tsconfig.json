@@ -7,5 +7,5 @@
     "target": "ESNext"
   },
   "exclude": ["dist", "node_modules", "**/*.test.ts"],
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts", "eslint.config.*"]
 }
