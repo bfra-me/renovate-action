@@ -13,7 +13,7 @@
       description: 'Update references to Renovate releases in README.md.',
       fileMatch: ['^(?:README|readme)\\.md$'],
       matchStrings: ['https://github\\.com/renovatebot/(?<depName>renovate)/releases/tag/(?<currentValue>[0-9\\.]+)'],
-      packageNameTemplate: 'ghcr.io/renovatebot/{{{depName}}}',
+      packageNameTemplate: 'renovatebot/{{{depName}}}',
     },
   ],
   packageRules: [
@@ -31,14 +31,9 @@
     },
     {
       description: 'Keep the bfra-me/renovate-config preset and @bfra-me reusable workflows pinned.',
-      matchPackageNames: ['bfra-me/renovate-config', 'bfra-me/.github/**'],
+      matchDepNames: ['bfra-me/.github'],
+      matchPackageNames: ['bfra-me/renovate-config'],
       updatePinnedDependencies: false,
-    },
-    {
-      description: 'Keep the bfra-me/renovate-config preset and @bfra-me reusable workflows pinned.',
-      matchPackageNames: ['bfra-me/renovate-config', 'bfra-me/.github/**'],
-      matchUpdateTypes: ['major'],
-      updatePinnedDependencies: true,
     },
 
     {
