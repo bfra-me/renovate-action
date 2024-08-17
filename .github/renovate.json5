@@ -2,8 +2,8 @@
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
     'security:openssf-scorecard',
-    'github>bfra-me/renovate-config#v3.9.2',
-    'github>bfra-me/renovate-config:internal.json5#v3.9.2',
+    'github>bfra-me/renovate-config#v3',
+    'github>bfra-me/renovate-config:internal.json5#v3',
   ],
   automergeType: 'pr',
   customManagers: [
@@ -30,12 +30,11 @@
       semanticCommitType: 'build',
     },
     {
-      description: 'Keep the bfra-me/renovate-config preset and @bfra-me reusable workflows pinned.',
-      matchDepNames: ['bfra-me/.github'],
+      description: 'Keep the bfra-me/renovate-config preset pinned.',
       matchPackageNames: ['bfra-me/renovate-config'],
+      rangeStrategy: 'pin',
       updatePinnedDependencies: false,
     },
-
     {
       description: 'Set the semantic commit type based on the type of update of Renovate dependencies.',
       matchPackageNames: [
