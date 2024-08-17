@@ -9,12 +9,11 @@
   customManagers: [
     {
       customType: 'regex',
-      datasourceTemplate: 'docker',
+      datasourceTemplate: 'github-releases',
       description: 'Update references to Renovate releases in README.md.',
       fileMatch: ['^(?:README|readme)\\.md$'],
       matchStrings: ['https://github\\.com/renovatebot/(?<depName>renovate)/releases/tag/(?<currentValue>[0-9\\.]+)'],
       packageNameTemplate: 'ghcr.io/renovatebot/{{{depName}}}',
-      versioningTemplate: 'node',
     },
   ],
   packageRules: [
@@ -31,9 +30,15 @@
       semanticCommitType: 'build',
     },
     {
-      description: 'Keep the bfra-me/renovate-config preset pinned.',
-      matchPackageNames: ['bfra-me/renovate-config'],
+      description: 'Keep the bfra-me/renovate-config preset and @bfra-me reusable workflows pinned.',
+      matchPackageNames: ['bfra-me/renovate-config', 'bfra-me/.github/**'],
       updatePinnedDependencies: false,
+    },
+    {
+      description: 'Keep the bfra-me/renovate-config preset and @bfra-me reusable workflows pinned.',
+      matchPackageNames: ['bfra-me/renovate-config', 'bfra-me/.github/**'],
+      matchUpdateTypes: ['major'],
+      updatePinnedDependencies: true,
     },
 
     {
