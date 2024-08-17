@@ -35,13 +35,6 @@
       matchPackageNames: ['bfra-me/renovate-config'],
       updatePinnedDependencies: false,
     },
-    {
-      description: 'Keep the bfra-me/renovate-config preset and @bfra-me reusable workflows pinned.',
-      matchDepNames: ['bfra-me/.github'],
-      matchPackageNames: ['bfra-me/renovate-config'],
-      matchUpdateTypes: ['major'],
-      updatePinnedDependencies: true,
-    },
 
     {
       description: 'Set the semantic commit type based on the type of update of Renovate dependencies.',
