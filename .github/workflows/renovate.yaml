@@ -16,6 +16,10 @@ name: Renovate
         required: false
         type: boolean
         default: false
+  workflow_run:
+    branches: [main]
+    types: [completed]
+    workflows: [CI]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.run_number || github.ref }}
@@ -58,8 +62,9 @@ jobs:
               - 'action.yaml'
       - env:
           dry_run: ${{ github.event_name == 'push' && github.ref != 'refs/heads/main' }}
-        if: github.event_name != 'push' || steps.filter.outputs.changes == 'true'
-        name: Renovate
+          if: >-
+            ${{ !contains('["push", "workflow_run"]', github.event_name) || github.event.workflow_run.conclusion == 'success' || steps.filter.outputs.changes == 'true' }}
+          name: Renovate
         uses: ./
         with:
           branch: ${{ env.dry_run == 'true' && github.ref_name || '' }}
