@@ -62,6 +62,6 @@
     commands: ['pnpm run bootstrap'],
     executionMode: 'branch',
   },
-  prCreation: 'immediate',
-  rebaseWhen: 'behind-base-branch',
+  prCreation: 'not-pending',
+  rebaseWhen: 'auto',
 }
