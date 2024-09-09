@@ -2072,8 +2072,8 @@ packages:
     resolution: {integrity: sha512-weEDEq7Z5eTHPDh4xjX789+fHfF+P8boiFB+0vbWzpbnbsEr/GRaohi/uMKxg8RZMXnl1ItAi/IUHWMsjDV7kQ==}
     engines: {node: '>=14.0.0'}
 
-  tinyspy@3.0.0:
-    resolution: {integrity: sha512-q5nmENpTHgiPVd1cJDDc9cVoYN5x4vCvwT3FMilvKPKneCBZAxn2YWQjDF0UMcE9k0Cay1gBiDfTMU0g+mPMQA==}
+  tinyspy@3.0.1:
+    resolution: {integrity: sha512-Zl/ko7fioZvaflejqwgnWwnTjr3K562tmyNFZADyRWYLXxkr2g+cuZ+lP+s2GRUV0PVCqqoDu0Rmx4fzdJnrZw==}
     engines: {node: '>=14.0.0'}
 
   to-regex-range@5.0.1:
@@ -2909,7 +2909,7 @@ snapshots:
 
   '@vitest/spy@2.0.2':
     dependencies:
-      tinyspy: 3.0.0
+      tinyspy: 3.0.1
 
   '@vitest/utils@2.0.2':
     dependencies:
@@ -4173,7 +4173,7 @@ snapshots:
 
   tinyrainbow@1.2.0: {}
 
-  tinyspy@3.0.0: {}
+  tinyspy@3.0.1: {}
 
   to-regex-range@5.0.1:
     dependencies:
