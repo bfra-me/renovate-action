@@ -13,8 +13,8 @@ importers:
         version: 1.10.1
     devDependencies:
       '@bfra.me/tsconfig':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.7.0
+        version: 0.7.0
       '@eslint-types/import':
         specifier: 2.29.1
         version: 2.29.1
@@ -93,8 +93,8 @@ packages:
     resolution: {integrity: sha512-EStJpq4OuY8xYfhGVXngigBJRWxftKX9ksiGDnmlY3o7B/V7KIAc9X4oiK87uPJSc/vs5L869bem5fhZa8caZw==}
     engines: {node: '>=6.9.0'}
 
-  '@bfra.me/tsconfig@0.6.0':
-    resolution: {integrity: sha512-YS/JhF+Ta3QsYpiZUk27BEaPxd8PvTeU+k8oN+gjIIg2n+hJBq9b/hdWww1CEOaDJaYrIYaJwUdWDcXt7w5kug==}
+  '@bfra.me/tsconfig@0.7.0':
+    resolution: {integrity: sha512-hJ/irdEfXYoMlgAJ0Tx7ji8R5yJPZuvOB39Hg0DLNghHa5RtnyREhYKBY8zKcxW9+5lII1luyg/AAU/zNuCLMQ==}
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -2317,7 +2317,7 @@ snapshots:
       js-tokens: 4.0.0
       picocolors: 1.1.0
 
-  '@bfra.me/tsconfig@0.6.0':
+  '@bfra.me/tsconfig@0.7.0':
     dependencies:
       '@tsconfig/strictest': 2.0.5
 
