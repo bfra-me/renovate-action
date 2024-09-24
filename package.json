@@ -37,7 +37,7 @@
     "@actions/core": "1.10.1"
   },
   "devDependencies": {
-    "@bfra.me/tsconfig": "0.7.0",
+    "@bfra.me/tsconfig": "0.8.1",
     "@eslint-types/import": "2.29.1",
     "@eslint-types/typescript-eslint": "7.5.0",
     "@eslint/js": "9.11.0",
