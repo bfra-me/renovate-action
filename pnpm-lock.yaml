@@ -13,8 +13,8 @@ importers:
         version: 1.10.1
     devDependencies:
       '@bfra.me/tsconfig':
-        specifier: 0.7.0
-        version: 0.7.0
+        specifier: 0.8.1
+        version: 0.8.1
       '@eslint-types/import':
         specifier: 2.29.1
         version: 2.29.1
@@ -93,8 +93,8 @@ packages:
     resolution: {integrity: sha512-EStJpq4OuY8xYfhGVXngigBJRWxftKX9ksiGDnmlY3o7B/V7KIAc9X4oiK87uPJSc/vs5L869bem5fhZa8caZw==}
     engines: {node: '>=6.9.0'}
 
-  '@bfra.me/tsconfig@0.7.0':
-    resolution: {integrity: sha512-hJ/irdEfXYoMlgAJ0Tx7ji8R5yJPZuvOB39Hg0DLNghHa5RtnyREhYKBY8zKcxW9+5lII1luyg/AAU/zNuCLMQ==}
+  '@bfra.me/tsconfig@0.8.1':
+    resolution: {integrity: sha512-6/gbTMCyxM9e4pr9/fiaqm+5qrGsIkZLj+7/UZwRXozSQQyN7vIgQCU/EbHzidAT7qsHMN2UgS53+jyfu9zMXg==}
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -645,9 +645,6 @@ packages:
   '@sindresorhus/merge-streams@4.0.0':
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
-
-  '@tsconfig/strictest@2.0.5':
-    resolution: {integrity: sha512-ec4tjL2Rr0pkZ5hww65c+EEPYwxOi4Ryv+0MtjeaSQRJyq322Q27eOQiFbuNgw2hpL4hB1/W/HBGk3VKS43osg==}
 
   '@types/eslint@9.6.1':
     resolution: {integrity: sha512-FXx2pKgId/WyYo2jXw63kk7/+TY7u7AziEJxJAnSFzHlqTAS3Ync6SvgYAN/k4/PQpnnVuzoMuVnByKK2qp0ag==}
@@ -2328,9 +2325,7 @@ snapshots:
       js-tokens: 4.0.0
       picocolors: 1.1.0
 
-  '@bfra.me/tsconfig@0.7.0':
-    dependencies:
-      '@tsconfig/strictest': 2.0.5
+  '@bfra.me/tsconfig@0.8.1': {}
 
   '@colors/colors@1.5.0':
     optional: true
@@ -2761,8 +2756,6 @@ snapshots:
   '@sindresorhus/merge-streams@2.3.0': {}
 
   '@sindresorhus/merge-streams@4.0.0': {}
-
-  '@tsconfig/strictest@2.0.5': {}
 
   '@types/eslint@9.6.1':
     dependencies:
