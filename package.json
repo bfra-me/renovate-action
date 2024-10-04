@@ -40,7 +40,7 @@
     "@bfra.me/tsconfig": "0.8.1",
     "@eslint-types/import": "2.29.1",
     "@eslint-types/typescript-eslint": "7.5.0",
-    "@eslint/js": "9.11.0",
+    "@eslint/js": "9.12.0",
     "@semantic-release/git": "10.0.1",
     "@types/eslint__js": "8.42.3",
     "@types/node": "20.16.0",
