@@ -44,7 +44,7 @@
     "@semantic-release/git": "10.0.1",
     "@types/eslint__js": "8.42.3",
     "@types/node": "20.16.0",
-    "@vercel/ncc": "0.38.1",
+    "@vercel/ncc": "0.38.2",
     "conventional-changelog-conventionalcommits": "8.0.0",
     "eslint": "9.13.0",
     "eslint-define-config": "2.1.0",
