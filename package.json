@@ -34,7 +34,7 @@
   "author": "Marcus R. Brown <git@mrbro.dev>",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "1.11.0"
+    "@actions/core": "1.11.1"
   },
   "devDependencies": {
     "@bfra.me/tsconfig": "0.8.1",
