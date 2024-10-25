@@ -95,10 +95,10 @@ runs:
             allowedPostUpgradeCommands: [
               '^(npx )?corepack(?:@\\d+(?:\\.\\d+\\.\\d+)?)? enable$',
               '^npm ci( --force)?( --ignore-scripts)?$',
-              '^npm install -g (npm|pnpm)(?:@\\d+(?:\\.\\d+\\.\\d+)?)?$',
-              '^(npx|pnpm|yarn) prettier(?:@\\d+(?:\\.\\d+\\.\\d+)?)?( --no-color)? --write \\.$',
+              '^npm install -g (npm|pnpm|yarn)(?:@\\d+(?:\\.\\d+\\.\\d+)?)?$',
+              '^(?:p?npx|pnpm|yarn) prettier(?:@\\d+(?:\\.\\d+\\.\\d+)?)?( --no-color)? --write \\.$',
               '^(pnpm|yarn) install( --force)?( --frozen-lockfile)?( --ignore-scripts)?$',
-              '^(npm|pnpm|yarn) run (bootstrap|build(-release)?|fix|format|update-snapshots)$',
+              '^(?:npm|pnpm|yarn)(?:\\srun)?\\s(?:bootstrap|build(-release)?|clean|fix|format|update-snapshots)$',
               '^yarn install( --force)?( --immutable)?( --immutable-cache)?$',
               '^(?:\\[ -w \\.npmrc \\] && )?git checkout -- \\.npmrc(?: \\|\\| true)?$',
             ],
