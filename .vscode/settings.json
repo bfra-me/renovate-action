@@ -1,7 +1,14 @@
 {
     "cSpell.words": ["actioneers", "automerge", "bfra", "conventionalcommits", "Parens"],
 
-    "eslint.experimental.useFlatConfig": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+
+    "eslint.options": {
+        "flags": ["unstable_ts_config"]
+    },
+    "eslint.useFlatConfig": true,
 
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "typescript.tsdk": "node_modules/typescript/lib"
