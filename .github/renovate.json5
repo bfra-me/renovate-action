@@ -56,11 +56,21 @@
       },
       schedule: ['after 8pm every weekday', 'before 8am every weekday', 'every weekend'],
     },
+    {
+      description: 'Show Merge Confidence, OpenSSF Scorecard, and Sourcegraph badges for Renovate dependencies.',
+      matchDatasources: ['go', 'maven', 'npm', 'nuget', 'packagist', 'pypi', 'rubygems'],
+      matchUpdateTypes: ['patch', 'minor', 'major'],
+      prBodyColumns: ['Package', 'Type', 'Update', 'Change', 'Pending', 'Age', 'Confidence', 'OpenSSF', 'Sourcegraph'],
+    },
   ],
   platformAutomerge: true,
   postUpgradeTasks: {
     commands: ['pnpm run bootstrap'],
     executionMode: 'branch',
+  },
+  prBodyColumns: ['Package', 'Type', 'Update', 'Change', 'Pending', 'Age', 'Confidence', 'OpenSSF', 'Sourcegraph'],
+  prBodyDefinitions: {
+    Sourcegraph: '[![code search for "{{{depName}}}"](https://sourcegraph.com/search/badge?q=repo:%5Egithub%5C.com/{{{repository}}}%24+case:yes+-file:package%28-lock%29%3F%5C.json+{{{depName}}}&label=matches)](https://sourcegraph.com/search?q=repo:%5Egithub%5C.com/{{{repository}}}%24+case:yes+-file:package%28-lock%29%3F%5C.json+{{{depName}}})',
   },
   prCreation: 'not-pending',
   rebaseWhen: 'auto',
