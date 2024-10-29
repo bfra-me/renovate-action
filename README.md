@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/bfra-me/renovate-action/releases/latest" title="Latest Release on GitHub"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/bfra-me/renovate-action?sort=semver&style=for-the-badge&logo=github&label=release"></a>
-  <a href="https://github.com/renovatebot/renovate/releases/tag/38.132.1" title="Renovate release"><img alt="Renovate" src="https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbfra-me%2Frenovate-action%2Fmain%2Faction.yaml&query=%24.runs.steps.1.env.RENOVATE_VERSION&style=for-the-badge&logo=renovatebot&label=renovate&color=377D9D"></a>
+  <a href="https://github.com/renovatebot/renovate/releases/tag/38.133.4" title="Renovate release"><img alt="Renovate" src="https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbfra-me%2Frenovate-action%2Fmain%2Faction.yaml&query=%24.runs.steps.1.env.RENOVATE_VERSION&style=for-the-badge&logo=renovatebot&label=renovate&color=377D9D"></a>
   <a href="https://github.com/bfra-me/renovate-action/actions?query=workflow%3Aci" title="Search GitHub Actions for CI workflow runs" ><img alt="GitHub Workflow CI Status" src="https://img.shields.io/github/actions/workflow/status/bfra-me/renovate-action/ci.yaml?branch=main&style=for-the-badge&logo=github%20actions&logoColor=white&label=ci"></a>
 </p>
 
