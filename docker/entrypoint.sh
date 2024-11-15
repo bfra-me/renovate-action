@@ -10,7 +10,7 @@ chmod a+x /usr/local/bin/yq
 yq --version
 
 # renovate: datasource=npm depName=pnpm
-export PNPM_VERSION=9.13.1
+export PNPM_VERSION=9.13.2
 install-tool pnpm $PNPM_VERSION
 
 runuser -u ubuntu renovate
