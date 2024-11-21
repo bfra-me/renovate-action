@@ -21,5 +21,6 @@ install-tool pnpm $PNPM_VERSION
 export YARN_VERSION=4.5.1
 install-tool yarn $YARN_VERSION
 
+[ ! -d /tmp/renovate ] && mkdir /tmp/renovate
 chown -R ubuntu:ubuntu /tmp/renovate
 runuser -u ubuntu renovate
