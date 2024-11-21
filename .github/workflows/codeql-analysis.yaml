@@ -3,9 +3,8 @@ name: CodeQL
 
 'on':
   pull_request:
-    types: [opened, synchronize]
   push:
-    branches: [main, 'renovate/**']
+    branches: [main]
   schedule:
     - cron: '31 7 * * 3' # Every Wednesday at 7:31am UTC
 
