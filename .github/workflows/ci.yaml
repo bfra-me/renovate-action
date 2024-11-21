@@ -4,7 +4,8 @@ name: CI
 'on':
   merge_group:
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches: [main]
+    types: [opened, synchronize, ready_for_review, reopened]
   push:
     branches: [main]
   workflow_dispatch:
@@ -41,32 +42,7 @@ jobs:
       - id: filter
         uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
         with:
-          filters: |
-            config: &config
-              - .github/**
-              - .node-version
-              - .npmrc
-              - eslint.config.js
-              - '**.json5?'
-              - '**.md'
-              - '**.yaml'
-              - '**.yml'
-            dist-changed:
-              - added|modified: 'dist/**'
-            src-changed: &src-changed
-              - .github/workflows/**
-              - .node-version
-              - .npmrc
-              - __tests__/**
-              - docker/**
-              - src/**
-              - action.yaml
-              - package.json
-              - pnpm-lock.yaml
-              - tsconfig.json
-            should-lint:
-              - added|modified: *config
-              - added|modified: *src-changed
+          filters: .github/filters.yaml
 
   lint:
     if: ${{ needs.setup.outputs.should-lint == 'true' }}
