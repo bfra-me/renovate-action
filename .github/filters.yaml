@@ -20,6 +20,10 @@ src-changed: &src-changed
   - package.json
   - pnpm-lock.yaml
   - tsconfig.json
+renovate-changed:
+  - '.github/workflows/renovate.yaml'
+  - '.github/renovate.json5'
+  - 'action.yaml'
 should-lint:
   - added|modified: *config
   - added|modified: *src-changed
