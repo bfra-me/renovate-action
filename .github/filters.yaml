@@ -1,0 +1,25 @@
+config: &config
+  - .github/**
+  - .node-version
+  - .npmrc
+  - eslint.config.js
+  - '**.json5?'
+  - '**.md'
+  - '**.yaml'
+  - '**.yml'
+dist-changed:
+  - added|modified: 'dist/**'
+src-changed: &src-changed
+  - .github/workflows/**
+  - .node-version
+  - .npmrc
+  - __tests__/**
+  - docker/**
+  - src/**
+  - action.yaml
+  - package.json
+  - pnpm-lock.yaml
+  - tsconfig.json
+should-lint:
+  - added|modified: *config
+  - added|modified: *src-changed
