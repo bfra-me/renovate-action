@@ -11,7 +11,12 @@ name: Renovate
     branches: ['**']
   workflow_dispatch:
     inputs:
-      print_config:
+      log-level:
+        description: Log level for Renovate
+        required: false
+        type: string
+        default: 'debug'
+      print-config:
         description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
         required: false
         type: boolean
@@ -37,6 +42,7 @@ jobs:
         contains(join(github.event.*.body, ''), '- [x] <!-- approve-branch=') ||
         contains(join(github.event.*.body, ''), '- [x] <!-- approvePr-branch=') ||
         contains(join(github.event.*.body, ''), '- [x] <!-- create-all-rate-limited-prs -->') ||
+        contains(join(github.event.*.body, ''), '- [x] <!-- create-config-migration-pr -->') ||
         contains(join(github.event.*.body, ''), '- [x] <!-- manual job -->') ||
         contains(join(github.event.*.body, ''), '- [x] <!-- other-branch=') ||
         contains(join(github.event.*.body, ''), '- [x] <!-- rebase-all-open-prs -->') ||
@@ -67,10 +73,10 @@ jobs:
           name: Renovate
         uses: ./
         with:
-          branch: ${{ env.dry_run == 'true' && github.ref_name || '' }}
+          branch: ${{ ( github.ref_name != github.event.repository.default_branch || env.dry_run == 'true' ) && github.ref_name || '' }}
           cache: true
           dry-run: ${{ env.dry_run }}
-          log-level: debug
-          print-config: ${{ inputs.print_config || github.event_name == 'push' }}
+          log-level: ${{ inputs.log-level || 'debug' }}
+          print-config: ${{ inputs.print-config || false }}
           renovate-app-id: ${{ secrets.APPLICATION_ID }}
           renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
