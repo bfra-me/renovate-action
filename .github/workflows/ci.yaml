@@ -144,7 +144,7 @@ jobs:
         with:
           app-id: ${{ secrets.APPLICATION_ID }}
           private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
-          repositories: ${{ github.repository }}
+          owner: ${{ github.repository_owner}}
       - id: get-user-id
         name: Get GitHub App User ID and Setup Git user
         env:
