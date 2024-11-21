@@ -26,6 +26,7 @@ jobs:
       node-version: ${{ steps.set-node-version.outputs.node-version }}
       should-lint: ${{ contains(steps.filter.outputs.changes, 'should-lint') }}
       src-changed: ${{ contains(steps.filter.outputs.changes, 'src-changed') }}
+      renovate-changed: ${{ contains(steps.filter.outputs.changes, 'renovate-changed') }}
     permissions:
       pull-requests: read
     runs-on: ubuntu-latest
@@ -96,6 +97,7 @@ jobs:
           path: dist/
 
   test:
+    if: ${{ github.event_name == 'push' || needs.setup.outputs.src-changed == 'true' }}
     name: Test
     needs: [setup]
     runs-on: ubuntu-latest
@@ -111,7 +113,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
       - run: pnpm test
-      - if: ${{ github.repository_owner == 'bfra-me' && github.ref_name != github.event.repository.default_branch }}
+      # Don't run a self test if Renovate configuration has changed as it will be run in the Renovate job
+      - if: github.repository_owner == 'bfra-me' && github.ref_name != github.event.repository.default_branch && needs.setup.outputs.renovate-changed != 'true'
         uses: ./
         with:
           dry-run: true
@@ -141,6 +144,7 @@ jobs:
         with:
           app-id: ${{ secrets.APPLICATION_ID }}
           private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner}}
       - id: get-user-id
         name: Get GitHub App User ID and Setup Git user
         env:
