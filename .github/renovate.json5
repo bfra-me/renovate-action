@@ -19,6 +19,7 @@
   packageRules: [
     {
       matchDatasources: ['docker'],
+      pinDigests: false,
       semanticCommitType: 'build',
     },
     {
@@ -71,7 +72,7 @@
         'renovate',
       ],
       matchUpdateTypes: ['major'],
-      groupName: 'Renovate major',
+      groupName: 'Renovate',
     },
     {
       description: 'Show Merge Confidence, OpenSSF Scorecard, and Sourcegraph badges for Renovate dependencies.',
