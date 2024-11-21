@@ -36,6 +36,12 @@
       updatePinnedDependencies: false,
     },
     {
+      description: 'Keep the bfra-me/renovate-config preset pinned.',
+      matchPackageNames: ['bfra-me/renovate-config'],
+      matchUpdateTypes: ['major'],
+      updatePinnedDependencies: true,
+    },
+    {
       description: 'Set the semantic commit type based on the type of update of Renovate dependencies.',
       matchPackageNames: [
         'ghcr.io/renovatebot/renovate',
@@ -55,6 +61,17 @@
         semanticCommitType: 'fix',
       },
       schedule: ['after 8pm every weekday', 'before 8am every weekday', 'every weekend'],
+    },
+    {
+      description: 'Group major version updates of Renovate dependencies.',
+      matchPackageNames: [
+        'ghcr.io/renovatebot/renovate',
+        'renovatebot/renovate',
+        'renovatebot/github-action',
+        'renovate',
+      ],
+      matchUpdateTypes: ['major'],
+      groupName: 'Renovate major',
     },
     {
       description: 'Show Merge Confidence, OpenSSF Scorecard, and Sourcegraph badges for Renovate dependencies.',
