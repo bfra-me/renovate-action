@@ -37,7 +37,7 @@
     "@actions/core": "1.11.1"
   },
   "devDependencies": {
-    "@bfra.me/eslint-config": "0.4.7",
+    "@bfra.me/eslint-config": "0.4.8",
     "@bfra.me/tsconfig": "0.9.1",
     "@semantic-release/git": "10.0.1",
     "@types/node": "22.9.3",
