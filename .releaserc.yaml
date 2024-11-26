@@ -14,6 +14,7 @@ plugins:
 
   - - '@semantic-release/github'
     - releasedLabels: false
+      successComment: false
 
   - 'semantic-release-export-data'
 
