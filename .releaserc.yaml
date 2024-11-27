@@ -58,3 +58,5 @@ presetConfig:
       section: 'Miscellaneous Chores'
     - type: skip
       hidden: true
+
+tagFormat: '${version}'
