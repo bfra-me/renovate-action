@@ -15,51 +15,24 @@ inputs:
     description: Enable the Renovate cache.
     required: false
     default: 'false'
-  dry_run:
-    deprecationMessage: Use the `dry-run` input instead. This input will be removed in a future major release.
-    description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
-    required: false
-    default: 'false'
   dry-run:
     description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
     required: false
     default: 'false'
-  log_level:
-    deprecationMessage: Use the `log-level` input instead. This input will be removed in a future major release.
-    description: Set the log level.
-    required: false
-    default: 'info'
   log-level:
     description: Set the log level.
     required: false
     default: 'info'
-  print_config:
-    deprecationMessage: Use the `print-config` input instead. This input will be removed in a future major release.
-    description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
-    required: false
-    default: 'false'
   print-config:
     description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
     required: false
     default: 'false'
-  renovate_app_id:
-    deprecationMessage: Use the `renovate-app-id` input instead. This input will be removed in a future major release.
-    description: The ID of the GitHub App that will be used to run Renovate.
-    required: false
   renovate-app-id:
     description: The ID of the GitHub App that will be used to run Renovate.
     required: true
-  renovate_app_pem:
-    deprecationMessage: Use the `renovate-app-private-key` input instead. This input will be removed in a future major release.
-    description: The private key of the GitHub App that will be used to run Renovate.
-    required: false
   renovate-app-private-key:
     description: The private key of the GitHub App that will be used to run Renovate.
     required: true
-  renovate_app_slug:
-    deprecationMessage: The `renovate_app_slug` input is deprecated and will be removed in a future major release.
-    description: The slug of the GitHub app to use for authentication.
-    required: false
 
 outputs:
   docker-image:
