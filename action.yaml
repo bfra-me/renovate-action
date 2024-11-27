@@ -48,8 +48,8 @@ runs:
       name: Get Renovate GitHub App Installation
       uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
       with:
-        app-id: ${{ inputs.renovate-app-id || inputs.renovate_app_id }}
-        private-key: ${{ inputs.renovate-app-private-key || inputs.renovate_app_pem }}
+        app-id: ${{ inputs.renovate-app-id }}
+        private-key: ${{ inputs.renovate-app-private-key }}
         owner: ${{ github.repository_owner }}
 
     - name: Configure
@@ -57,10 +57,10 @@ runs:
       env:
         RENOVATE_VERSION: 39.33.0 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate versioning=semver
         autodiscover: ${{ inputs.autodiscover != '' && inputs.autodiscover || 'false' }}
-        dry_run: ${{ inputs.dry-run != '' && inputs.dry-run || inputs.dry_run != '' && inputs.dry_run || 'false' }}
-        log_level: ${{ inputs.log-level != '' && inputs.log-level || inputs.log_level != '' && inputs.log_level || 'info' }}
-        print_config: ${{ inputs.print-config != '' && inputs.print-config || inputs.print_config != '' && inputs.print_config || 'false' }}
-        renovate_app_id: ${{ inputs.renovate-app-id || inputs.renovate_app_id }}
+        dry_run: ${{ inputs.dry-run != '' && inputs.dry-run || 'false' }}
+        log_level: ${{ inputs.log-level != '' && inputs.log-level || 'info' }}
+        print_config: ${{ inputs.print-config != '' && inputs.print-config || 'false' }}
+        renovate_app_id: ${{ inputs.renovate-app-id }}
         renovate_app_slug: ${{ steps.get-renovate-app.outputs.app-slug }}
         cache: ${{ inputs.cache == 'true' }}
         zzglobal_config: |-
@@ -151,13 +151,6 @@ runs:
             "137683033+mrbro-bot[bot]@users.noreply.github.com",
             "109017866+fro-bot[bot]@users.noreply.github.com",
             "${{ steps.configure.outputs.renovate-git-author-email }}"
-          ]
-        RENOVATE_HOST_RULES: |-
-          [
-            {
-              "abortIgnoreStatusCodes": [404],
-              "abortOnError": true
-            }
           ]
         RENOVATE_PLATFORM: github
         RENOVATE_PRESET_CACHE_PERSISTENCE: ${{ steps.configure.outputs.enable-cache == 'true' }}
