@@ -15,51 +15,24 @@ inputs:
     description: Enable the Renovate cache.
     required: false
     default: 'false'
-  dry_run:
-    deprecationMessage: Use the `dry-run` input instead. This input will be removed in a future major release.
-    description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
-    required: false
-    default: 'false'
   dry-run:
     description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
     required: false
     default: 'false'
-  log_level:
-    deprecationMessage: Use the `log-level` input instead. This input will be removed in a future major release.
-    description: Set the log level.
-    required: false
-    default: 'info'
   log-level:
     description: Set the log level.
     required: false
     default: 'info'
-  print_config:
-    deprecationMessage: Use the `print-config` input instead. This input will be removed in a future major release.
-    description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
-    required: false
-    default: 'false'
   print-config:
     description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
     required: false
     default: 'false'
-  renovate_app_id:
-    deprecationMessage: Use the `renovate-app-id` input instead. This input will be removed in a future major release.
-    description: The ID of the GitHub App that will be used to run Renovate.
-    required: false
   renovate-app-id:
     description: The ID of the GitHub App that will be used to run Renovate.
     required: true
-  renovate_app_pem:
-    deprecationMessage: Use the `renovate-app-private-key` input instead. This input will be removed in a future major release.
-    description: The private key of the GitHub App that will be used to run Renovate.
-    required: false
   renovate-app-private-key:
     description: The private key of the GitHub App that will be used to run Renovate.
     required: true
-  renovate_app_slug:
-    deprecationMessage: The `renovate_app_slug` input is deprecated and will be removed in a future major release.
-    description: The slug of the GitHub app to use for authentication.
-    required: false
 
 outputs:
   docker-image:
@@ -75,19 +48,19 @@ runs:
       name: Get Renovate GitHub App Installation
       uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
       with:
-        app-id: ${{ inputs.renovate-app-id || inputs.renovate_app_id }}
-        private-key: ${{ inputs.renovate-app-private-key || inputs.renovate_app_pem }}
+        app-id: ${{ inputs.renovate-app-id }}
+        private-key: ${{ inputs.renovate-app-private-key }}
         owner: ${{ github.repository_owner }}
 
     - name: Configure
       id: configure
       env:
-        RENOVATE_VERSION: 38.142.7 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate versioning=semver
+        RENOVATE_VERSION: 39.33.0 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate versioning=semver
         autodiscover: ${{ inputs.autodiscover != '' && inputs.autodiscover || 'false' }}
-        dry_run: ${{ inputs.dry-run != '' && inputs.dry-run || inputs.dry_run != '' && inputs.dry_run || 'false' }}
-        log_level: ${{ inputs.log-level != '' && inputs.log-level || inputs.log_level != '' && inputs.log_level || 'info' }}
-        print_config: ${{ inputs.print-config != '' && inputs.print-config || inputs.print_config != '' && inputs.print_config || 'false' }}
-        renovate_app_id: ${{ inputs.renovate-app-id || inputs.renovate_app_id }}
+        dry_run: ${{ inputs.dry-run != '' && inputs.dry-run || 'false' }}
+        log_level: ${{ inputs.log-level != '' && inputs.log-level || 'info' }}
+        print_config: ${{ inputs.print-config != '' && inputs.print-config || 'false' }}
+        renovate_app_id: ${{ inputs.renovate-app-id }}
         renovate_app_slug: ${{ steps.get-renovate-app.outputs.app-slug }}
         cache: ${{ inputs.cache == 'true' }}
         zzglobal_config: |-
@@ -153,7 +126,7 @@ runs:
       shell: 'bash -Eeuo pipefail {0}'
 
     - name: Renovate ${{ steps.configure.outputs.renovate-version }}
-      uses: renovatebot/github-action@0984fb80fc633b17e57f3e8b6c007fe0dc3e0d62 # v40.3.6
+      uses: renovatebot/github-action@757597d1bb6993c6406e207997a85f2b20ff39be # v41.0.4
       env:
         FORCE_COLOR: '3'
         LOG_LEVEL: ${{ steps.configure.outputs.log-level }}
@@ -178,13 +151,6 @@ runs:
             "137683033+mrbro-bot[bot]@users.noreply.github.com",
             "109017866+fro-bot[bot]@users.noreply.github.com",
             "${{ steps.configure.outputs.renovate-git-author-email }}"
-          ]
-        RENOVATE_HOST_RULES: |-
-          [
-            {
-              "abortIgnoreStatusCodes": [404],
-              "abortOnError": true
-            }
           ]
         RENOVATE_PLATFORM: github
         RENOVATE_PRESET_CACHE_PERSISTENCE: ${{ steps.configure.outputs.enable-cache == 'true' }}
