@@ -57,7 +57,7 @@
       commitBody: '{{#if hasReleaseNotes}}{{{body}}}{{/if}}',
       commitMessageTopic: '{{{depName}}}',
       major: {
-        semanticCommitType: 'feat!',
+        commitMessagePrefix: 'feat(deps)!:',
       },
       minor: {
         semanticCommitType: 'feat',
