@@ -94,5 +94,6 @@ typings/
 .DS_Store
 Thumbs.db
 
-# TypeScript type declarations and maps under `dist/`
+# TypeScript type declarations and sourcemaps under `dist/`
 dist/**/*.d.ts*
+dist/**/*.js.map
