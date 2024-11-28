@@ -16,8 +16,8 @@ importers:
         specifier: 0.4.9
         version: 0.4.9(@typescript-eslint/eslint-plugin@8.15.0(@typescript-eslint/parser@8.15.0(eslint@9.15.0(jiti@2.4.0))(typescript@5.7.2))(eslint@9.15.0(jiti@2.4.0))(typescript@5.7.2))(@vitest/eslint-plugin@1.1.10(@typescript-eslint/utils@8.15.0(eslint@9.15.0(jiti@2.4.0))(typescript@5.7.2))(eslint@9.15.0(jiti@2.4.0))(typescript@5.7.2)(vitest@2.1.5(@types/node@22.9.3)))(eslint-plugin-no-only-tests@3.3.0)(eslint@9.15.0(jiti@2.4.0))(typescript@5.7.2)
       '@bfra.me/tsconfig':
-        specifier: 0.9.1
-        version: 0.9.1
+        specifier: 0.9.2
+        version: 0.9.2
       '@semantic-release/changelog':
         specifier: 6.0.3
         version: 6.0.3(semantic-release@24.2.0(typescript@5.7.2))
@@ -104,8 +104,8 @@ packages:
       eslint-plugin-no-only-tests:
         optional: true
 
-  '@bfra.me/tsconfig@0.9.1':
-    resolution: {integrity: sha512-ThHia47cCABmg7c7KqunUQjl8wDXtbOEo0tbWHAxk+YmkoGiblTx9MmADFD3DoZ2KBKN8S9IDVjLz8ZD5D9t8A==}
+  '@bfra.me/tsconfig@0.9.2':
+    resolution: {integrity: sha512-L1V6tUpYKG8vHK2Z4oxh6c6jsVOEDm0AqigCf2L6P3dJGRYlKOixS2lWrmw/ql9mNH2/sDtrxxmnpvndPFiaFg==}
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -2901,7 +2901,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@bfra.me/tsconfig@0.9.1': {}
+  '@bfra.me/tsconfig@0.9.2': {}
 
   '@colors/colors@1.5.0':
     optional: true
