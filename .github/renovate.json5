@@ -27,7 +27,7 @@
       semanticCommitType: 'build',
     },
     {
-      matchPackageNames: ['@vercel/ncc', 'typescript'],
+      matchPackageNames: ['tsup', 'typescript'],
       semanticCommitType: 'build',
     },
     {
@@ -94,7 +94,7 @@
   ],
   platformAutomerge: true,
   postUpgradeTasks: {
-    commands: ['pnpm run bootstrap'],
+    commands: ['pnpm run bootstrap', 'pnpm run fix', 'pnpm run build'],
     executionMode: 'branch',
   },
   prBodyDefinitions: {
