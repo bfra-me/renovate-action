@@ -14,6 +14,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 defaults:
   run:
     shell: 'bash -Eeuxo pipefail {0}'
