@@ -27,7 +27,7 @@ jobs:
     outputs:
       dist-changed: ${{ contains(steps.filter.outputs.changes, 'dist-changed') }}
       node-version: ${{ steps.set-node-version.outputs.node-version }}
-      should-lint: ${{ contains(steps.filter.outputs.changes, 'should-lint') }}
+      should-check: ${{ contains(steps.filter.outputs.changes, 'should-check') }}
       src-changed: ${{ contains(steps.filter.outputs.changes, 'src-changed') }}
       renovate-changed: ${{ contains(steps.filter.outputs.changes, 'renovate-changed') }}
     permissions:
@@ -42,15 +42,15 @@ jobs:
         with:
           cache: pnpm
           node-version-file: '.node-version'
-      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm bootstrap --frozen-lockfile
       - id: filter
         uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
         with:
           filters: .github/filters.yaml
 
-  lint:
-    if: ${{ needs.setup.outputs.should-lint == 'true' }}
-    name: Lint
+  check:
+    if: ${{ needs.setup.outputs.should-check == 'true' }}
+    name: Check
     needs: [setup]
     runs-on: ubuntu-latest
     steps:
@@ -62,8 +62,8 @@ jobs:
         with:
           cache: pnpm
           node-version: ${{ needs.setup.outputs.node-version }}
-      - run: pnpm install --frozen-lockfile --ignore-scripts
-      - run: pnpm lint
+      - run: pnpm bootstrap --frozen-lockfile
+      - run: pnpm check
 
   build:
     if: ${{ github.event_name == 'push' || needs.setup.outputs.src-changed == 'true' }}
@@ -80,7 +80,7 @@ jobs:
           cache: pnpm
           node-version: ${{ needs.setup.outputs.node-version }}
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --ignore-scripts
+        run: pnpm bootstrap --frozen-lockfile
       - name: Rebuild the dist/ directory
         run: pnpm build-release
       - if: ${{ needs.setup.outputs.dist-changed == 'true' }}
@@ -114,7 +114,7 @@ jobs:
           cache: pnpm
           node-version: ${{ needs.setup.outputs.node-version }}
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --ignore-scripts
+        run: pnpm bootstrap --frozen-lockfile
       - run: pnpm test
       # Don't run a self test if Renovate configuration has changed as it will be run in the Renovate job
       - if: github.repository_owner == 'bfra-me' && github.ref_name != github.event.repository.default_branch && needs.setup.outputs.renovate-changed != 'true'
@@ -130,7 +130,7 @@ jobs:
       DRY_RUN: ${{ github.ref_name != github.event.repository.default_branch }}
       RELEASE_BRANCH: release
     name: Release
-    needs: [setup, lint, test, build]
+    needs: [setup, check, test, build]
     outputs:
       commit: ${{ steps.merge.outputs.commit }}
       version: ${{ steps.semantic-release.outputs.version }}
@@ -187,7 +187,7 @@ jobs:
           cache: pnpm
           node-version: ${{ needs.setup.outputs.node-version }}
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm bootstrap --frozen-lockfile
       - if: env.DRY_RUN != 'true'
         name: Build release
         run: pnpm build-release

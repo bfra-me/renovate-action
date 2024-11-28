@@ -24,6 +24,6 @@ renovate-changed:
   - '.github/workflows/renovate.yaml'
   - '.github/renovate.json5'
   - 'action.yaml'
-should-lint:
+should-check:
   - added|modified: *config
   - added|modified: *src-changed
