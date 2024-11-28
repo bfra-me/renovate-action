@@ -82,7 +82,7 @@ jobs:
       - name: Install dependencies
         run: pnpm bootstrap --frozen-lockfile
       - name: Rebuild the dist/ directory
-        run: pnpm build-release
+        run: pnpm build
       - if: ${{ needs.setup.outputs.dist-changed == 'true' }}
         name: Compare the expected and actual dist/ directories
         run: |
@@ -190,7 +190,7 @@ jobs:
         run: pnpm bootstrap --frozen-lockfile
       - if: env.DRY_RUN != 'true'
         name: Build release
-        run: pnpm build-release
+        run: pnpm build
       - name: Semantic Release
         id: semantic-release
         env:

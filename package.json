@@ -9,7 +9,6 @@
   "scripts": {
     "bootstrap": "pnpm install --prefer-frozen-lockfile --ignore-scripts --prefer-offline --loglevel error",
     "build": "tsup",
-    "build-release": "tsup --minify",
     "dev": "tsup --watch",
     "fix": "pnpm run format && pnpm run lint --fix",
     "format": "prettier --write .",

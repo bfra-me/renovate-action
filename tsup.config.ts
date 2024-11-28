@@ -6,7 +6,6 @@ import type {Dependency} from 'esbuild-plugin-license'
 
 export const tsup: Options = {
   banner: {js: "import {createRequire} from 'node:module';const require=createRequire(import.meta.url);"},
-  clean: true,
   dts: true,
   entry: {index: 'src/main.ts'},
   esbuildPlugins: [
@@ -24,6 +23,7 @@ export const tsup: Options = {
   ],
   format: ['esm'],
   ignoreWatch: ['**/dist', '**/node_modules'],
+  minify: true,
   noExternal: ['@actions/core'],
   watch: process.argv.includes('--watch'),
 }
