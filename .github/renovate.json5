@@ -2,11 +2,9 @@
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
     'security:openssf-scorecard',
+    'github>sanity-io/renovate-config:semantic-commit-type',
     'github>bfra-me/renovate-config#v3',
     'github>bfra-me/renovate-config:internal.json5#v3',
-    'github>sanity-io/renovate-config:semantic-commit-type',
-    'security:openssf-scorecard',
-    'npm:unpublishSafe',
   ],
   automergeType: 'pr',
   ignorePresets: ['mergeConfidence:age-confidence-badges', 'mergeConfidence:all-badges'],
