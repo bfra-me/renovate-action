@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@bfra.me/eslint-config": "0.7.1",
-    "@bfra.me/tsconfig": "0.9.3",
+    "@bfra.me/tsconfig": "0.9.4",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
     "@swc/core": "1.9.3",
