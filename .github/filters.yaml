@@ -21,9 +21,9 @@ src-changed: &src-changed
   - pnpm-lock.yaml
   - tsconfig.json
 renovate-changed:
-  - '.github/workflows/renovate.yaml'
-  - '.github/renovate.json5'
-  - 'action.yaml'
+  - .github/workflows/renovate.yaml
+  - .github/renovate.json5
+  - action.yaml
 should-check:
   - added|modified: *config
   - added|modified: *src-changed

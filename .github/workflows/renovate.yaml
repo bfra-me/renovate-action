@@ -2,7 +2,7 @@
 # Renovate this repository if Renovate-specific tasks are checked or if dispatched.
 name: Renovate
 
-'on':
+on:
   issues:
     types: [edited]
   pull_request:
@@ -15,7 +15,7 @@ name: Renovate
         description: Log level for Renovate
         required: false
         type: string
-        default: 'debug'
+        default: debug
       print-config:
         description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
         required: false
@@ -24,7 +24,7 @@ name: Renovate
   workflow_run:
     branches: [main]
     types: [completed]
-    workflows: ['Main']
+    workflows: [Main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.run_number || github.ref }}

@@ -1,5 +1,5 @@
 branches:
-  - 'release'
+  - release
 
 plugins:
   - '@semantic-release/commit-analyzer'
@@ -11,14 +11,14 @@ plugins:
   - '@semantic-release/npm'
 
   - - '@semantic-release/git'
-    - assets: ['dist', 'package.json']
+    - assets: [dist, package.json]
       message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}'
 
   - - '@semantic-release/github'
     - releasedLabels: false
       successComment: false
 
-  - 'semantic-release-export-data'
+  - semantic-release-export-data
 
 analyzeCommits:
   releaseRules:
@@ -35,29 +35,29 @@ preset: conventionalcommits
 presetConfig:
   types:
     - type: feat
-      section: 'Features'
+      section: Features
     - type: feature
-      section: 'Features'
+      section: Features
     - type: build
-      section: 'Build System'
+      section: Build System
     - type: fix
-      section: 'Bug Fixes'
+      section: Bug Fixes
     - type: docs
-      section: 'Documentation'
+      section: Documentation
     - type: test
-      section: 'Tests'
+      section: Tests
     - type: ci
-      section: 'Continuous Integration'
+      section: Continuous Integration
     - type: style
-      section: 'Styles'
+      section: Styles
     - type: refactor
-      section: 'Code Refactoring'
+      section: Code Refactoring
     - type: perf
-      section: 'Performance Improvements'
+      section: Performance Improvements
     - type: revert
-      section: 'Reverts'
+      section: Reverts
     - type: chore
-      section: 'Miscellaneous Chores'
+      section: Miscellaneous Chores
     - type: skip
       hidden: true
 
