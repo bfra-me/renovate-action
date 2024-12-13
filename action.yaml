@@ -22,7 +22,7 @@ inputs:
   log-level:
     description: Set the log level.
     required: false
-    default: 'info'
+    default: info
   print-config:
     description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
     required: false
@@ -134,8 +134,8 @@ runs:
         RENOVATE_AUTODISCOVER_FILTER: ${{ steps.configure.outputs.autodiscover == 'false' && github.repository || '' }}
         RENOVATE_BASE_BRANCHES: ${{ steps.configure.outputs.base-branches }}
         RENOVATE_USE_BASE_BRANCH_CONFIG: ${{ steps.configure.outputs.base-branches && 'merge' || 'none' }}
-        RENOVATE_BRANCH_PREFIX_OLD: 'renovate-github/'
-        RENOVATE_BINARY_SOURCE: 'install'
+        RENOVATE_BRANCH_PREFIX_OLD: renovate-github/
+        RENOVATE_BINARY_SOURCE: install
         RENOVATE_CACHE_DIR: ${{ steps.configure.outputs.cache-dir }}
         RENOVATE_CONFIG: ${{ steps.configure.outputs.global-config }}
         RENOVATE_DEPENDENCY_DASHBOARD_FOOTER: '\n- [ ] <!-- manual job -->Check here to trigger a Renovate run on this repository\n'
