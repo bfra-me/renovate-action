@@ -26,7 +26,7 @@ Include the following workflow in your repository:
 ---
 name: Renovate
 
-'on':
+on:
   push:
     branches:
       - main

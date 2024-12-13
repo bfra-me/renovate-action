@@ -1,7 +1,7 @@
 ---
 name: Main
 
-'on':
+on:
   merge_group:
   pull_request:
     branches: [main]
@@ -41,7 +41,7 @@ jobs:
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
           cache: pnpm
-          node-version-file: '.node-version'
+          node-version-file: .node-version
       - run: pnpm bootstrap --frozen-lockfile
       - id: filter
         uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
