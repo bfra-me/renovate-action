@@ -7,7 +7,7 @@
   "description": "GitHub Action for Self-Hosted Renovate",
   "main": "dist/index.js",
   "scripts": {
-    "bootstrap": "pnpm install --prefer-frozen-lockfile --ignore-scripts --prefer-offline --loglevel error",
+    "bootstrap": "pnpm install --prefer-offline --loglevel error",
     "build": "tsup",
     "dev": "tsup --watch",
     "fix": "pnpm run format && pnpm run lint --fix",
