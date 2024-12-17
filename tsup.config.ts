@@ -1,8 +1,7 @@
-//  @ts-expect-error TS7016 Could not find a declaration file for module 'esbuild-plugin-license'.
-import type {Dependency} from 'esbuild-plugin-license'
 import type {Options} from 'tsup'
-// @ts-expect-error TS7016 Could not find a declaration file for module 'esbuild-plugin-license'.
-import esbuildPluginLicense from 'esbuild-plugin-license'
+import process from 'node:process'
+//  @ts-expect-error TS7016 Could not find a declaration file for module 'esbuild-plugin-license'.
+import esbuildPluginLicense, {type Dependency} from 'esbuild-plugin-license'
 
 export const tsup: Options = {
   banner: {js: "import {createRequire} from 'node:module';const require=createRequire(import.meta.url);"},
