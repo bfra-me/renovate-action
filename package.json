@@ -12,7 +12,7 @@
     "dev": "tsup --watch",
     "fix": "pnpm run format && pnpm run lint --fix",
     "format": "prettier --write .",
-    "lint": "eslint --flag unstable_ts_config .",
+    "lint": "eslint .",
     "check": "pnpm run check-types && pnpm run check-format && pnpm run lint",
     "check-format": "prettier --check .",
     "check-types": "tsc",
