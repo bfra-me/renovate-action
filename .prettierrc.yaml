@@ -1,13 +1,2 @@
 ---
-arrowParens: avoid
-bracketSpacing: false
-jsxSingleQuote: true
-overrides:
-  - files:
-      - '.vscode/**/*.json'
-    options:
-      tabWidth: 4
-printWidth: 120
-semi: false
-singleQuote: true
-tabWidth: 2
+'@bfra.me/prettier-config/120-proof'
