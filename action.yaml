@@ -65,7 +65,7 @@ runs:
         cache: ${{ inputs.cache == 'true' }}
         zzglobal_config: |-
           {
-            allowedCommands: [
+            allowedPostUpgradeCommands: [
               '^(npx )?corepack(?:@\\d+(?:\\.\\d+\\.\\d+)?)? enable$',
               '^npm ci( --force)?( --ignore-scripts)?$',
               '^npm install -g (npm|pnpm|yarn)(?:@\\d+(?:\\.\\d+\\.\\d+)?)?$',
