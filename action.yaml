@@ -55,7 +55,7 @@ runs:
     - name: Configure
       id: configure
       env:
-        RENOVATE_VERSION: 39.137.2 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate versioning=semver
+        RENOVATE_VERSION: 39.138.0 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate versioning=semver
         autodiscover: ${{ inputs.autodiscover != '' && inputs.autodiscover || 'false' }}
         dry_run: ${{ inputs.dry-run != '' && inputs.dry-run || 'false' }}
         log_level: ${{ inputs.log-level != '' && inputs.log-level || 'info' }}
