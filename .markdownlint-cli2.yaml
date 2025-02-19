@@ -4,3 +4,6 @@ config:
   MD033:
     allowed_elements: [a, h3, img, p]
   MD041: false
+
+globs:
+  - '!.cursorrules'

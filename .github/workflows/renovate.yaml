@@ -38,7 +38,7 @@ jobs:
     if: >-
       (github.event_name != 'issues' && github.event_name != 'pull_request') ||
       (
-        (github.event_name != 'pull_request' || startsWith(github.head_ref, 'renovate/')) &&
+        (startsWith(github.head_ref, 'renovate/') || startsWith(github.ref_name, 'renovate/')) &&
         (
           contains(join(github.event.*.body, ''), '- [x] <!-- approve-all-pending-prs -->') ||
           contains(join(github.event.*.body, ''), '- [x] <!-- approve-branch=') ||
