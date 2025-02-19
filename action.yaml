@@ -113,7 +113,7 @@ runs:
     - name: Restore Renovate Cache
       id: renovate-cache
       if: steps.configure.outputs.enable-cache == 'true'
-      uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+      uses: actions/cache/restore@0c907a75c2c80ebcb7f088228285e798b750cf8f # v4.2.1
       with:
         enableCrossOsArchive: true
         key: ${{ steps.configure.outputs.cache-key }}
@@ -184,7 +184,7 @@ runs:
         (success() || failure()) &&
         steps.configure.outputs.enable-cache == 'true' &&
         steps.renovate-cache.outputs.cache-hit != 'true' || github.event_name == 'push'
-      uses: actions/cache/save@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+      uses: actions/cache/save@0c907a75c2c80ebcb7f088228285e798b750cf8f # v4.2.1
       with:
         enableCrossOsArchive: true
         key: ${{ steps.configure.outputs.cache-key }}
