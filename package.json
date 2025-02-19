@@ -16,7 +16,7 @@
     "check": "pnpm run check-types && pnpm run lint",
     "check-format": "prettier --check .",
     "check-types": "tsc",
-    "test": "vitest"
+    "test": "vitest run"
   },
   "repository": {
     "type": "git",
