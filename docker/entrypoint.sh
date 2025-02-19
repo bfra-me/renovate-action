@@ -14,7 +14,7 @@ export NODE_VERSION=22.11.0
 install-tool node $NODE_VERSION
 
 # renovate: datasource=npm depName=pnpm
-export PNPM_VERSION=9.15.4
+export PNPM_VERSION=9.15.5
 install-tool pnpm $PNPM_VERSION
 
 # renovate: datasource=npm packageName=@yarnpkg/cli-dist
