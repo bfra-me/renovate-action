@@ -38,8 +38,8 @@
     "@actions/core": "1.11.1"
   },
   "devDependencies": {
-    "@bfra.me/eslint-config": "0.16.4",
-    "@bfra.me/prettier-config": "0.15.1",
+    "@bfra.me/eslint-config": "0.16.5",
+    "@bfra.me/prettier-config": "0.15.2",
     "@bfra.me/tsconfig": "0.9.7",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
