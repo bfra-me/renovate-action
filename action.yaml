@@ -8,6 +8,10 @@ inputs:
     description: Autodiscover all repositories.
     required: false
     default: 'false'
+  autodiscover-filter:
+    description: Filter repositories to autodiscover.
+    required: false
+    default: '[]'
   branch:
     description: Run Renovate on this branch.
     required: false
@@ -131,7 +135,7 @@ runs:
         FORCE_COLOR: '3'
         LOG_LEVEL: ${{ steps.configure.outputs.log-level }}
         RENOVATE_AUTODISCOVER: 'true'
-        RENOVATE_AUTODISCOVER_FILTER: ${{ steps.configure.outputs.autodiscover == 'false' && github.repository || '' }}
+        RENOVATE_AUTODISCOVER_FILTER: ${{ steps.configure.outputs.autodiscover == 'false' && github.repository || inputs.autodiscover-filter != '[]' && toJSON(fromJSON(inputs.autodiscover-filter)) || '' }}
         RENOVATE_BASE_BRANCHES: ${{ steps.configure.outputs.base-branches }}
         RENOVATE_USE_BASE_BRANCH_CONFIG: ${{ steps.configure.outputs.base-branches && 'merge' || 'none' }}
         RENOVATE_BRANCH_PREFIX_OLD: renovate-github/
