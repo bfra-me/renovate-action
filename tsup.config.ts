@@ -25,7 +25,6 @@ export const tsup: Options = {
   minify: true,
   noExternal: ['@actions/core'],
   sourcemap: true,
-  treeshake: 'smallest',
   watch: process.argv.includes('--watch'),
 }
 
