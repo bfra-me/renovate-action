@@ -1,6 +1,6 @@
 config: &config
   - .github/**
-  - .node-version
+  - .tool-versions
   - .npmrc
   - eslint.config.js
   - '**.json5?'
@@ -11,7 +11,7 @@ dist-changed:
   - added|modified: 'dist/**'
 src-changed: &src-changed
   - .github/workflows/**
-  - .node-version
+  - .tool-versions
   - .npmrc
   - __tests__/**
   - docker/**
