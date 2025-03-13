@@ -1,6 +1,6 @@
 {
   "name": "@bfra.me/renovate-action",
-  "packageManager": "pnpm@10.6.2",
+  "packageManager": "pnpm@10.6.3",
   "version": "0.0.0-semantic-release",
   "private": true,
   "type": "module",
