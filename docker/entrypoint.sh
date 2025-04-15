@@ -18,7 +18,7 @@ export PNPM_VERSION=10.8.1
 install-tool pnpm $PNPM_VERSION
 
 # renovate: datasource=npm packageName=@yarnpkg/cli-dist
-export YARN_VERSION=4.9.0
+export YARN_VERSION=4.9.1
 install-tool yarn $YARN_VERSION
 
 [ ! -d /tmp/renovate ] && mkdir /tmp/renovate
