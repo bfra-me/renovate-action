@@ -48,7 +48,7 @@
     "@vitest/eslint-plugin": "1.1.43",
     "conventional-changelog-conventionalcommits": "8.0.0",
     "esbuild-plugin-license": "1.2.3",
-    "eslint": "9.25.0",
+    "eslint": "9.25.1",
     "eslint-config-prettier": "10.1.2",
     "eslint-plugin-no-only-tests": "3.3.0",
     "eslint-plugin-node-dependencies": "0.12.0",
