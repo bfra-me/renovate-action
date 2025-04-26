@@ -1,0 +1,98 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Documentation Standards
+# Documentation templates and standards for the renovate-action repository
+
+<rule>
+name: documentation_standards
+description: Guidance on documentation templates, memory management, and documentation standards
+filters:
+  - type: message
+    pattern: "(?i)(documentation standards|documentation templates|working memory|task management)"
+  - type: content
+    pattern: "docs|documentation|template|memory"
+actions:
+  - type: suggest
+    message: |
+      # Documentation Standards
+
+      ## Overview
+
+      The renovate-action repository follows structured documentation practices with templates for various documentation types and memory management for task tracking.
+
+      ## Documentation Templates
+
+      Templates are stored in the [docs/templates/](mdc:docs/templates) directory:
+
+      1. **Feature Documentation Template**: [docs/templates/feature-documentation-template.md](mdc:docs/templates/feature-documentation-template.md)
+         - For documenting new features
+         - Includes sections for feature overview, technical documentation, and implementation details
+
+      2. **Task Plan Template**: [docs/templates/task-plan-template.md](mdc:docs/templates/task-plan-template.md)
+         - For planning implementation tasks
+         - Includes problem analysis, solution design, implementation steps
+
+      ## Memory Management System
+
+      The memory management system is structured in the [docs/working-memory/](mdc:docs/working-memory) directory:
+
+      ```
+      docs/working-memory/
+      ├── open/                 # Active tasks
+      │   └── {task-id}/
+      │       ├── plan.md       # Task planning
+      │       └── updates.md    # Progress tracking
+      └── done/                 # Completed tasks
+      ```
+
+      ## Task Documentation Files
+
+      ### plan.md Requirements
+      - Problem Analysis
+      - Solution Design
+      - Implementation Steps
+      - Affected Components
+      - Testing Plan
+      - Documentation Impact
+      - Dependencies
+
+      ### updates.md Structure
+      - Current Status (top, single entry)
+      - Progress History (chronological)
+      - Decisions Log
+      - Issues Encountered
+      - Next Steps
+
+      ## Status Update Process
+
+      For updating task status:
+      1. Always include timestamps: `date "+%Y-%m-%d %H:%M"`
+      2. Use a single active status at the top
+      3. Move previous status to history
+      4. Use consistent progress markers:
+         - ✓ Completed work
+         - 🤔 Decisions made
+         - ❌ Issues encountered
+         - ⏭️ Next steps
+         - 📚 Documentation updates
+
+      ## Documentation Best Practices
+
+      1. Keep README.md up to date with usage examples
+      2. Document major decisions in appropriate files
+      3. Use templates for consistency
+      4. Cross-reference related documentation
+      5. Keep examples up to date with current code
+      6. Document API changes and new features promptly
+
+metadata:
+  priority: medium
+  version: 1.0
+  tags:
+    - documentation
+    - templates
+    - working-memory
+</rule>
