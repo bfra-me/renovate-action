@@ -1,0 +1,108 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Development Workflow
+# Development workflow, testing, and release process for renovate-action
+
+<rule>
+name: development_workflow
+description: Guidance on the development workflow, testing, and release process for renovate-action
+filters:
+  - type: message
+    pattern: "(?i)(development workflow|testing|release process|ci cd)"
+  - type: content
+    pattern: "workflow|ci|cd|testing|release|build"
+actions:
+  - type: suggest
+    message: |
+      # Development Workflow
+
+      ## Project Setup
+
+      1. Clone the repository
+      2. Install dependencies with pnpm:
+         ```bash
+         pnpm bootstrap
+         ```
+      3. Build the project:
+         ```bash
+         pnpm build
+         ```
+
+      ## Source Files
+
+      The main source files are in the `src` directory:
+      - [src/main.ts](mdc:src/main.ts): Main entry point for the GitHub Action
+      - [src/wait.ts](mdc:src/wait.ts): Utility function for waiting
+
+      ## Testing
+
+      Tests are located in [src/__tests__/](mdc:src/__tests__) and use Vitest:
+
+      ```bash
+      # Run tests
+      pnpm test
+      ```
+
+      The main test file is [src/__tests__/main.test.ts](mdc:src/__tests__/main.test.ts).
+
+      ## Build Process
+
+      The build configuration is defined in [tsup.config.ts](mdc:tsup.config.ts).
+
+      To build the project:
+      ```bash
+      pnpm build
+      ```
+
+      The build process:
+      1. Compiles TypeScript to JavaScript
+      2. Bundles the code using tsup/esbuild
+      3. Generates declaration files
+      4. Creates license information
+      5. Outputs to the `dist` directory
+
+      ## CI/CD Pipeline
+
+      The CI/CD pipeline is defined in [.github/workflows/main.yaml](mdc:.github/workflows/main.yaml) and includes:
+
+      1. **Setup**: Prepares the environment and determines what changed
+      2. **Check**: Runs linting and type checking
+      3. **Build**: Builds the project
+      4. **Test**: Runs tests
+      5. **Release**: Creates releases (if applicable)
+
+      ## Release Process
+
+      The release process uses Semantic Release and is configured in [.releaserc.yaml](mdc:.releaserc.yaml):
+
+      1. Commits to `main` are merged into the `release` branch
+      2. Semantic Release determines the next version based on conventional commits
+      3. Release notes are generated
+      4. A GitHub release is created
+      5. Major version tags are updated (e.g., `v5`)
+
+      ## Conventional Commits
+
+      The project uses Conventional Commits for commit messages:
+
+      - `feat:` - New feature (minor version)
+      - `feat!:` or `feat(scope)!:` - Breaking change (major version)
+      - `fix:` - Bug fix (patch version)
+      - `docs:` - Documentation changes
+      - `test:` - Adding or fixing tests
+      - `ci:` - CI/CD changes
+      - `build:` - Build-related changes
+      - `chore:` - Other changes
+
+metadata:
+  priority: high
+  version: 1.0
+  tags:
+    - development
+    - workflow
+    - testing
+    - release
+</rule>
