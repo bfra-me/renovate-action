@@ -1,0 +1,68 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Repository Overview
+# Core structure and key files for the renovate-action repository
+
+<rule>
+name: repository_overview
+description: Overview of renovate-action repository structure and key files
+filters:
+  - type: message
+    pattern: "(?i)(repository structure|overview|key files|main components)"
+  - type: content
+    pattern: "renovate-action|repository|structure|setup"
+actions:
+  - type: suggest
+    message: |
+      # Renovate Action Repository Overview
+
+      ## Key Components
+
+      This GitHub Action automates dependency updates using Renovate in a self-hosted configuration.
+
+      ### Core Files
+      - [action.yaml](mdc:action.yaml): Main GitHub Action definition with inputs, outputs, and steps
+      - [src/main.ts](mdc:src/main.ts): TypeScript entry point that runs the action
+      - [docker/entrypoint.sh](mdc:docker/entrypoint.sh): Docker container entrypoint script
+
+      ### Configuration
+      - [package.json](mdc:package.json): Node.js dependencies and scripts
+      - [tsconfig.json](mdc:tsconfig.json): TypeScript configuration
+      - [tsup.config.ts](mdc:tsup.config.ts): Build configuration
+      - [.github/renovate.json5](mdc:.github/renovate.json5): Renovate configuration for this repository
+
+      ### Documentation
+      - [README.md](mdc:README.md): Usage instructions and badges
+      - [docs/templates/](mdc:docs/templates): Documentation templates
+
+      ### CI/CD Workflows
+      - [.github/workflows/main.yaml](mdc:.github/workflows/main.yaml): Main CI/CD pipeline
+      - [.github/workflows/renovate.yaml](mdc:.github/workflows/renovate.yaml): Runs Renovate on this repository
+
+      ## Directory Structure
+      ```
+      renovate-action/
+      ├── .github/           # GitHub workflows and settings
+      ├── dist/              # Compiled TypeScript code
+      ├── docker/            # Docker configuration
+      ├── docs/              # Documentation and templates
+      │   ├── templates/     # Documentation templates
+      │   └── working-memory/# Task tracking
+      ├── src/               # Source code
+      │   ├── __tests__/     # Test files
+      │   ├── main.ts        # Main entry point
+      │   └── wait.ts        # Utility functions
+      └── action.yaml        # GitHub Action definition
+      ```
+
+metadata:
+  priority: high
+  version: 1.0
+  tags:
+    - overview
+    - structure
+    - navigation
+</rule>

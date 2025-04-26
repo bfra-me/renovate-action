@@ -1,0 +1,108 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# GitHub Action Configuration
+# Details about the renovate-action configuration and usage
+
+<rule>
+name: github_action_configuration
+description: Guidance on the renovate-action configuration, inputs, outputs, and usage
+filters:
+  - type: message
+    pattern: "(?i)(github action|action configuration|action usage|inputs outputs)"
+  - type: content
+    pattern: "action.yaml|github action|renovate inputs|renovate configuration"
+actions:
+  - type: suggest
+    message: |
+      # GitHub Action Configuration and Usage
+
+      ## Action Definition
+
+      The main action is defined in [action.yaml](mdc:action.yaml) and provides a composite action that runs Renovate in a Docker container.
+
+      ## Inputs
+
+      | Input                   | Description                                       | Default   | Required |
+      |-------------------------|---------------------------------------------------|-----------|----------|
+      | `autodiscover`          | Autodiscover all repositories                     | `false`   | No       |
+      | `autodiscover-filter`   | Filter repositories to autodiscover               | `[]`      | No       |
+      | `branch`                | Run Renovate on this branch                       | -         | No       |
+      | `cache`                 | Enable the Renovate cache                         | `false`   | No       |
+      | `dry-run`               | Perform a dry run                                 | `false`   | No       |
+      | `log-level`             | Set the log level                                 | `info`    | No       |
+      | `print-config`          | Log the fully-resolved Renovate config            | `false`   | No       |
+      | `renovate-app-id`       | ID of the GitHub App for Renovate                 | -         | Yes      |
+      | `renovate-app-private-key` | Private key of the GitHub App for Renovate     | -         | Yes      |
+
+      ## Outputs
+
+      | Output            | Description                        |
+      |-------------------|------------------------------------|
+      | `docker-image`    | The name of the Renovate Docker image |
+      | `renovate-version` | The Renovate version              |
+
+      ## Usage Examples
+
+      Basic usage in a workflow file:
+
+      ```yaml
+      name: Renovate
+      on:
+        schedule:
+          - cron: '0 */6 * * *' # Run every 6 hours
+
+      jobs:
+        renovate:
+          name: Renovate
+          runs-on: ubuntu-latest
+          steps:
+            - uses: bfra-me/renovate-action@v5
+              with:
+                renovate-app-id: ${{ secrets.APPLICATION_ID }}
+                renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+      ```
+
+      Usage with additional options:
+
+      ```yaml
+      name: Renovate
+      on:
+        push:
+          branches:
+            - main
+            - 'renovate/**'
+        pull_request:
+        workflow_dispatch:
+
+      jobs:
+        renovate:
+          name: Renovate
+          runs-on: ubuntu-latest
+          steps:
+            - uses: bfra-me/renovate-action@v5
+              with:
+                dry-run: ${{ github.event_name == 'pull_request' }}
+                log-level: debug
+                cache: true
+                renovate-app-id: ${{ secrets.APPLICATION_ID }}
+                renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+      ```
+
+      ## GitHub App Requirements
+
+      The action requires a GitHub App with the following permissions:
+      - Repository contents: Read & write
+      - Pull requests: Read & write
+      - Issues: Read & write
+
+metadata:
+  priority: high
+  version: 1.0
+  tags:
+    - github-action
+    - configuration
+    - usage
+</rule>

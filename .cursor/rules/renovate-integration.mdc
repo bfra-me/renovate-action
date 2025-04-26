@@ -1,0 +1,95 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Renovate Integration
+# Renovate bot integration and configuration details
+
+<rule>
+name: renovate_integration
+description: Guidance on Renovate bot integration, configuration, and best practices
+filters:
+  - type: message
+    pattern: "(?i)(renovate integration|renovate bot|renovate config|dependency updates)"
+  - type: content
+    pattern: "renovate|dependencies|update|bot"
+actions:
+  - type: suggest
+    message: |
+      # Renovate Integration
+
+      ## Overview
+
+      The renovate-action repository is a GitHub Action that runs a self-hosted Renovate bot to automate dependency updates across repositories.
+
+      ## Key Components
+
+      1. **Docker Container**: Renovate runs in a Docker container specified in [action.yaml](mdc:action.yaml)
+      2. **GitHub App Authentication**: Uses GitHub App credentials for authentication
+      3. **Configuration**: Uses Renovate configuration from the target repository
+
+      ## Renovate Configuration
+
+      This repository's own Renovate configuration is in [.github/renovate.json5](mdc:.github/renovate.json5) and includes:
+
+      - Preset extends from various sources
+      - Custom managers for specific updates
+      - Package rules for different dependency types
+      - Semantic commit conventions
+      - Automerge settings
+
+      ## Docker Integration
+
+      The Docker integration is handled in:
+      - [docker/entrypoint.sh](mdc:docker/entrypoint.sh): Sets up the environment and runs Renovate
+
+      ## GitHub App Setup
+
+      To use this action, you need to:
+      1. Create a GitHub App with appropriate permissions
+      2. Generate a private key
+      3. Install the app on repositories
+      4. Configure the action with the App ID and private key
+
+      ## Usage in Repositories
+
+      To add Renovate to a repository:
+      1. Create a workflow file (e.g., `.github/workflows/renovate.yaml`)
+      2. Configure secrets for the GitHub App
+      3. Set up the workflow to run on a schedule
+      4. Configure Renovate in the target repository (usually `.github/renovate.json5`)
+
+      ## Common Configurations
+
+      ```json
+      {
+        "extends": [
+          "config:base"
+        ],
+        "packageRules": [
+          {
+            "matchUpdateTypes": ["minor", "patch"],
+            "matchCurrentVersion": "!/^0/",
+            "automerge": true
+          }
+        ]
+      }
+      ```
+
+      ## Renovate Workflow
+
+      The Renovate workflow in this repository ([.github/workflows/renovate.yaml](mdc:.github/workflows/renovate.yaml)):
+      1. Runs on various triggers, including schedule
+      2. Applies specific filtering for PRs and issues
+      3. Uses the action with appropriate configuration
+      4. Can be manually triggered with workflow dispatch
+
+metadata:
+  priority: high
+  version: 1.0
+  tags:
+    - renovate
+    - dependencies
+    - automation
+</rule>
