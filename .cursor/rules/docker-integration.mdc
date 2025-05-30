@@ -1,0 +1,126 @@
+---
+description: Guidelines for Docker integration in renovate-action
+globs: docker/*, Dockerfile, action.yaml
+alwaysApply: false
+---
+
+# Docker Integration Guidelines
+# Best practices for Docker integration in renovate-action
+
+<rule>
+name: docker_integration
+description: Guidelines for Docker integration in renovate-action
+filters:
+  - type: file_path
+    pattern: "docker/.*"
+  - type: file_path
+    pattern: "Dockerfile"
+  - type: content
+    pattern: "docker run|docker exec|Docker"
+actions:
+  - type: suggest
+    message: |
+      # Docker Integration Guidelines for Renovate Action
+
+      ## Entrypoint Script
+
+      1. **Tool Installation**:
+         - Pin tool versions explicitly
+         - Use the `# renovate: datasource=...` annotation format
+         - Install tools with appropriate error handling
+         - Verify installations with version checks
+
+      2. **Permission Management**:
+         - Run as non-root user (ubuntu) for security
+         - Set appropriate file permissions
+         - Create necessary directories with correct ownership
+
+      3. **Script Structure**:
+         - Include proper shebang (`#!/bin/bash`)
+         - Set error handling flags (`set -e`, `set -o pipefail`)
+         - Include helpful comments
+         - Log key operations
+
+      ## Docker Execution
+
+      1. **Container Configuration**:
+         - Use environment variables for configuration
+         - Mount volumes for caching when appropriate
+         - Set appropriate user for container execution
+         - Configure Docker socket mounting securely
+
+      2. **Version Management**:
+         - Use specific image tags rather than `latest`
+         - Consider using digest hashes for highest security
+         - Document the Docker image being used
+
+      3. **Resource Control**:
+         - Configure appropriate resource limits
+         - Clean up containers after use
+         - Implement proper error handling for Docker operations
+
+      ## Security Best Practices
+
+      1. **Image Security**:
+         - Use official base images
+         - Keep images updated with security patches
+         - Minimize installed packages
+         - Run security scans on Docker images
+
+      2. **Runtime Security**:
+         - Use non-root users
+         - Apply least privilege principle
+         - Use read-only file systems where possible
+         - Limit container capabilities
+
+      ## Environment Variables
+
+      1. **Variable Management**:
+         - Document required environment variables
+         - Provide defaults for optional variables
+         - Use consistent naming convention
+         - Validate critical variables
+
+examples:
+  - input: |
+      #!/bin/bash
+      
+      # Install tools
+      apt-get update
+      apt-get install -y curl jq
+      
+      # Run as root
+      renovate
+    output: |
+      #!/bin/bash
+      set -e
+      set -o pipefail
+      
+      echo "Installing dependencies..."
+      
+      # Install curl - version 7.88.1
+      # renovate: datasource=github-releases depName=curl/curl
+      CURL_VERSION="7.88.1"
+      apt-get update && apt-get install -y curl=${CURL_VERSION}
+      
+      # Install jq - version 1.6
+      # renovate: datasource=github-releases depName=jqlang/jq
+      JQ_VERSION="1.6"
+      apt-get install -y jq=${JQ_VERSION}
+      
+      # Create runtime directory
+      mkdir -p /tmp/renovate
+      chown ubuntu:ubuntu /tmp/renovate
+      
+      # Run as non-root user
+      exec sudo -u ubuntu renovate
+
+metadata:
+  priority: high
+  version: 1.0
+  tags:
+    - docker
+    - containers
+    - entrypoint
+    - security
+</rule>

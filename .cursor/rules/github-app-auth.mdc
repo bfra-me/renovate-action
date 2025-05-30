@@ -1,0 +1,161 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# GitHub App Authentication Patterns
+# Best practices for GitHub App authentication in renovate-action
+
+<rule>
+name: github_app_authentication
+description: Best practices for GitHub App authentication in renovate-action
+filters:
+  - type: content
+    pattern: "GitHub App|renovate-app|APPLICATION_ID|APPLICATION_PRIVATE_KEY|token|github_token|create-github-app-token"
+  - type: file_path
+    pattern: "action\\.ya?ml$"
+  - type: file_path
+    pattern: "\\.github/workflows/.*\\.ya?ml$"
+  - type: file_path
+    pattern: "src/.*\\.ts$"
+actions:
+  - type: suggest
+    message: |
+      # GitHub App Authentication Best Practices
+
+      ## App Configuration
+
+      1. **GitHub App Setup**:
+         - Use GitHub Apps instead of PATs for better security
+         - Configure minimal permissions required
+         - Set appropriate webhook events
+         - Use repository-level installation for targeted access
+
+      2. **App Credentials**:
+         - Store App ID and private key as repository secrets
+         - Never hardcode credentials in the code
+         - Rotate private keys periodically
+         - Use descriptive secret names: `APPLICATION_ID`, `APPLICATION_PRIVATE_KEY`
+
+      ## Token Generation
+
+      1. **Token Acquisition**:
+         - Use `actions/create-github-app-token` action to get tokens
+         - Request tokens with appropriate scopes
+         - Configure token with the minimum required lifetime
+         - Format as:
+           ```yaml
+           - id: get-renovate-app
+             name: Get Renovate GitHub App Installation
+             uses: actions/create-github-app-token@3ff1caaa28b64c9cc276ce0a02e2ff584f3900c5 # v2.0.2
+             with:
+               app-id: ${{ inputs.renovate-app-id }}
+               private-key: ${{ inputs.renovate-app-private-key }}
+               owner: ${{ github.repository_owner }}
+           ```
+
+      2. **Token Handling**:
+         - Never log or expose tokens
+         - Pass tokens directly to tools needing them
+         - Don't store tokens in intermediate files
+         - Ensure tokens are not persisted in logs or artifacts
+
+      ## Git Author Configuration
+
+      1. **Bot Identity**:
+         - Configure Git author based on GitHub App identity
+         - Use consistent bot naming convention
+         - Format as: `${app_slug}[bot] <${app_id}+${app_slug}[bot]@users.noreply.github.com>`
+         - Example setup:
+           ```yaml
+           renovate_username="${{ env.renovate_app_slug }}[bot]"
+           renovate_git_author_email="${{ env.renovate_app_id }}+${renovate_username}@users.noreply.github.com"
+           renovate_git_author="${renovate_username} <${renovate_git_author_email}>"
+           ```
+
+      2. **Git Configuration**:
+         - Set `user.name` and `user.email` consistently
+         - Add bot email to `RENOVATE_GIT_IGNORED_AUTHORS` if needed
+         - Document the author identity being used
+
+      ## TypeScript Implementation
+
+      1. **Token Handling in Code**:
+         - Use environment variables for tokens
+         - Implement proper error handling for auth failures
+         - Add appropriate types for GitHub App response objects
+         - Example:
+           ```typescript
+           interface GitHubAppToken {
+             token: string;
+             expires_at: string;
+             permissions: Record<string, string>;
+           }
+
+           async function getGitHubAppToken(
+             appId: string,
+             privateKey: string
+           ): Promise<GitHubAppToken> {
+             // Implementation
+           }
+           ```
+
+      ## Security Considerations
+
+      1. **Permission Model**:
+         - Use repository-specific installations
+         - Grant only required repository permissions
+         - Configure user-based access control
+         - Document permissions needed and why
+
+      2. **Token Lifecycle**:
+         - Implement token expiration handling
+         - Refresh tokens when needed
+         - Don't cache tokens for longer than needed
+         - Handle token revocation gracefully
+
+examples:
+  - input: |
+      # Using personal access token
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Running Renovate with basic token
+      - name: Renovate
+        uses: renovatebot/github-action@v39
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+    output: |
+      # Using GitHub App token
+      - id: get-token
+        name: Get GitHub App Token
+        uses: actions/create-github-app-token@3ff1caaa28b64c9cc276ce0a02e2ff584f3900c5 # v2.0.2
+        with:
+          app-id: ${{ secrets.APPLICATION_ID }}
+          private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Checkout
+        uses: actions/checkout@2dd78f6dc379d0b00df8e0b621cbe458a6c4593b # v4.1.1
+        with:
+          token: ${{ steps.get-token.outputs.token }}
+
+      # Running Renovate with App token
+      - name: Renovate
+        uses: renovatebot/github-action@fd8e2c5fqdeadbeef # v39.0.0
+        env:
+          RENOVATE_GIT_AUTHOR: ${{ steps.configure.outputs.renovate-git-author }}
+        with:
+          token: ${{ steps.get-token.outputs.token }}
+
+metadata:
+  priority: high
+  version: 1.0
+  tags:
+    - security
+    - authentication
+    - github-app
+    - tokens
+</rule>

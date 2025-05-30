@@ -1,0 +1,123 @@
+---
+description: Guidelines for Renovate configuration and integration
+globs: .github/renovate.json, .github/renovate.json5, action.yaml
+alwaysApply: false
+---
+
+# Renovate Configuration Guidelines
+# Best practices for Renovate configuration in renovate-action
+
+<rule>
+name: renovate_config
+description: Guidelines for Renovate configuration and integration
+filters:
+  - type: file_path
+    pattern: "\\.github/renovate\\.json5?$"
+  - type: content
+    pattern: "RENOVATE_|renovate"
+  - type: file_path
+    pattern: "action\\.ya?ml$"
+actions:
+  - type: suggest
+    message: |
+      # Renovate Configuration Guidelines
+
+      ## Configuration Structure
+
+      1. **External Presets**:
+         - Use shared organizational presets for consistency
+         - Extend from `bfra-me/renovate-config` for common settings
+         - Use semantic commit presets for consistent commit messages
+         - Consider security presets (e.g., `security:openssf-scorecard`)
+
+      2. **Package Rules**:
+         - Group related dependency updates
+         - Apply consistent versioning strategies
+         - Set appropriate scheduling
+         - Configure auto-merge policies
+         - Use semantic commit prefixes based on update type
+
+      ## Embedded Configuration
+
+      1. **Action Configuration**:
+         - Document environment variables with `RENOVATE_` prefix
+         - Use JSON for complex configuration objects
+         - Standardize onboarding configuration
+         - Configure allowedCommands for post-upgrade tasks
+         - Set appropriate git ignored authors
+
+      2. **User Experience**:
+         - Customize dependency dashboard footer
+         - Provide manual trigger options
+         - Set meaningful PR titles and descriptions
+         - Configure appropriate labels
+
+      ## Authentication
+
+      1. **GitHub App Authentication**:
+         - Use GitHub App for better security and permissions
+         - Configure Git author based on GitHub App
+         - Apply rate limiting considerations
+         - Implement token-based authentication
+
+      ## Caching System
+
+      1. **Cache Configuration**:
+         - Enable caching for better performance
+         - Base cache versioning on Renovate major version
+         - Use GitHub Actions cache for persistence
+         - Configure cache paths appropriately
+
+      ## Execution Control
+
+      1. **Run Options**:
+         - Configure dry-run mode for testing
+         - Set appropriate log levels
+         - Enable/disable specific features as needed
+         - Configure repository discovery and filtering
+
+examples:
+  - input: |
+      {
+        "extends": [
+          "config:base"
+        ],
+        "packageRules": [
+          {
+            "matchPackagePatterns": ["^renovate"],
+            "automerge": true
+          }
+        ]
+      }
+    output: |
+      {
+        "extends": [
+          "bfra-me/renovate-config#v3",
+          "bfra-me/renovate-config:internal.json5#v3",
+          "security:openssf-scorecard",
+          "github>sanity-io/renovate-config:semantic-commit-type"
+        ],
+        "packageRules": [
+          {
+            "matchPackagePatterns": [
+              "^renovate",
+              "ghcr.io/renovatebot/renovate",
+              "renovatebot/github-action"
+            ],
+            "semanticCommitType": "{{#if isGroupMajor}}feat!{{else}}{{#if isMajor}}feat!{{else}}{{#if isMinor}}feat{{else}}fix{{/if}}{{/if}}{{/if}}",
+            "commitMessagePrefix": "{{#if isGroupMajor}}feat!{{else}}{{#if isMajor}}feat!{{else}}{{#if isMinor}}feat{{else}}fix{{/if}}{{/if}}{{/if}}:",
+            "schedule": ["every weekend", "after 10pm and before 5am"],
+            "groupName": "{{#if isGroupMajor}}Renovate{{else}}null{{/if}}"
+          }
+        ]
+      }
+
+metadata:
+  priority: high
+  version: 1.0
+  tags:
+    - renovate
+    - configuration
+    - dependency-management
+    - automation
+</rule>

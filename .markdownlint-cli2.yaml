@@ -6,4 +6,9 @@ config:
   MD041: false
 
 globs:
+  - '**/*.md'
   - '!.cursorrules'
+  - '!**/node_modules'
+  - '!.cursor/rules/**'
+  - '!.specstory/**'
+  - '!.ai/**'
