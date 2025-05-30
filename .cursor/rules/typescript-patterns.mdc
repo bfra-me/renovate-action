@@ -1,0 +1,98 @@
+---
+description: TypeScript patterns and best practices for renovate-action
+globs: *.ts, *.tsx
+alwaysApply: false
+---
+
+# TypeScript Patterns for Renovate Action
+# Best practices and patterns for TypeScript development in this project
+
+<rule>
+name: typescript_patterns
+description: TypeScript patterns and best practices for renovate-action
+filters:
+  - type: file_extension
+    pattern: "\\.ts$"
+  - type: file_extension
+    pattern: "\\.tsx$"
+actions:
+  - type: suggest
+    message: |
+      # TypeScript Best Practices for Renovate Action
+
+      ## Type Safety
+
+      1. **Static Typing**:
+         - Use explicit return types for functions
+         - Avoid `any` type when possible, prefer `unknown` when type is uncertain
+         - Utilize TypeScript's built-in utility types (Pick, Omit, Partial, etc.)
+
+      2. **Action Configuration Types**:
+         - Define input/output interfaces for GitHub Actions
+         - Use const assertions for fixed values
+         - Include JSDoc comments for types
+
+      ## Project Structure
+
+      1. **Module Organization**:
+         - One responsibility per file
+         - Group related functionality
+         - Use consistent import style (prefer named exports)
+
+      2. **Build System**:
+         - Use tsup for bundling (as configured in tsup.config.ts)
+         - Ensure source maps for debugging
+         - Generate license comments and declaration files
+
+      ## Error Handling
+
+      1. **Error Patterns**:
+         - Use @actions/core for error handling in GitHub Actions
+         - Create custom error classes when needed
+         - Provide meaningful error messages
+
+      ## Testing
+
+      1. **Test Structure**:
+         - Place tests in `src/__tests__/` directory
+         - Use Vitest for test framework
+         - Mock external dependencies
+
+      ## Code Style
+
+      1. **Formatting**:
+         - Follow the project's Prettier configuration
+         - Use ESLint with project rules
+         - Maintain consistent naming conventions
+
+      2. **Comments and Documentation**:
+         - Add JSDoc comments for public APIs
+         - Document complex logic
+         - Explain "why" rather than "what" when commenting
+
+examples:
+  - input: |
+      /**
+       * Get token from GitHub App
+       */
+      export async function getToken(): Promise<string> {
+        // Implementation
+      }
+    output: |
+      /**
+       * Get authentication token from GitHub App
+       * @returns Promise resolving to the authentication token string
+       * @throws {Error} If GitHub App credentials are invalid or missing
+       */
+      export async function getToken(): Promise<string> {
+        // Implementation
+      }
+
+metadata:
+  priority: high
+  version: 1.0
+  tags:
+    - typescript
+    - coding-standards
+    - best-practices
+</rule>

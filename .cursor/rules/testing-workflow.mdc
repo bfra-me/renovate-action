@@ -1,0 +1,121 @@
+---
+description: Guidelines for testing and CI/CD workflows in renovate-action
+globs: src/__tests__/*.ts, .github/workflows/*.yaml, .github/workflows/*.yml
+alwaysApply: false
+---
+
+# Testing and CI/CD Workflow Guidelines
+# Best practices for testing and CI/CD in renovate-action
+
+<rule>
+name: testing_workflow
+description: Guidelines for testing and CI/CD workflows in renovate-action
+filters:
+  - type: file_path
+    pattern: "src/__tests__/.*\\.ts$"
+  - type: file_path
+    pattern: "\\.github/workflows/.*\\.ya?ml$"
+  - type: content
+    pattern: "test|vitest|jest"
+actions:
+  - type: suggest
+    message: |
+      # Testing and CI/CD Workflow Guidelines
+
+      ## Testing Framework
+
+      1. **Vitest Configuration**:
+         - Use Vitest for unit testing
+         - Configure Jest-compatible API
+         - Enable ESM support
+         - Configure TypeScript integration
+
+      2. **Test Structure**:
+         - Place tests in `src/__tests__/` directory
+         - Use descriptive test names
+         - Follow arrange-act-assert pattern
+         - Group related tests
+
+      3. **Test Coverage**:
+         - Aim for high test coverage
+         - Focus on critical paths
+         - Test edge cases and error conditions
+         - Mock external dependencies
+
+      ## CI/CD Workflows
+
+      1. **Main Workflow Structure**:
+         - Split into logical jobs (setup, check, build, test, release)
+         - Use job dependencies for sequential execution
+         - Apply concurrency controls
+         - Configure appropriate triggers
+
+      2. **Conditional Execution**:
+         - Use path filters for efficient workflows
+         - Apply conditions for selective step execution
+         - Skip unnecessary steps based on context
+
+      3. **Job Dependencies**:
+         - Define clear job dependencies
+         - Pass artifacts between jobs when needed
+         - Configure appropriate outputs
+
+      ## Self-Testing
+
+      1. **Action Testing**:
+         - Include self-test in main workflow
+         - Test with various input combinations
+         - Verify action behavior in real context
+         - Test error handling
+
+      ## Release Management
+
+      1. **Semantic Release**:
+         - Configure semantic-release for automated versioning
+         - Generate changelogs automatically
+         - Manage Git tags
+         - Create GitHub releases
+         - Update major version tag
+
+      2. **Version Control**:
+         - Use consistent commit message format
+         - Follow conventional commits specification
+         - Apply appropriate commit types (feat, fix, docs, etc.)
+         - Use breaking change designation when appropriate
+
+examples:
+  - input: |
+      test('should do something', () => {
+        expect(true).toBe(true);
+      });
+    output: |
+      describe('featureName', () => {
+        test('should handle normal case correctly', () => {
+          // Arrange
+          const input = { value: 'test' };
+          
+          // Act
+          const result = someFunction(input);
+          
+          // Assert
+          expect(result).toEqual(expectedOutput);
+        });
+        
+        test('should handle error case gracefully', () => {
+          // Arrange
+          const invalidInput = null;
+          
+          // Act & Assert
+          expect(() => someFunction(invalidInput)).toThrow('Invalid input');
+        });
+      });
+
+metadata:
+  priority: high
+  version: 1.0
+  tags:
+    - testing
+    - ci-cd
+    - workflows
+    - quality-assurance
+</rule>
