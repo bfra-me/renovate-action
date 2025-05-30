@@ -53,9 +53,9 @@
         'renovate',
       ],
       commitBody: '{{#if hasReleaseNotes}}{{{body}}}{{/if}}',
-      commitMessageTopic: '{{{depName}}}',
+      commitMessageTopic: '{{{depName}}} {{#if isMajor}}v{{{newValue}}}{{else}}{{{newValue}}}{{/if}}',
       major: {
-        semanticCommitType: 'feat!',
+        commitMessagePrefix: 'feat(deps)!:',
       },
       minor: {
         semanticCommitType: 'feat',
