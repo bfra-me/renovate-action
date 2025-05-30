@@ -97,3 +97,14 @@ Thumbs.db
 # TypeScript type declarations and sourcemaps under `dist/`
 dist/**/*.d.ts*
 dist/**/*.js.map
+
+# SpecStory explanation file
+.specstory/.what-is-this.md
+# SpecStory
+.specstory/
+
+# Cursor config
+.cursor/mcp.json
+
+# Experimental
+/hack/

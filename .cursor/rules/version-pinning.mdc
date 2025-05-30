@@ -1,0 +1,104 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Secure Version Pinning Practices
+# Guidelines for pinning dependencies securely in renovate-action
+
+<rule>
+name: secure_version_pinning
+description: Guidelines for secure version pinning across the codebase
+filters:
+  - type: file_path
+    pattern: "action\\.ya?ml$"
+  - type: file_path
+    pattern: "\\.github/workflows/.*\\.ya?ml$"
+  - type: file_path
+    pattern: "docker/.*\\.sh$"
+  - type: content
+    pattern: "uses:|image:|RENOVATE_VERSION|docker run|apt-get install|npm install"
+actions:
+  - type: suggest
+    message: |
+      # Secure Version Pinning Guidelines
+
+      ## GitHub Actions
+
+      1. **Action References**:
+         - Always pin external GitHub Actions to specific commit hashes
+         - Include version tag comments for reference
+         - Format as: `uses: owner/repo@commithash # vX.Y.Z`
+         - Example: `uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2`
+
+      2. **Renovate Annotations**:
+         - Add Renovate metadata comments for automated updates
+         - Format as: `# renovate: datasource=github-releases depName=owner/repo`
+         - For Docker images: `# renovate: datasource=docker depName=image packageName=registry/image versioning=semver`
+
+      ## Docker Images
+
+      1. **Image References**:
+         - Pin Docker images to specific digests when possible
+         - Always include a tag, never use `latest`
+         - Format as: `image: registry/image:tag@sha256:digest` or `image: registry/image:tag`
+         - Example: `ghcr.io/renovatebot/renovate:39.259.0`
+
+      2. **Renovate Configuration**:
+         - Add proper Renovate comments for Docker image updates
+         - Include version strategy information
+         - Example: `# renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate versioning=semver`
+
+      ## Package Installation
+
+      1. **System Packages**:
+         - Pin specific versions of system packages
+         - Include Renovate metadata for tracking
+         - Format as: `apt-get install -y package=version`
+         - Example: `apt-get install -y jq=1.6-2.1ubuntu3`
+
+      2. **Node.js Packages**:
+         - Pin exact versions in package.json
+         - Use lockfiles for all dependency trees
+         - Ensure all dependencies have integrity hashes
+
+      ## Environment Variables
+
+      1. **Version Constants**:
+         - Define version constants in a centralized location
+         - Use environment variables or configuration files
+         - Document the source of each version
+         - Include Renovate metadata as comments
+
+      ## Security Considerations
+
+      1. **Supply Chain Security**:
+         - Prefer commit hashes over version tags for immutability
+         - Validate checksums for downloaded artifacts
+         - Document the source and verification method
+         - Enable security scanning in CI/CD pipeline
+
+examples:
+  - input: |
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      RENOVATE_VERSION=latest
+    output: |
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate versioning=semver
+      RENOVATE_VERSION=39.259.0
+
+metadata:
+  priority: high
+  version: 1.0
+  tags:
+    - security
+    - versioning
+    - dependencies
+    - pinning
+</rule>

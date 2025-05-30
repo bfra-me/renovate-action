@@ -1,0 +1,245 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Docker Entrypoint Script Patterns
+# Best practices for Docker entrypoint scripts in renovate-action
+
+<rule>
+name: docker_entrypoint_patterns
+description: Best practices for Docker entrypoint scripts in renovate-action
+filters:
+  - type: file_path
+    pattern: "docker/.*\\.sh$"
+  - type: content
+    pattern: "#!/bin/bash|#!/bin/sh|entrypoint|docker"
+actions:
+  - type: suggest
+    message: |
+      # Docker Entrypoint Script Best Practices
+
+      ## Script Structure
+
+      1. **Proper Shebang and Flags**:
+         - Use `#!/bin/bash` for Bash scripts
+         - Set error handling flags: `set -e`, `set -o pipefail`
+         - Consider `set -u` for undefined variable detection
+         - Example:
+           ```bash
+           #!/bin/bash
+           set -e
+           set -o pipefail
+           ```
+
+      2. **Script Documentation**:
+         - Include header comment explaining purpose
+         - Document required environment variables
+         - Explain expected inputs and outputs
+         - Provide usage examples
+         - Example:
+           ```bash
+           #!/bin/bash
+           #
+           # Entrypoint script for Renovate Docker container
+           #
+           # Required environment variables:
+           # - RENOVATE_TOKEN: GitHub token for authentication
+           # - RENOVATE_REPOSITORY: Repository to run Renovate on
+           #
+           # Example usage:
+           # docker run --env-file .env ghcr.io/renovatebot/renovate:39.259.0
+           ```
+
+      ## Tool Installation
+
+      1. **Version Pinning**:
+         - Pin all tool versions explicitly
+         - Use Renovate annotations for version tracking
+         - Format: `# renovate: datasource=github-releases depName=owner/repo`
+         - Example:
+           ```bash
+           # renovate: datasource=github-releases depName=stedolan/jq
+           JQ_VERSION="1.6"
+           apt-get update && apt-get install -y jq=${JQ_VERSION}
+           ```
+
+      2. **Installation Verification**:
+         - Check installation success
+         - Verify tool versions match expected versions
+         - Add cleanup after installations to reduce image size
+         - Example:
+           ```bash
+           # Install jq
+           apt-get update && apt-get install -y jq=${JQ_VERSION}
+
+           # Verify installation
+           if ! jq --version | grep -q "${JQ_VERSION}"; then
+             echo "ERROR: jq version mismatch"
+             exit 1
+           fi
+
+           # Cleanup
+           apt-get clean
+           rm -rf /var/lib/apt/lists/*
+           ```
+
+      ## User Management
+
+      1. **Non-Root Execution**:
+         - Avoid running as root
+         - Create and use non-privileged user
+         - Set permissions appropriately
+         - Example:
+           ```bash
+           # Create non-root user if not exists
+           if ! id -u ubuntu > /dev/null 2>&1; then
+             groupadd -g 1000 ubuntu
+             useradd -u 1000 -g 1000 -d /home/ubuntu -s /bin/bash -m ubuntu
+           fi
+
+           # Set permissions
+           mkdir -p /tmp/renovate
+           chown -R ubuntu:ubuntu /tmp/renovate
+
+           # Run as non-root user
+           exec sudo -u ubuntu "$@"
+           ```
+
+      ## Environment Management
+
+      1. **Environment Variable Handling**:
+         - Validate required environment variables
+         - Set defaults for optional variables
+         - Use appropriate quoting for variable expansion
+         - Example:
+           ```bash
+           # Check required environment variables
+           if [ -z "${RENOVATE_TOKEN}" ]; then
+             echo "ERROR: RENOVATE_TOKEN is required"
+             exit 1
+           fi
+
+           # Set defaults for optional variables
+           : "${LOG_LEVEL:=info}"
+           : "${RENOVATE_AUTODISCOVER:=false}"
+           ```
+
+      2. **Path Configuration**:
+         - Set PATH to include required binaries
+         - Use absolute paths for critical commands
+         - Export necessary environment variables
+         - Example:
+           ```bash
+           # Configure PATH
+           export PATH="/usr/local/bin:${PATH}"
+
+           # Set Renovate environment variables
+           export RENOVATE_PLATFORM="github"
+           export LOG_LEVEL="${LOG_LEVEL:-info}"
+           ```
+
+      ## Error Handling
+
+      1. **Robust Error Handling**:
+         - Implement trap for cleanup on exit
+         - Provide informative error messages
+         - Set appropriate exit codes
+         - Example:
+           ```bash
+           # Clean up on exit
+           cleanup() {
+             echo "Cleaning up..."
+             # Cleanup commands
+           }
+           trap cleanup EXIT
+
+           # Error handling
+           handle_error() {
+             local exit_code=$1
+             local error_msg=$2
+             echo "ERROR: ${error_msg} (${exit_code})"
+             exit "${exit_code}"
+           }
+
+           # Usage example
+           command || handle_error $? "Command failed"
+           ```
+
+      ## Command Execution
+
+      1. **Command Execution Patterns**:
+         - Use exec to replace shell process when appropriate
+         - Capture and check command exit codes
+         - Log command outputs at appropriate levels
+         - Example:
+           ```bash
+           # Execute final command, replacing current process
+           exec renovate "$@"
+
+           # For commands where output needs to be captured
+           output=$(command) || handle_error $? "Command failed"
+           ```
+
+examples:
+  - input: |
+      #!/bin/bash
+
+      # Install tools
+      apt-get update
+      apt-get install -y curl
+
+      # Run Renovate
+      renovate
+    output: |
+      #!/bin/bash
+      set -e
+      set -o pipefail
+
+      #
+      # Entrypoint script for Renovate Docker container
+      #
+      # This script installs required tools and prepares the environment
+      # for running Renovate in a Docker container.
+      #
+
+      echo "Starting Renovate entrypoint script..."
+
+      # Install curl
+      # renovate: datasource=github-releases depName=curl/curl
+      CURL_VERSION="7.88.1"
+      echo "Installing curl version ${CURL_VERSION}..."
+      apt-get update && apt-get install -y curl
+
+      # Verify installation
+      curl --version || { echo "ERROR: curl installation failed"; exit 1; }
+
+      # Create non-root user if not exists
+      if ! id -u ubuntu > /dev/null 2>&1; then
+        echo "Creating ubuntu user..."
+        groupadd -g 1000 ubuntu
+        useradd -u 1000 -g 1000 -d /home/ubuntu -s /bin/bash -m ubuntu
+      fi
+
+      # Set up working directory
+      mkdir -p /tmp/renovate
+      chown -R ubuntu:ubuntu /tmp/renovate
+
+      # Set environment variables
+      : "${LOG_LEVEL:=info}"
+      export LOG_LEVEL
+
+      echo "Environment prepared, launching Renovate..."
+
+      # Run as non-root user
+      exec sudo -u ubuntu renovate "$@"
+
+metadata:
+  priority: high
+  version: 1.0
+  tags:
+    - docker
+    - entrypoint
+    - shell-scripts
+    - security
+</rule>
