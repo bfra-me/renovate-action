@@ -8,7 +8,7 @@ on:
   pull_request:
     types: [edited]
   push:
-    branches: ['**']
+    branches-ignore: [main]
   workflow_dispatch:
     inputs:
       log-level:
@@ -72,14 +72,15 @@ jobs:
       - env:
           dry_run: ${{ github.event_name == 'push' && github.ref != 'refs/heads/main' }}
           if: >-
-            ${{ !contains('["push", "workflow_run"]', github.event_name) || github.event.workflow_run.conclusion == 'success' || steps.filter.outputs.changes == 'true' }}
+            (github.event.action == 'edited' && !contains(github.actor, '[bot]')) ||
+            !contains('["push", "workflow_run"]', github.event_name) || github.event.workflow_run.conclusion == 'success' || steps.filter.outputs.changes == 'true'
           name: Renovate
         uses: ./
         with:
           branch: ${{ ( github.ref_name != github.event.repository.default_branch || env.dry_run == 'true' ) && github.ref_name || '' }}
           cache: true
           dry-run: ${{ env.dry_run }}
-          log-level: ${{ inputs.log-level || 'debug' }}
+          log-level: ${{ inputs.log-level || (github.event_name == 'pull_request' || github.ref_name != github.event.repository.default_branch) && 'debug' || 'info' }}
           print-config: ${{ inputs.print-config || false }}
           renovate-app-id: ${{ secrets.APPLICATION_ID }}
           renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
