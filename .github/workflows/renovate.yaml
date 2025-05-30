@@ -80,7 +80,7 @@ jobs:
           branch: ${{ ( github.ref_name != github.event.repository.default_branch || env.dry_run == 'true' ) && github.ref_name || '' }}
           cache: true
           dry-run: ${{ env.dry_run }}
-          log_level: ${{ inputs.log-level || (github.event_name == 'pull_request' || github.ref_name != github.event.repository.default_branch) && 'debug' || 'info' }}
+          log-level: ${{ inputs.log-level || (github.event_name == 'pull_request' || github.ref_name != github.event.repository.default_branch) && 'debug' || 'info' }}
           print-config: ${{ inputs.print-config || false }}
           renovate-app-id: ${{ secrets.APPLICATION_ID }}
           renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
