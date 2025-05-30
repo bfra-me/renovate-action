@@ -59,7 +59,7 @@ runs:
     - name: Configure
       id: configure
       env:
-        RENOVATE_VERSION: 39.264.0 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate versioning=semver
+        RENOVATE_VERSION: 40.36.2 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate versioning=semver
         autodiscover: ${{ inputs.autodiscover != '' && inputs.autodiscover || 'false' }}
         dry_run: ${{ inputs.dry-run != '' && inputs.dry-run || 'false' }}
         log_level: ${{ inputs.log-level != '' && inputs.log-level || 'info' }}
@@ -130,7 +130,7 @@ runs:
       shell: 'bash -Eeuo pipefail {0}'
 
     - name: Renovate ${{ steps.configure.outputs.renovate-version }}
-      uses: renovatebot/github-action@8ac70de2fe55752c573155866e30735411e3b61c # v41.0.22
+      uses: renovatebot/github-action@8058cfe11252651a837a58e2e3370fbc0e72c658 # v42.0.4
       env:
         FORCE_COLOR: '3'
         LOG_LEVEL: ${{ steps.configure.outputs.log-level }}
