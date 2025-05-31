@@ -66,6 +66,9 @@
     "onlyBuiltDependencies": [
       "@swc/core",
       "esbuild"
-    ]
+    ],
+    "overrides": {
+      "jiti": "<2.2.0"
+    }
   }
 }
