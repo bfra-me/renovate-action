@@ -5,6 +5,7 @@ name: Update Repo Settings
 on:
   push:
     branches: [main]
+    paths: [.github/settings.yml, .github/workflows/update-repo-settings.yaml]
   schedule:
     - cron: '51 8 * * *' # 8:51am UTC every day
   workflow_dispatch:
