@@ -105,6 +105,3 @@ dist/**/*.js.map
 
 # Cursor config
 .cursor/mcp.json
-
-# Experimental
-/hack/
