@@ -24,7 +24,7 @@ on:
   workflow_run:
     branches: [main]
     types: [completed]
-    workflows: [Main]
+    workflows: [CodeQL, Main, Scorecard supply-chain security, Update Repo Settings]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.run_number || github.ref }}
