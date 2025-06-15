@@ -17,4 +17,4 @@ jobs:
   update-repo-settings:
     name: Update Repo Settings
     secrets: inherit
-    uses: bfra-me/.github/.github/workflows/update-repo-settings.yaml@9f8ef530778020642f55414b1309f78e50e669f5 # v3.0.3
+    uses: bfra-me/.github/.github/workflows/update-repo-settings.yaml@3075851c28077d75b7645bd98b6a7351c4d57f55 # v3.0.4
