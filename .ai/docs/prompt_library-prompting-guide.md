@@ -11,6 +11,7 @@ Model Context Protocol (MCP) is a specification that enables AI assistants to us
 The `prompt_library` MCP server provides specialized tools for creating, managing, and deploying cursor rules within projects. Cursor rules are user-provided instructions that help AI assistants work more effectively with codebases by providing contextual guidance, best practices, and project-specific conventions.
 
 The primary purpose of `prompt_library` is to:
+
 - Analyze repositories to understand their structure, patterns, and technologies
 - Generate appropriate cursor rules based on the analysis
 - Manage the creation and deployment of these rules
@@ -57,6 +58,7 @@ flowchart TD
 This workflow involves analyzing a repository to understand its structure, technologies, and patterns. The analysis results provide insights that inform the creation of appropriate cursor rules.
 
 Steps:
+
 1. Run repository analysis using `instruct_repo_analysis`
 2. Review the analysis report
 3. Generate recommendations using `recommend_cursor_rules`
@@ -66,6 +68,7 @@ Steps:
 Based on the repository analysis, this workflow facilitates the creation of cursor rules tailored to the project's needs.
 
 Steps:
+
 1. Create cursor rule files using `create_cursor_rule_files`
 2. Retrieve static rule templates using `get_static_cursor_rule` or `get_static_cursor_rules`
 3. Customize the rules for the project
@@ -76,6 +79,7 @@ Steps:
 This workflow ensures that created cursor rules are properly deployed to the project's `.cursor/rules` directory.
 
 Steps:
+
 1. Prepare the workspace using `prep_workspace`
 2. Ensure the Makefile has the necessary task using `ensure_makefile_task`
 3. Update .dockerignore to exclude draft rules using `update_dockerignore`
@@ -86,6 +90,7 @@ Steps:
 For more advanced needs, this workflow generates custom cursor rules specifically tailored to the repository's unique characteristics.
 
 Steps:
+
 1. Run repository analysis using `instruct_repo_analysis`
 2. Generate custom repository rules using `instruct_custom_repo_rules_generation`
 3. Execute the complete workflow using `plan_and_execute_prompt_library_workflow`
@@ -132,18 +137,21 @@ flowchart TD
 ### Repository Analysis Tools
 
 #### `instruct_repo_analysis`
+
 - **Description**: Runs a repository analysis to gather information for cursor rule creation
 - **Inputs**:
   - `random_string`: Dummy parameter for no-parameter tools
 - **Outputs**: Repository analysis results with information about the codebase structure, patterns, and technologies
 
 #### `instruct_custom_repo_rules_generation`
+
 - **Description**: Runs a cursor rules generation process based on repository analysis
 - **Inputs**:
   - `report_path`: Path to the AI report file, relative to the project root (default: "ai_report.md")
 - **Outputs**: Generated custom cursor rules based on the analysis
 
 #### `recommend_cursor_rules`
+
 - **Description**: Analyze a repository summary and recommend cursor rules to generate based on identified technologies and patterns
 - **Inputs**:
   - `repo_summary`: A summary description of the repository, including technologies, frameworks, and key features
@@ -152,12 +160,14 @@ flowchart TD
 ### Cursor Rule Management Tools
 
 #### `get_static_cursor_rule`
+
 - **Description**: Get a static cursor rule file by name to be written to the caller's .cursor/rules directory
 - **Inputs**:
   - `rule_name`: Name of the cursor rule to retrieve (with or without .md extension)
 - **Outputs**: Content of the specified cursor rule
 
 #### `get_static_cursor_rules`
+
 - **Description**: Get multiple static cursor rule files to be written to the caller's .cursor/rules directory
 - **Inputs**:
   - `rule_names`: List of cursor rule names to retrieve (with or without .md extension)
@@ -165,6 +175,7 @@ flowchart TD
 - **Outputs**: Contents of the specified cursor rules
 
 #### `save_cursor_rule`
+
 - **Description**: Save a cursor rule to the cursor rules directory in the project
 - **Inputs**:
   - `rule_name`: The name of the cursor rule file (without extension)
@@ -173,6 +184,7 @@ flowchart TD
 - **Outputs**: Confirmation of the saved cursor rule
 
 #### `create_cursor_rule_files`
+
 - **Description**: Create empty cursor rule files and provide instructions for sequential content creation
 - **Inputs**:
   - `rule_names`: A list of cursor rule names to create (without file extensions)
@@ -181,30 +193,35 @@ flowchart TD
 ### Workspace Preparation Tools
 
 #### `prep_workspace`
+
 - **Description**: Prepare the workspace for cursor rules by returning natural language instructions
 - **Inputs**:
   - `random_string`: Dummy parameter for no-parameter tools
 - **Outputs**: Instructions for preparing the workspace
 
 #### `ensure_makefile_task`
+
 - **Description**: Ensure the Makefile has the update-cursor-rules task
 - **Inputs**:
   - `makefile_path`: Path to the Makefile file, relative to the project root (default: "Makefile")
 - **Outputs**: Confirmation that the Makefile has the required task
 
 #### `ensure_ai_report`
+
 - **Description**: Check for the existence of an AI report file and ensure its content aligns with requirements
 - **Inputs**:
   - `report_path`: Path to the AI report file, relative to the project root (default: "./ai_report.md")
 - **Outputs**: Confirmation of the AI report file status
 
 #### `update_dockerignore`
+
 - **Description**: Update the .dockerignore file to exclude the cursor rules drafts directory
 - **Inputs**:
   - `random_string`: Dummy parameter for no-parameter tools
 - **Outputs**: Confirmation that .dockerignore has been updated
 
 #### `run_update_cursor_rules`
+
 - **Description**: Run the update-cursor-rules Makefile task to deploy cursor rules
 - **Inputs**:
   - `random_string`: Dummy parameter for no-parameter tools
@@ -213,12 +230,14 @@ flowchart TD
 ### Workflow Tools
 
 #### `cursor_rules_workflow`
+
 - **Description**: Execute the complete cursor rules workflow
 - **Inputs**:
   - `rule_names`: A list of cursor rule names to create (without file extensions)
 - **Outputs**: Results of the complete workflow execution
 
 #### `plan_and_execute_prompt_library_workflow`
+
 - **Description**: Execute a structured workflow for generating custom cursor rules based on repository analysis
 - **Inputs**:
   - `repo_description`: Brief description of the repository's purpose and functionality
@@ -353,6 +372,7 @@ Once you provide this information, I'll generate custom cursor rules specificall
 **AI Assistant**: "Thank you for providing those details. I'll now generate custom cursor rules specifically for your GitHub Action that automates dependency updates with Renovate.
 
 [AI uses `plan_and_execute_prompt_library_workflow` with:
+
 - repo_description: "GitHub Action for automating dependency updates using Renovate"
 - main_languages: "TypeScript, Shell"
 - file_patterns: ".ts, .sh, .yaml"
@@ -391,7 +411,8 @@ I'll create a Git pre-push hook that will run the update-cursor-rules task autom
 2. Now I'll create the pre-push hook script:
 
 [AI uses `edit_file` to create the pre-push hook script with the following content:
-```
+
+````
 #!/bin/sh
 # Pre-push hook to update cursor rules
 make update-cursor-rules
@@ -430,7 +451,7 @@ flowchart TD
     subgraph "Deployment"
     D
     end
-```
+````
 
 - Use `instruct_repo_analysis` to analyze the current repository structure and technologies
 - Compare existing rules with recommended rules using `recommend_cursor_rules`
