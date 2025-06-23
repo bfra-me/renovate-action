@@ -9,12 +9,10 @@ The `renovate-action` repository provides a GitHub Action for running a self-hos
 ### Programming Languages
 
 - **TypeScript**: The primary programming language used in the repository. TypeScript provides static typing on top of JavaScript, allowing for better code quality and developer experience.
-
   - Version: 5.8.3
   - Usage: Main source code in `src/` directory
 
 - **YAML**: Used extensively for configuration files, including GitHub Actions workflows, the main action definition, and various configuration files.
-
   - Usage: `action.yaml`, GitHub workflow files, configuration files
 
 - **Bash**: Used in shell scripts, particularly in the Docker entrypoint script.
@@ -23,7 +21,6 @@ The `renovate-action` repository provides a GitHub Action for running a self-hos
 ### Build Tools
 
 - **tsup**: A zero-config TypeScript bundler powered by esbuild, used to build the TypeScript code into JavaScript.
-
   - Version: 8.4.0
   - Configuration: `tsup.config.ts`
   - Features used:
@@ -33,7 +30,6 @@ The `renovate-action` repository provides a GitHub Action for running a self-hos
     - Declaration file generation
 
 - **SWC**: A high-performance JavaScript/TypeScript compiler used through tsup.
-
   - Version: 1.11.22
   - Usage: Speeds up the TypeScript compilation process
 
@@ -66,7 +62,6 @@ The `renovate-action` repository provides a GitHub Action for running a self-hos
 ### Action Structure
 
 - **Composite Action**: The action is defined as a composite action in `action.yaml`, which combines multiple steps into a single action.
-
   - Features used:
     - Inputs and outputs definition
     - Environment variables
@@ -82,7 +77,6 @@ The `renovate-action` repository provides a GitHub Action for running a self-hos
 ### Docker Integration
 
 - **Docker**: The action uses Docker to run Renovate in a container.
-
   - Image: `ghcr.io/renovatebot/renovate`
   - Configuration: `docker/entrypoint.sh`, `action.yaml`
   - Features used:
@@ -91,7 +85,6 @@ The `renovate-action` repository provides a GitHub Action for running a self-hos
     - Volume mounting for cache persistence
 
 - **Docker Entrypoint Script**: The `docker/entrypoint.sh` script initializes the Docker container with the necessary tools:
-
   - **Tool Installation**: Installs and configures essential tools with specific versions:
     - YQ (YAML processor): v4.45.1 - Used for parsing and modifying YAML files
     - Node.js: v22.11.0 - Runtime environment for Renovate
@@ -103,34 +96,28 @@ The `renovate-action` repository provides a GitHub Action for running a self-hos
   - **Environment Preparation**: Ensures all necessary tools are available for dependency management across different ecosystems
 
 - **Renovate Configuration and Execution**: The action provides extensive configuration options that are passed to the Renovate bot:
-
   - **Repository Discovery**:
-
     - `autodiscover`: Controls whether to automatically find repositories to process
     - `autodiscover-filter`: JSON array for filtering which repositories to include
     - `branch`: Optional specific branch targeting for Renovate operations
 
   - **Execution Control**:
-
     - `dry-run`: When enabled, logs actions without making actual changes
     - `print-config`: Outputs fully-resolved configuration when enabled
     - `log-level`: Controls verbosity of logging (default: "info")
 
   - **Caching System**:
-
     - `cache`: Optional cache enabling for improved performance
     - Cache versioning based on Renovate major version
     - Cross-run persistence with GitHub Actions cache
     - Managed with `actions/cache/restore` and `actions/cache/save`
 
   - **Authentication Flow**:
-
     - Uses GitHub App authentication via `actions/create-github-app-token`
     - Configures Git author identity based on GitHub App
     - Ignores commits from specific authors to prevent loops
 
   - **Global Configuration**:
-
     - Predefined onboarding configuration using organization presets
     - Custom dependency dashboard footer with manual trigger option
     - Preconfigured list of allowed shell commands
@@ -157,7 +144,6 @@ The `renovate-action` repository provides a GitHub Action for running a self-hos
 The Renovate configuration for this repository (`.github/renovate.json5`) leverages external presets and defines specific rules for how Renovate manages its own dependencies.
 
 - **External Presets**:
-
   - The configuration extends presets from the [`bfra-me/renovate-config`](https://github.com/bfra-me/renovate-config) repository (specifically `bfra-me/renovate-config#v3` and `bfra-me/renovate-config:internal.json5#v3`). These shared presets likely define common organizational settings like automerge strategies, labels, schedules, and base package rules.
   - It also uses `security:openssf-scorecard` and `github>sanity-io/renovate-config:semantic-commit-type`.
 
@@ -177,14 +163,12 @@ This configuration ensures that the action itself stays up-to-date with the late
 Beyond the repository-specific `.github/renovate.json5`, the composite action (`action.yaml`) itself embeds significant configuration, passing it to the `renovatebot/github-action` step via environment variables (`RENOVATE_*`). This provides opinionated defaults and enforces certain behaviors for users of `bfra-me/renovate-action`.
 
 - **Intent**: The primary goals of this embedded configuration are:
-
   - **Standardization**: Enforce GitHub App authentication and a standard onboarding experience using `bfra-me/renovate-config` presets.
   - **Security**: Limit allowed shell commands (`allowedCommands`) for post-upgrade tasks and ignore commits from known bot authors (`gitIgnoredAuthors`) to prevent infinite loops.
   - **User Experience**: Provide a custom footer in the Dependency Dashboard (`dependencyDashboardFooter`) with a manual trigger option.
   - **Abstraction**: Simplify usage by handling the setup of Git author details, platform settings, and other parameters automatically based on the GitHub App context.
 
 - **Key Hardcoded Settings**:
-
   - `RENOVATE_CONFIG`: Injects a JSON blob containing `allowedCommands`, `onboardingConfig`, `onboardingConfigFileName`, `onboardingPrTitle`, etc.
   - `RENOVATE_GIT_IGNORED_AUTHORS`: A static list of author emails/patterns.
   - `RENOVATE_DEPENDENCY_DASHBOARD_FOOTER`: A specific markdown string.
@@ -204,7 +188,6 @@ Exposing these via inputs would make the `bfra-me/renovate-action` more adaptabl
 ### GitHub Workflows
 
 - **GitHub Actions**: Used for continuous integration and deployment.
-
   - Workflows defined in `.github/workflows/`
   - Key workflows:
     - `main.yaml`: Primary CI/CD pipeline
@@ -213,7 +196,6 @@ Exposing these via inputs would make the `bfra-me/renovate-action` more adaptabl
     - `codeql-analysis.yaml`: Code security scanning
 
 - **Renovate Workflow (`renovate.yaml`)**: This workflow is specifically designed to run Renovate on the `renovate-action` repository itself, enabling automated self-updates.
-
   - **Purpose**: To keep the action's own dependencies (Node packages, base actions like `renovatebot/github-action`, Renovate Docker image version) up-to-date.
   - **Triggers**: Runs on various events including:
     - `push` to any branch (with path filtering to run only if relevant files like `action.yaml` or `.github/renovate.json5` change).
@@ -224,7 +206,6 @@ Exposing these via inputs would make the `bfra-me/renovate-action` more adaptabl
   - **Concurrency Control**: Ensures only one instance runs per context, cancelling older runs.
 
 - **Main Workflow (`main.yaml`)**: Serves as the primary CI/CD pipeline.
-
   - **Purpose**: Validates code changes, builds distributable code, runs tests, and handles releases.
   - **Triggers**: Runs on `pull_request` to `main`, `push` to `main`, `merge_group`, and `workflow_dispatch`.
   - **Job Dependencies**: `setup` -> (`check`, `build`, `test`) -> `release`.
@@ -239,7 +220,6 @@ Exposing these via inputs would make the `bfra-me/renovate-action` more adaptabl
     - **On Push to `main`**: Runs `setup`, `check` (conditional), `build`, `test` (skips self-test). The `release` job runs in full mode, performing the actual release and tag updates.
 
 - **Testing the Composite Action**: The `main.yaml` workflow not only builds and tests the code, but also performs a self-test of the composite action:
-
   - After building and running unit tests, the workflow invokes the composite action itself (using the local codebase) in a real workflow step, passing in the required secrets and running Renovate in dry-run mode. This ensures that the action is exercised in a real-world context, verifying that it can correctly orchestrate Renovate via the `renovatebot/github-action` and handle all configuration, authentication, and environment setup as expected.
   - This self-test step is crucial for validating the end-to-end functionality of the composite action, beyond just unit and integration tests.
 
@@ -250,7 +230,6 @@ Exposing these via inputs would make the `bfra-me/renovate-action` more adaptabl
 ### Release Management
 
 - **Semantic Release**: Automated version management and package publishing.
-
   - Version: 24.2.3
   - Configuration: `.releaserc.yaml`
   - Features used:
@@ -275,7 +254,6 @@ Exposing these via inputs would make the `bfra-me/renovate-action` more adaptabl
 ### Development Dependencies
 
 - **ESLint and related plugins**: Used for linting TypeScript code.
-
   - Version: 9.25.1
   - Configuration: `eslint.config.ts`
   - Key plugins:
@@ -285,13 +263,11 @@ Exposing these via inputs would make the `bfra-me/renovate-action` more adaptabl
     - eslint-plugin-node-dependencies (v0.12.0)
 
 - **Prettier**: Opinionated code formatter.
-
   - Version: 3.5.3
   - Configuration: `.prettierrc.yaml`
   - Integration: eslint-plugin-prettier for ESLint integration
 
 - **Semantic Release plugins**:
-
   - @semantic-release/changelog (v6.0.3): Generates changelogs
   - @semantic-release/git (v10.0.1): Git integration
   - semantic-release-export-data (v1.1.0): Exports release data
@@ -317,13 +293,11 @@ Key purposes of the `renovatebot/github-action`:
 The `renovatebot/github-action` sits at a critical junction in the Renovate ecosystem:
 
 1. **Containerization Layer**: Acts as the bridge between the Renovate core software and containerized execution environments
-
    - Packages Renovate in Docker images for consistent, isolated execution
    - Manages versioning through Docker tags (e.g., `ghcr.io/renovatebot/renovate:39.259.0`)
    - Provides stable execution environments across different CI systems
 
 2. **Self-Hosting Option**: One of several deployment options for Renovate:
-
    - **Mend-hosted Renovate App**: Fully managed service requiring minimal setup
    - **Self-hosted with GitHub Actions** (using `renovatebot/github-action`): More customizable with access to private repositories
    - **Self-hosted on other CI platforms**: Maximum flexibility but more complex setup
@@ -338,13 +312,11 @@ The `renovatebot/github-action` sits at a critical junction in the Renovate ecos
 The `renovatebot/github-action` is built with a layered architecture:
 
 1. **GitHub Action Interface Layer**:
-
    - Defined in [action.yml](https://github.com/renovatebot/github-action/blob/main/action.yml)
    - Exposes inputs for configuration options
    - Handles environment variable passing
 
 2. **Docker Execution Layer**:
-
    - Pulls and executes the Renovate Docker image
    - Manages volume mounts for caching and persistence
    - Handles Docker networking and permissions
@@ -387,19 +359,16 @@ Key integration points:
 The `renovatebot/github-action` provides several important capabilities:
 
 1. **Docker Image Selection**:
-
    - `renovate-image`: Allows specifying a custom Docker image (default: `ghcr.io/renovatebot/renovate`)
    - `renovate-version`: Allows specifying a specific Renovate version tag
 
 2. **Docker Configuration**:
-
    - `docker-cmd-file`: Custom entrypoint script
    - `docker-user`: User to run Renovate as
    - `docker-volumes`: Custom volume mounts
    - `mount-docker-socket`: Mount Docker socket for containerization features
 
 3. **Authentication**:
-
    - `token`: GitHub token for authentication
    - Support for environment variable-based secrets
 
@@ -482,7 +451,6 @@ The Renovate package is published to npm primarily for CLI usage (`npx renovate`
 Considering these approaches as potential alternatives for our `bfra-me/renovate-action`:
 
 1.  **Replacing `renovatebot/github-action` with Direct CLI Call**:
-
     - _Feasibility_: Possible. Our action could install `renovate` using `pnpm` (already available in our `entrypoint.sh`) and execute `npx renovate` directly within a step.
     - _Pros_: Removes dependency on `renovatebot/github-action`, potentially offering slightly more control over the immediate execution environment.
     - _Cons_: We would need to replicate the environment setup, Docker integration nuances, and potentially some input handling currently managed by `renovatebot/github-action`. This increases the maintenance burden of our action. The official action benefits from direct maintenance by the Renovate team.
