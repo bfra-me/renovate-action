@@ -10,7 +10,6 @@
 ## Solution Design
 
 1. Approach 1:
-
    - Description
    - Pros and cons
    - Technical considerations
@@ -23,7 +22,6 @@
 ## Implementation Steps
 
 - [ ] High-level step 1
-
   - [ ] Sub-task 1.1
   - [ ] Sub-task 1.2
   - Success criteria: What defines completion
