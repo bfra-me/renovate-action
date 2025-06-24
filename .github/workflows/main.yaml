@@ -220,3 +220,12 @@ jobs:
           else
             gh api -X PATCH repos/{owner}/{repo}/git/${ref} -f sha=$sha -F force=true
           fi
+
+      - name: Dispatch Renovate workflow in the .github repository
+        if: ${{ env.DRY_RUN != 'true' && steps.semantic-release.outputs.new-release-published == 'true' }}
+        env:
+          GH_TOKEN: ${{ steps.get-app-token.outputs.token }}
+          ORG: ${{ github.repository_owner }}
+        run: |
+          echo "Triggering workflow_dispatch for $ORG/.github"
+          gh workflow run renovate.yaml --repo $ORG/.github
