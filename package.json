@@ -43,7 +43,7 @@
     "@bfra.me/tsconfig": "0.10.0",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
-    "@swc/core": "1.12.6",
+    "@swc/core": "1.12.7",
     "@types/node": "22.15.31",
     "@vitest/eslint-plugin": "1.2.7",
     "conventional-changelog-conventionalcommits": "9.0.0",
