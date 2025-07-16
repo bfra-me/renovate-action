@@ -73,8 +73,8 @@ importers:
         specifier: 24.2.7
         version: 24.2.7(typescript@5.8.3)
       semantic-release-export-data:
-        specifier: 1.1.0
-        version: 1.1.0(semantic-release@24.2.7(typescript@5.8.3))
+        specifier: 1.1.1
+        version: 1.1.1(semantic-release@24.2.7(typescript@5.8.3))
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@swc/core@1.12.14)(jiti@2.1.2)(postcss@8.5.6)(typescript@5.8.3)(yaml@2.8.0)
@@ -2743,8 +2743,8 @@ packages:
     resolution: {integrity: sha512-3A6sD0WYP7+QrjbfNA2FN3FsOaGGFoekCVgTyypy53gPxhbkCIjtO6YWgdrfM+n/8sI8JeXZOIxsHjMTNxQ4nQ==}
     engines: {node: ^14.0.0 || >=16.0.0}
 
-  semantic-release-export-data@1.1.0:
-    resolution: {integrity: sha512-OgN0PkrJDrgdaHtjxO+CjsO+gfTuKOCilIuIvy8P2KwjAnGM1FS/loK4buGC8+Der8IT1DmmmpcOqLTHlKlTMw==}
+  semantic-release-export-data@1.1.1:
+    resolution: {integrity: sha512-cjhc6g7Vl4tRRD6eA593EyMiQaOvazsziabdzPqsf0OAKoIQSL2eynS2jaJhbdxiu4msZreZ+XcU5FU9FAZbeA==}
     peerDependencies:
       semantic-release: '>=18'
 
@@ -6061,9 +6061,8 @@ snapshots:
       refa: 0.12.1
       regexp-ast-analysis: 0.7.1
 
-  semantic-release-export-data@1.1.0(semantic-release@24.2.7(typescript@5.8.3)):
+  semantic-release-export-data@1.1.1(semantic-release@24.2.7(typescript@5.8.3)):
     dependencies:
-      '@actions/core': 1.11.1
       semantic-release: 24.2.7(typescript@5.8.3)
 
   semantic-release@24.2.7(typescript@5.8.3):
