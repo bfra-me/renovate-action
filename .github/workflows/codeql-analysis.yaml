@@ -19,7 +19,7 @@ permissions:
 jobs:
   analyze:
     env:
-      language: javascript
+      language: typescript
     name: Analyze
     runs-on: ubuntu-latest
     permissions:
