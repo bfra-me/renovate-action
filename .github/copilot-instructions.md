@@ -24,9 +24,10 @@ This is a GitHub composite action that runs Renovate bot in a self-hosted config
 - Uses `@bfra.me/*` organization packages for consistent tooling (eslint, prettier, tsconfig)
 
 ### Testing
-- Uses Vitest as the test framework
-- Tests in `src/__tests__/` directory
-- Integration test simulates GitHub Action execution via `child_process`
+- **Three-Tier Strategy**: Unit tests (Vitest), integration tests (child_process), self-tests (CI/CD)
+- **Unit Testing**: Vitest 3.2.4 in `src/__tests__/` for TypeScript function validation
+- **Integration Testing**: `child_process.execFileSync` to test complete action execution pipeline
+- **Self-Test Pattern**: Conditional execution in main workflow using real GitHub App credentials in dry-run mode
 
 ## Critical Patterns
 
@@ -204,3 +205,251 @@ curl: (6) Could not resolve host: github.com
 - **Renovate Bot**: Core dependency update engine
 - **Docker Hub/GHCR**: Container registry for Renovate images
 - **GitHub Actions Cache**: For persistent storage across runs
+
+## Testing Strategy
+
+### Overview
+The project implements a comprehensive three-tier testing strategy ensuring reliability from individual components to full end-to-end workflows.
+
+### Unit Testing with Vitest
+- **Framework**: Vitest 3.2.4 for TypeScript module validation
+- **Location**: `src/__tests__/` directory
+- **Execution**: `pnpm test` command
+- **Coverage**: Error conditions, timing constraints, pure function isolation
+- **Configuration**: ESM support via package.json, TypeScript via tsconfig.json
+
+### Integration Testing via child_process
+- **Mechanism**: Node.js `child_process.execFileSync` to execute built action
+- **Environment**: Simulates GitHub Actions runner with `INPUT_*` environment variables
+- **Validation**: Built distribution (`dist/index.js`), input/output protocols, production execution
+- **Testing Pattern**: Set env vars → execute action → validate outputs
+
+### Self-Test Pattern in CI/CD
+- **Location**: `.github/workflows/main.yaml` conditional step
+- **Authentication**: Real GitHub App credentials in dry-run mode
+- **Conditions**: Repository owner validation, non-default branch, no Renovate config changes
+- **Validation**: Token generation, Docker execution, cache management, error handling
+
+### Production Testing
+- **Renovate Workflow**: Real dependency operations via `.github/workflows/renovate.yaml`
+- **Triggers**: Manual dispatch, checkbox interactions, workflow completion
+- **Scenarios**: Branch operations, configuration validation, production execution
+
+### Testing Environments
+- **Development**: Local unit tests with `pnpm test`, debug mode with `ACTIONS_STEP_DEBUG=true`
+- **CI/CD**: Full test suite on PRs, self-tests on feature branches, release validation
+- **Production**: Real GitHub App auth, repository operations, cache validation
+
+### Error Scenario Testing
+- **Permission Issues**: Docker user/file ownership conflicts
+- **Authentication Failures**: Invalid GitHub App credentials validation
+- **Cache Corruption**: Cache key versioning and invalidation testing
+- **Configuration Errors**: Renovate preset resolution and config validation
+
+### Performance Testing
+- **Cache Performance**: Hit rates, storage usage, version-based invalidation
+- **Docker Performance**: Image pull time, tool installation, file system operations
+- **API Limits**: Rate limiting, request batching, error recovery patterns
+
+### Local Testing Patterns
+- **GitHub Actions Runner Simulation**:
+  ```bash
+  # Using act for local workflow testing
+  act -j test --secret-file .secrets --env-file .env.test
+
+  # Simulate specific GitHub context
+  act -e .github/test-events/push.json --matrix os:ubuntu-latest
+  ```
+- **Environment Variable Testing**:
+  ```typescript
+  // Test GitHub Actions input patterns
+  describe('Action Inputs', () => {
+    beforeEach(() => {
+      process.env.INPUT_DRY_RUN = 'true'
+      process.env.INPUT_LOG_LEVEL = 'debug'
+      process.env.GITHUB_REPOSITORY = 'bfra-me/renovate-action'
+    })
+
+    afterEach(() => {
+      delete process.env.INPUT_DRY_RUN
+      delete process.env.INPUT_LOG_LEVEL
+      delete process.env.GITHUB_REPOSITORY
+    })
+  })
+  ```
+- **Docker Testing Patterns**:
+  ```bash
+  # Local Renovate container testing
+  docker run --rm -v /tmp/test-cache:/tmp/renovate/cache \
+    -e RENOVATE_TOKEN=test \
+    ghcr.io/renovatebot/renovate:latest --dry-run
+  ```
+
+### Dependency Mocking Strategies
+- **GitHub API Mocking**:
+  ```typescript
+  import { vi } from 'vitest'
+  import { Octokit } from '@octokit/rest'
+
+  // Mock GitHub App token generation
+  vi.mock('@actions/core', () => ({
+    getInput: vi.fn((input) => {
+      const inputs = {
+        'renovate-app-id': '12345',
+        'renovate-app-private-key': 'mock-key'
+      }
+      return inputs[input] || ''
+    }),
+    setOutput: vi.fn(),
+    setFailed: vi.fn()
+  }))
+
+  // Mock Octokit responses
+  const mockOctokit = {
+    apps: {
+      createInstallationAccessToken: vi.fn().mockResolvedValue({
+        data: { token: 'ghs_mocktoken' }
+      })
+    }
+  }
+  ```
+- **Docker Registry Mocking**:
+  ```typescript
+  // Mock Docker image availability
+  vi.mock('child_process', () => ({
+    execFileSync: vi.fn((cmd, args) => {
+      if (cmd === 'docker' && args.includes('pull')) {
+        return Buffer.from('Image pulled successfully')
+      }
+      return Buffer.from('Command executed')
+    })
+  }))
+  ```
+- **File System Mocking**:
+  ```typescript
+  import { vi } from 'vitest'
+  import fs from 'fs'
+
+  // Mock cache operations
+  vi.spyOn(fs, 'existsSync').mockImplementation((path) => {
+    return path.toString().includes('/tmp/renovate/cache')
+  })
+
+  vi.spyOn(fs, 'mkdirSync').mockImplementation(() => undefined)
+  ```
+
+### Composite Action Testing Patterns
+- **Action.yaml Step Orchestration**:
+  ```typescript
+  describe('Composite Action Flow', () => {
+    test('validates step dependencies', async () => {
+      // Test that configure step runs before renovate step
+      const stepOrder = ['configure', 'renovate', 'finalize']
+      let executedSteps = []
+
+      // Mock each step execution
+      stepOrder.forEach(step => {
+        executeStep(step, () => executedSteps.push(step))
+      })
+
+      expect(executedSteps).toEqual(stepOrder)
+    })
+  })
+  ```
+- **Input/Output Validation**:
+  ```typescript
+  // Test input propagation across steps
+  test('propagates inputs correctly', () => {
+    process.env.INPUT_DRY_RUN = 'true'
+    process.env.INPUT_CACHE = 'false'
+
+    const configStep = require('../action-steps/configure')
+    const outputs = configStep.run()
+
+    expect(outputs.dry_run).toBe('true')
+    expect(outputs.cache_enabled).toBe('false')
+  })
+
+  // Test output consumption
+  test('consumes step outputs', () => {
+    const stepOutputs = {
+      docker_image: 'ghcr.io/renovatebot/renovate:41.35.0',
+      renovate_version: '41.35.0'
+    }
+
+    const renovateStep = require('../action-steps/renovate')
+    expect(renovateStep.getDockerImage(stepOutputs)).toBe(stepOutputs.docker_image)
+  })
+  ```
+- **Error Propagation Testing**:
+  ```typescript
+  describe('Error Handling', () => {
+    test('fails fast on invalid configuration', () => {
+      process.env.INPUT_RENOVATE_APP_ID = ''
+
+      expect(() => {
+        require('../action-steps/configure').validateInputs()
+      }).toThrow('renovate-app-id is required')
+    })
+
+    test('cleans up on failure', async () => {
+      const cleanupSpy = vi.spyOn(require('../utils/cleanup'), 'finalize')
+
+      try {
+        await simulateStepFailure('renovate')
+      } catch (error) {
+        // Error expected
+      }
+
+      expect(cleanupSpy).toHaveBeenCalledWith({
+        cachePath: '/tmp/renovate',
+        preserveCache: false
+      })
+    })
+  })
+  ```
+
+### Advanced Testing Scenarios
+- **Cache State Testing**:
+  ```typescript
+  describe('Cache Management', () => {
+    test('handles cache version migration', () => {
+      // Simulate cache from older Renovate version
+      const oldCacheKey = 'renovate-cache-v40'
+      const newCacheKey = 'renovate-cache-v41'
+
+      mockCacheService.restore.mockResolvedValueOnce(false) // Old cache miss
+      mockCacheService.save.mockResolvedValueOnce(true)    // New cache save
+
+      expect(cacheManager.migrate(oldCacheKey, newCacheKey)).resolves.toBe(true)
+    })
+  })
+  ```
+- **Multi-Repository Testing**:
+  ```typescript
+  // Test autodiscovery patterns
+  test('discovers repositories correctly', () => {
+    const mockRepos = [
+      { name: 'repo1', private: false },
+      { name: 'repo2', private: true },
+      { name: 'archived-repo', archived: true }
+    ]
+
+    mockGitHubAPI.repos.listForOrg.mockResolvedValue({ data: mockRepos })
+
+    const discovered = autodiscoverRepositories({
+      excludeArchived: true,
+      includePrivate: false
+    })
+
+    expect(discovered).toEqual([{ name: 'repo1', private: false }])
+  })
+  ```
+
+### Testing Best Practices
+- **Unit**: Test pure functions, mock externals, descriptive assertions, grouped suites
+- **Integration**: Complete workflows, realistic data, error handling validation
+- **Self-Test**: Always dry-run, security constraints, resource monitoring, cleanup
+- **Local Development**: Use act for workflow testing, mock external dependencies, validate error paths
+- **Composite Actions**: Test step orchestration, input/output flow, failure scenarios
+- **Continuous**: Monitor reliability, add edge case tests, keep dependencies updated
