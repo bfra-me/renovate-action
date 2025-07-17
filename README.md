@@ -31,11 +31,11 @@ on:
     branches:
       - main
       # Remove this filter if Renovate is configured to automerge via PR
-      - 'renovate/**'
+      - "renovate/**"
   pull_request:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *' # Run every 6 hours
+    - cron: "0 */6 * * *" # Run every 6 hours
 
 jobs:
   renovate:

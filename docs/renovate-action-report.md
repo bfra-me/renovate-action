@@ -334,13 +334,13 @@ Our composite action (`action.yaml`) utilizes `renovatebot/github-action` in the
 - name: Renovate ${{ steps.configure.outputs.renovate-version }}
   uses: renovatebot/github-action@fdbe2b88946ea8b6fb5785a5267b46677d13a4d2 # v41.0.21
   env:
-    FORCE_COLOR: '3'
+    FORCE_COLOR: "3"
     LOG_LEVEL: ${{ steps.configure.outputs.log-level }}
-    RENOVATE_AUTODISCOVER: 'true'
+    RENOVATE_AUTODISCOVER: "true"
     # Additional environment variables...
   with:
     env-regex: '^(?:CI|FORCE_COLOR|GITHUB_(?:(?!PATH|ENV).)+|(?:HTTPS?|NO)_PROXY|(?:https?|no)_proxy|LOG_LEVEL|NODE_OPTIONS|RENOVATE_\w+|RUNNER_\w+)$'
-    docker-cmd-file: '${{ github.action_path }}/docker/entrypoint.sh'
+    docker-cmd-file: "${{ github.action_path }}/docker/entrypoint.sh"
     docker-user: root
     mount-docker-socket: true
     renovate-version: ${{ steps.configure.outputs.renovate-version }}
