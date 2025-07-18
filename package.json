@@ -51,7 +51,7 @@
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-no-only-tests": "3.3.0",
     "eslint-plugin-node-dependencies": "1.1.2",
-    "eslint-plugin-prettier": "5.5.2",
+    "eslint-plugin-prettier": "5.5.3",
     "jiti": "2.4.2",
     "js-yaml": "4.1.0",
     "prettier": "3.6.2",
