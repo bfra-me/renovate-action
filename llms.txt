@@ -1,0 +1,44 @@
+# Renovate Action
+
+> A GitHub composite action that runs Renovate bot in a self-hosted configuration to automate dependency updates using Docker containers with GitHub App authentication.
+
+This action orchestrates dependency updates by running Renovate in a containerized environment with enhanced permissions and rate limits through GitHub App authentication. It implements sophisticated caching strategies and supports both dry-run and production modes for dependency management across repositories.
+
+Key features:
+
+- Self-hosted Renovate execution via Docker containers
+- GitHub App authentication for enhanced API access
+- Advanced caching for repository and dependency data
+- Composite action architecture with multi-step workflow orchestration
+- Support for autodiscovery, filtering, and custom Renovate configurations
+
+## Documentation
+
+- [README](README.md): Main project documentation with usage examples and setup instructions
+- [Copilot Instructions](.github/copilot-instructions.md): Comprehensive project overview, architecture documentation, and development guidelines
+- [License](LICENSE.md): MIT license terms and conditions
+
+## Action Definition
+
+- [Action Configuration](action.yaml): Core composite action definition with inputs, outputs, and step orchestration
+- [Renovate Configuration](.github/renovate.json5): Renovate bot configuration with custom managers and package rules
+- [Package Configuration](package.json): Project dependencies, scripts, and build configuration
+
+## Examples
+
+- [Main Workflow](.github/workflows/main.yaml): CI/CD workflow demonstrating testing and validation patterns
+- [Renovate Workflow](.github/workflows/renovate.yaml): Production example of using the action for automated dependency updates
+
+## Testing
+
+- [Testing Strategy](docs/testing-strategy.md): Comprehensive three-tier testing approach including unit, integration, and self-tests
+- [Main Source](src/main.ts): TypeScript entry point and core action logic
+- [Unit Tests](src/__tests__/main.test.ts): Vitest-based unit tests for TypeScript functions
+
+## Optional
+
+- [Action Report](docs/renovate-action-report.md): Detailed project analysis and implementation reports
+- [Docker Entrypoint](docker/entrypoint.sh): Docker container setup script for installing tools and dependencies
+- [Build Configuration](tsup.config.ts): TypeScript build configuration using tsup for ESM bundling
+- [CodeQL Workflow](.github/workflows/codeql-analysis.yaml): Security analysis and code scanning workflow
+- [Dependency Review](.github/workflows/dependency-review.yaml): Automated dependency vulnerability scanning
