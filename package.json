@@ -64,10 +64,11 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "@swc/core",
-      "esbuild"
+      "esbuild",
+      "unrs-resolver"
     ],
     "overrides": {
-      "jiti": "<2.6.0"
+      "jiti": "<2.2.0"
     }
   }
 }

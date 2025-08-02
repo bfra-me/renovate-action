@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  jiti: <2.6.0
+  jiti: <2.2.0
 
 importers:
 
@@ -58,7 +58,7 @@ importers:
         specifier: 5.5.3
         version: 5.5.3(eslint-config-prettier@10.1.8(eslint@9.32.0(jiti@2.1.2)))(eslint@9.32.0(jiti@2.1.2))(prettier@3.6.2)
       jiti:
-        specifier: <2.6.0
+        specifier: <2.2.0
         version: 2.1.2
       js-yaml:
         specifier: 4.1.0
@@ -1450,7 +1450,7 @@ packages:
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     hasBin: true
     peerDependencies:
-      jiti: <2.6.0
+      jiti: <2.2.0
     peerDependenciesMeta:
       jiti:
         optional: true
@@ -2474,7 +2474,7 @@ packages:
     resolution: {integrity: sha512-oPtTM4oerL+UXmx+93ytZVN82RrlY/wPUV8IeDxFrzIjXOLF1pN+EmKPLbubvKHT2HC20xXsCAH2Z+CKV6Oz/g==}
     engines: {node: '>= 18'}
     peerDependencies:
-      jiti: <2.6.0
+      jiti: <2.2.0
       postcss: '>=8.0.9'
       tsx: ^4.8.1
       yaml: ^2.4.2
@@ -3016,7 +3016,7 @@ packages:
     hasBin: true
     peerDependencies:
       '@types/node': ^20.19.0 || >=22.12.0
-      jiti: <2.6.0
+      jiti: <2.2.0
       less: ^4.0.0
       lightningcss: ^1.21.0
       sass: ^1.70.0
