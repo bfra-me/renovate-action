@@ -22,6 +22,7 @@ This is a GitHub composite action that runs Renovate bot in a self-hosted config
 - `tsup.config.ts`: Build configuration using tsup for ESM bundling with license generation
 - `package.json`: Scripts follow pattern: `bootstrap` → `build` → `check` → `test`
 - Uses `@bfra.me/*` organization packages for consistent tooling (eslint, prettier, tsconfig)
+- Package manager: `pnpm@10.14.0` with `packageManager` field for version consistency
 
 ### Testing
 - **Three-Tier Strategy**: Unit tests (Vitest), integration tests (child_process), self-tests (CI/CD)
@@ -94,7 +95,7 @@ pnpm test       # Run Vitest tests
 ### Renovate Self-Update Strategy
 - **Version Pinning**: Renovate version in `action.yaml` uses renovate comment for auto-updates:
   ```yaml
-  RENOVATE_VERSION: 41.35.0 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate versioning=semver
+  RENOVATE_VERSION: 41.42.2 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate versioning=semver
   ```
 - **Automated Updates**: `.github/renovate.json5` manages dependency updates with semantic commit types:
   - Major updates: `feat(deps)!:` (breaking changes)
@@ -173,13 +174,13 @@ ERROR: Renovate config validation error
 
 **Error Pattern**: Docker image pull failures or network timeouts
 ```
-Error: Failed to pull Docker image ghcr.io/renovatebot/renovate:41.35.0
+Error: Failed to pull Docker image ghcr.io/renovatebot/renovate:41.42.2
 Error: connect ETIMEDOUT
 ```
 **Root Cause**: Network connectivity or Docker registry issues
 **Solutions**:
 - Verify Docker image exists at specified version in GHCR
-- Check `RENOVATE_VERSION` in action.yaml matches available tags
+- Check `RENOVATE_VERSION` in action.yaml matches available tags (currently 41.42.2)
 - Use `docker-image` output for debugging actual image being used
 - Validate runner network access to GitHub Container Registry
 - Consider using alternative Docker registry or caching strategies
@@ -372,12 +373,10 @@ The project implements a comprehensive three-tier testing strategy ensuring reli
 
   // Test output consumption
   test('consumes step outputs', () => {
-    const stepOutputs = {
-      docker_image: 'ghcr.io/renovatebot/renovate:41.35.0',
-      renovate_version: '41.35.0'
-    }
-
-    const renovateStep = require('../action-steps/renovate')
+  const stepOutputs = {
+    docker_image: 'ghcr.io/renovatebot/renovate:41.42.2',
+    renovate_version: '41.42.2'
+  }    const renovateStep = require('../action-steps/renovate')
     expect(renovateStep.getDockerImage(stepOutputs)).toBe(stepOutputs.docker_image)
   })
   ```
