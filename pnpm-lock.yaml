@@ -1023,8 +1023,8 @@ packages:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
     engines: {node: '>=10'}
 
-  chalk@5.4.1:
-    resolution: {integrity: sha512-zgVZuo2WcZgfUEmsn6eO3kINexW8RAE4maiQ8QNs8CtpPCSyMiYsULR3HQYkm3w8FIA3SberyMJMSldGsW+U3w==}
+  chalk@5.5.0:
+    resolution: {integrity: sha512-1tm8DTaJhPBG3bIkVeZt1iZM9GfSX2lzOeDVZH9R9ffRHpmHvxZ/QhgQH/aDTkswQVt+YHdXAdS/In/30OjCbg==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
   char-regex@1.0.2:
@@ -2676,6 +2676,7 @@ packages:
   source-map@0.8.0-beta.0:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
+    deprecated: The work that was done in this beta branch won't be included in future versions
 
   spawn-error-forwarder@1.0.0:
     resolution: {integrity: sha512-gRjMgK5uFjbCvdibeGJuy3I5OYz6VLoVdsOJdA6wV0WlfQVLFueoqMxwwYD9RODdgb6oUIvlRlsyFSiQkMKu0g==}
@@ -4073,7 +4074,7 @@ snapshots:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
-  chalk@5.4.1: {}
+  chalk@5.5.0: {}
 
   char-regex@1.0.2: {}
 
@@ -5072,7 +5073,7 @@ snapshots:
     dependencies:
       ansi-escapes: 7.0.0
       ansi-regex: 6.1.0
-      chalk: 5.4.1
+      chalk: 5.5.0
       cli-highlight: 2.1.11
       cli-table3: 0.6.5
       marked: 15.0.12
