@@ -8,12 +8,14 @@ export const tsup: Options = {
   dts: true,
   entry: {index: 'src/main.ts'},
   esbuildPlugins: [
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     esbuildPluginLicense({
       thirdParty: {
         output: {
           file: 'licenses.txt',
           template: (dependencies: Dependency[]) =>
             dependencies
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
               .map(({licenseText, packageJson}) => `${packageJson.name}\n${packageJson.license}\n${licenseText}`)
               .join('\n\n'),
         },
