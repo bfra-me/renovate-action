@@ -240,15 +240,33 @@ runs:
         # Function to validate JSON
         validate_json() {
           local json_string="$1"
+          local context="${2:-config}"
+
           if [ -z "$json_string" ] || [ "$json_string" = "{}" ]; then
             return 0  # Empty or default JSON is valid
           fi
 
-          if echo "$json_string" | jq . > /dev/null 2>&1; then
-            return 0  # Valid JSON
-          else
+          # Basic JSON syntax validation
+          if ! echo "$json_string" | jq . > /dev/null 2>&1; then
+            echo "Error: Invalid JSON syntax in $context" >&2
             return 1  # Invalid JSON
           fi
+
+          # Ensure it's a JSON object (not array or primitive)
+          if ! echo "$json_string" | jq -e 'type == "object"' > /dev/null 2>&1; then
+            echo "Error: $context must be a JSON object, not $(echo "$json_string" | jq -r 'type')" >&2
+            return 1
+          fi
+
+          # Check for potentially dangerous fields that users shouldn't override
+          local dangerous_fields=("platform" "gitAuthor" "gitIgnoredAuthors" "cacheDir" "repositoryCache")
+          for field in "${dangerous_fields[@]}"; do
+            if echo "$json_string" | jq -e "has(\"$field\")" > /dev/null 2>&1; then
+              echo "Warning: Field '$field' in $context should not be overridden by user config" >&2
+            fi
+          done
+
+          return 0  # Valid JSON
         }
 
         # Function to merge global config securely
@@ -257,7 +275,7 @@ runs:
           local user_config="$2"
 
           # Validate base config first
-          if ! validate_json "$base_config"; then
+          if ! validate_json "$base_config" "base config"; then
             echo "Error: Base zzglobal_config is not valid JSON"
             exit 1
           fi
@@ -269,7 +287,7 @@ runs:
           fi
 
           # Validate user config
-          if ! validate_json "$user_config"; then
+          if ! validate_json "$user_config" "user global-config"; then
             echo "Warning: User global-config is not valid JSON, falling back to base config" >&2
             echo "$base_config"
             return 0
@@ -279,19 +297,62 @@ runs:
           local base_allowed_commands
           base_allowed_commands=$(echo "$base_config" | jq -c '.allowedCommands // []')
 
-          # Merge configs while protecting security fields
-          local merged_config
-          merged_config=$(echo "$base_config" | jq -c \
-            --argjson userConfig "$user_config" \
-            --argjson allowedCommands "$base_allowed_commands" \
-            '. * $userConfig | .allowedCommands = $allowedCommands')
+          # Extract base onboardingConfig for deep merging
+          local base_onboarding_config
+          base_onboarding_config=$(echo "$base_config" | jq -c '.onboardingConfig // {}')
 
+          # Extract user onboardingConfig if provided
+          local user_onboarding_config
+          user_onboarding_config=$(echo "$user_config" | jq -c '.onboardingConfig // {}')
+
+          # Perform deep merge of onboardingConfig
+          local merged_onboarding_config
+          if [ "$user_onboarding_config" != "{}" ]; then
+            echo "Deep merging onboardingConfig..." >&2
+            merged_onboarding_config=$(echo "$base_onboarding_config" | jq -c \
+              --argjson userOnboarding "$user_onboarding_config" \
+              '. * $userOnboarding')
+            if [ $? -ne 0 ]; then
+              echo "Warning: Failed to merge onboardingConfig, using base config" >&2
+              merged_onboarding_config="$base_onboarding_config"
+            else
+              echo "✅ Successfully merged onboardingConfig" >&2
+            fi
+          else
+            merged_onboarding_config="$base_onboarding_config"
+          fi
+
+          # Remove onboardingConfig from user config to prevent double-merging
+          local user_config_without_onboarding
+          user_config_without_onboarding=$(echo "$user_config" | jq -c 'del(.onboardingConfig)')
           if [ $? -ne 0 ]; then
-            echo "Warning: Failed to merge global configs, falling back to base config" >&2
+            echo "Warning: Failed to process user config, using base config" >&2
             echo "$base_config"
             return 0
           fi
 
+          # Merge configs while protecting security fields and using deep-merged onboardingConfig
+          local merged_config
+          merged_config=$(echo "$base_config" | jq -c \
+            --argjson userConfig "$user_config_without_onboarding" \
+            --argjson allowedCommands "$base_allowed_commands" \
+            --argjson onboardingConfig "$merged_onboarding_config" \
+            '. * $userConfig | .allowedCommands = $allowedCommands | .onboardingConfig = $onboardingConfig')
+
+          if [ $? -ne 0 ]; then
+            echo "Error: Failed to merge global configs, falling back to base config" >&2
+            echo "$base_config"
+            return 1
+          fi
+
+          # Final validation of merged config
+          if ! validate_json "$merged_config" "final merged config"; then
+            echo "Error: Merged config failed validation, falling back to base config" >&2
+            echo "$base_config"
+            return 1
+          fi
+
+          echo "✅ Config merge completed successfully" >&2
           echo "$merged_config"
         }
 
@@ -302,9 +363,23 @@ runs:
         echo "Processing global configuration..."
         if [ -n "$user_global_config" ] && [ "$user_global_config" != "{}" ]; then
           echo "User provided global-config, merging with base configuration..."
+          echo "User config size: $(echo "$user_global_config" | jq -r 'keys | length') keys"
           merged_global_config=$(merge_global_config "$base_global_config" "$user_global_config")
+          merge_exit_code=$?
+          if [ $merge_exit_code -ne 0 ]; then
+            echo "Error: Config merge failed with exit code $merge_exit_code, using base config" >&2
+            merged_global_config="$base_global_config"
+          else
+            echo "✅ Successfully merged user configuration"
+          fi
         else
           echo "No user global-config provided, using base configuration..."
+          merged_global_config="$base_global_config"
+        fi
+
+        # Validate the final merged configuration
+        if ! validate_json "$merged_global_config" "merged config"; then
+          echo "Error: Merged configuration is invalid, falling back to base config" >&2
           merged_global_config="$base_global_config"
         fi
 
