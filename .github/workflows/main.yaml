@@ -118,12 +118,47 @@ jobs:
       - run: pnpm test
       # Don't run a self test if Renovate configuration has changed as it will be run in the Renovate job
       - if: github.repository_owner == 'bfra-me' && github.ref_name != github.event.repository.default_branch && needs.setup.outputs.renovate-changed != 'true'
+        name: Self-test with default templates enabled
         uses: ./
         with:
           dry-run: true
           log-level: debug
           renovate-app-id: ${{ secrets.APPLICATION_ID }}
           renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          print-config: true
+      # Test template functionality with templates disabled
+      - if: github.repository_owner == 'bfra-me' && github.ref_name != github.event.repository.default_branch && needs.setup.outputs.renovate-changed != 'true'
+        name: Self-test with templates disabled
+        uses: ./
+        with:
+          dry-run: true
+          log-level: debug
+          renovate-app-id: ${{ secrets.APPLICATION_ID }}
+          renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          enable-custom-templates: false
+          print-config: true
+      # Test template functionality with custom template inputs
+      - if: github.repository_owner == 'bfra-me' && github.ref_name != github.event.repository.default_branch && needs.setup.outputs.renovate-changed != 'true'
+        name: Self-test with custom templates
+        uses: ./
+        with:
+          dry-run: true
+          log-level: debug
+          renovate-app-id: ${{ secrets.APPLICATION_ID }}
+          renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          pr-header: |
+            <!-- Custom test header for ${{ github.repository }} -->
+            🧪 **Test Mode**: This is a custom PR header for testing template functionality.
+          pr-footer: |
+            ---
+            🔧 **Custom Footer**: Template testing in progress for run ${{ github.run_id }}.
+          dependency-dashboard-header: |
+            <!-- Custom test dashboard header -->
+            🧪 **Test Dashboard**: Custom template validation for ${{ github.repository }}
+          dependency-dashboard-footer: |
+            ---
+            🔧 **Test Footer**: Template functionality validation complete.
+          print-config: true
 
   release:
     env:
