@@ -67,7 +67,7 @@ jobs:
 | `pr-footer` | Custom footer content for Renovate PRs with documentation links and @bfra-me signature | No | [Default footer with docs] |
 | `dependency-dashboard-header` | Custom header content for the Renovate dependency dashboard issue with repository context and @bfra-me branding | No | [Default dashboard header] |
 | `dependency-dashboard-footer` | Custom footer content for the Renovate dependency dashboard issue with action documentation links | No | [Default dashboard footer] |
-| `enable-custom-templates` | Enable custom PR and issue templates with @bfra-me branding and CI integration | No | `true` |
+| `enable-custom-templates` | Enable custom PR and issue templates with @bfra-me branding and CI integration | No | `false` |
 
 ### Template Functionality
 
@@ -94,7 +94,7 @@ Templates support the following variables that are automatically substituted:
   with:
     renovate-app-id: ${{ secrets.APPLICATION_ID }}
     renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
-    # Templates are enabled by default with @bfra-me branding
+    enable-custom-templates: true
 ```
 
 **Disable Custom Templates:**
@@ -104,7 +104,7 @@ Templates support the following variables that are automatically substituted:
   with:
     renovate-app-id: ${{ secrets.APPLICATION_ID }}
     renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
-    enable-custom-templates: false
+    # Templates are disabled by default
 ```
 
 **Custom Template Content:**
@@ -114,6 +114,7 @@ Templates support the following variables that are automatically substituted:
   with:
     renovate-app-id: ${{ secrets.APPLICATION_ID }}
     renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+    enable-custom-templates: true
     pr-header: |
       🚀 **Automated Dependency Update for {{github.repository}}**
 
@@ -125,29 +126,6 @@ Templates support the following variables that are automatically substituted:
       📊 **Custom Dependency Dashboard for {{github.repository}}**
 
       This dashboard tracks all dependency updates for this repository.
-```
-
-**Advanced Configuration with Multiple Templates:**
-
-```yaml
-- uses: bfra-me/renovate-action@v7
-  with:
-    renovate-app-id: ${{ secrets.APPLICATION_ID }}
-    renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
-    pr-body-template: |
-      ## 📦 Dependency Updates
-
-      {{#if displayInstructions}}
-      This PR contains dependency updates for {{github.repository}}.
-
-      **CI Status:** [![Build](https://github.com/{{github.repository}}/actions/runs/{{github.run_id}}/badge.svg)](https://github.com/{{github.repository}}/actions/runs/{{github.run_id}})
-      {{/if}}
-
-      ### Changes
-      {{#each updates as |update|}}
-      - **{{update.depName}}**: {{update.displayFrom}} → {{update.displayTo}}
-      {{/each}}
-    print-config: true  # Useful for debugging template configuration
 ```
 
 #### Template Structure
