@@ -1,0 +1,104 @@
+---
+name: Renovate with Advanced Global Configuration
+
+on:
+  push:
+    branches:
+      - main
+      - 'renovate/**'
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      force_run:
+        description: Force Renovate to run even if no changes
+        required: false
+        default: false
+        type: boolean
+  schedule:
+    - cron: '0 2 * * 1' # Weekly on Monday at 2 AM
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: bfra-me/renovate-action@v7
+        with:
+          renovate-app-id: ${{ secrets.APPLICATION_ID }}
+          renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          dry-run: ${{ github.event_name == 'pull_request' }}
+          cache: true
+          log-level: ${{ github.event_name == 'workflow_dispatch' && 'debug' || 'info' }}
+          print-config: ${{ github.event_name == 'workflow_dispatch' }}
+          # Advanced global configuration with automerge and package rules
+          global-config: |
+            {
+              "extends": ["config:base"],
+              "schedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"],
+              "timezone": "America/New_York",
+              "prHourlyLimit": 1,
+              "prConcurrentLimit": 5,
+              "automerge": true,
+              "automergeType": "pr",
+              "automergeStrategy": "squash",
+              "onboardingConfig": {
+                "extends": ["config:base", "group:allNonMajor"],
+                "schedule": ["after 10pm every weekday", "before 5am every weekday"],
+                "labels": ["dependencies", "automated"],
+                "commitMessagePrefix": "chore(deps): ",
+                "prTitle": "{{semanticPrefix}}{{depName}} to {{newVersion}}",
+                "automerge": false
+              },
+              "packageRules": [
+                {
+                  "description": "Auto-merge dev dependencies with minor/patch updates",
+                  "matchDepTypes": ["devDependencies"],
+                  "matchUpdateTypes": ["patch", "minor"],
+                  "automerge": true,
+                  "schedule": ["at any time"]
+                },
+                {
+                  "description": "Auto-merge type definitions",
+                  "matchPackageNames": ["@types/*"],
+                  "automerge": true,
+                  "schedule": ["at any time"]
+                },
+                {
+                  "description": "Group major updates and disable automerge",
+                  "matchUpdateTypes": ["major"],
+                  "addLabels": ["breaking-change"],
+                  "automerge": false,
+                  "schedule": ["before 5am on Monday"]
+                },
+                {
+                  "description": "Security updates - immediate and high priority",
+                  "matchDatasources": ["npm"],
+                  "vulnerabilityAlerts": true,
+                  "automerge": true,
+                  "schedule": ["at any time"],
+                  "prPriority": 10
+                },
+                {
+                  "description": "Pin Node.js versions",
+                  "matchManagers": ["dockerfile", "github-actions"],
+                  "matchPackageNames": ["node", "actions/setup-node"],
+                  "rangeStrategy": "pin"
+                }
+              ],
+              "vulnerabilityAlerts": {
+                "enabled": true,
+                "automerge": true,
+                "schedule": ["at any time"]
+              },
+              "labels": ["dependencies"],
+              "commitMessagePrefix": "chore(deps): ",
+              "commitMessageTopic": "{{depName}}",
+              "commitMessageExtra": "to {{newVersion}}",
+              "prTitle": "{{commitMessagePrefix}}{{commitMessageTopic}} {{commitMessageExtra}}",
+              "prBodyTemplate": "{{{header}}}{{{table}}}{{{controls}}}{{{warnings}}}{{{notes}}}{{{changelogs}}}{{{configDescription}}}{{{footer}}}",
+              "lockFileMaintenance": {
+                "enabled": true,
+                "automerge": true,
+                "schedule": ["before 5am on Monday"]
+              }
+            }
