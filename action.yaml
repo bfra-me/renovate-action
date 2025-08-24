@@ -253,17 +253,17 @@ runs:
               "^yarn install( --force)?( --immutable)?( --immutable-cache)?$",
               "^(?:\\[ -w \\.npmrc \\] && )?git checkout -- \\.npmrc(?: \\|\\| true)?$"
             ],
-            description: [
-              'Use the global config preset for the @bfra-me organization.',
-              '_See the [self-hosted Renovate action](https://github.com/bfra-me/renovate-action/blob/main/action.yaml) for details._',
+            "description": [
+              "Use the global config preset for the @bfra-me organization.",
+              "_See the [self-hosted Renovate action](https://github.com/bfra-me/renovate-action/blob/main/action.yaml) for details._"
             ],
-            onboardingConfig: {
-              '$schema': 'https://docs.renovatebot.com/renovate-schema.json',
-              extends: ['github>bfra-me/renovate-config'],
+            "onboardingConfig": {
+              "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+              "extends": ["github>bfra-me/renovate-config"]
             },
-            onboardingConfigFileName: '.github/renovate.json5',
-            onboardingPrTitle: 'feat(deps): configure Renovate',
-            onboardingRebaseCheckbox: true
+            "onboardingConfigFileName": ".github/renovate.json5",
+            "onboardingPrTitle": "feat(deps): configure Renovate",
+            "onboardingRebaseCheckbox": true
           }
       run: |
         renovate_username="${{ env.renovate_app_slug }}[bot]"
@@ -273,30 +273,54 @@ runs:
         # Process template variables and substitute GitHub Actions context
         if [ "${{ env.enable_custom_templates }}" = "true" ]; then
           # Substitute GitHub Actions context variables in templates
-          processed_pr_header=$(echo "${pr_header}" | sed "s|{{github.repository}}|${{ github.repository }}|g" | sed "s|{{github.run_id}}|${{ github.run_id }}|g")
-          processed_pr_footer=$(echo "${pr_footer}" | sed "s|{{github.repository}}|${{ github.repository }}|g" | sed "s|{{github.run_id}}|${{ github.run_id }}|g")
-          processed_pr_body_template=$(echo "${pr_body_template}" | sed "s|{{github.repository}}|${{ github.repository }}|g" | sed "s|{{github.run_id}}|${{ github.run_id }}|g")
-          processed_dashboard_header=$(echo "${dependency_dashboard_header}" | sed "s|{{github.repository}}|${{ github.repository }}|g" | sed "s|{{github.run_id}}|${{ github.run_id }}|g")
-          processed_dashboard_footer=$(echo "${dependency_dashboard_footer}" | sed "s|{{github.repository}}|${{ github.repository }}|g" | sed "s|{{github.run_id}}|${{ github.run_id }}|g")
+          processed_pr_header=$(printf '%s\n' "${pr_header}" | sed "s|{{github.repository}}|${{ github.repository }}|g" | sed "s|{{github.run_id}}|${{ github.run_id }}|g")
+          processed_pr_footer=$(printf '%s\n' "${pr_footer}" | sed "s|{{github.repository}}|${{ github.repository }}|g" | sed "s|{{github.run_id}}|${{ github.run_id }}|g")
+          processed_pr_body_template=$(printf '%s\n' "${pr_body_template}" | sed "s|{{github.repository}}|${{ github.repository }}|g" | sed "s|{{github.run_id}}|${{ github.run_id }}|g")
+          processed_dashboard_header=$(printf '%s\n' "${dependency_dashboard_header}" | sed "s|{{github.repository}}|${{ github.repository }}|g" | sed "s|{{github.run_id}}|${{ github.run_id }}|g")
+          processed_dashboard_footer=$(printf '%s\n' "${dependency_dashboard_footer}" | sed "s|{{github.repository}}|${{ github.repository }}|g" | sed "s|{{github.run_id}}|${{ github.run_id }}|g")
 
-          # Escape JSON strings properly
-          escaped_pr_header=$(echo "${processed_pr_header}" | jq -Rs .)
-          escaped_pr_footer=$(echo "${processed_pr_footer}" | jq -Rs .)
-          escaped_pr_body_template=$(echo "${processed_pr_body_template}" | jq -Rs .)
-          escaped_dashboard_header=$(echo "${processed_dashboard_header}" | jq -Rs .)
-          escaped_dashboard_footer=$(echo "${processed_dashboard_footer}" | jq -Rs .)
+          # Escape JSON strings properly using jq
+          escaped_pr_header=$(printf '%s\n' "${processed_pr_header}" | jq -Rs .)
+          escaped_pr_footer=$(printf '%s\n' "${processed_pr_footer}" | jq -Rs .)
+          escaped_pr_body_template=$(printf '%s\n' "${processed_pr_body_template}" | jq -Rs .)
+          escaped_dashboard_header=$(printf '%s\n' "${processed_dashboard_header}" | jq -Rs .)
+          escaped_dashboard_footer=$(printf '%s\n' "${processed_dashboard_footer}" | jq -Rs .)
+
+          # Validate base config JSON first
+          if ! echo "${zzglobal_config}" | jq . > /dev/null 2>&1; then
+            echo "Error: Base zzglobal_config is not valid JSON"
+            exit 1
+          fi
 
           # Add templates to global config
-          updated_config=$(echo "${zzglobal_config}" | jq --argjson prHeader "$escaped_pr_header" --argjson prFooter "$escaped_pr_footer" --argjson prBodyTemplate "$escaped_pr_body_template" --argjson dashboardHeader "$escaped_dashboard_header" --argjson dashboardFooter "$escaped_dashboard_footer" '. + {
-            "prHeader": $prHeader,
-            "prFooter": $prFooter,
-            "prBodyTemplate": $prBodyTemplate,
-            "dependencyDashboardHeader": $dashboardHeader,
-            "dependencyDashboardFooter": $dashboardFooter
-          }')
+          updated_config=$(echo "${zzglobal_config}" | jq \
+            --argjson prHeader "${escaped_pr_header}" \
+            --argjson prFooter "${escaped_pr_footer}" \
+            --argjson prBodyTemplate "${escaped_pr_body_template}" \
+            --argjson dashboardHeader "${escaped_dashboard_header}" \
+            --argjson dashboardFooter "${escaped_dashboard_footer}" \
+            '. + {
+              "prHeader": $prHeader,
+              "prFooter": $prFooter,
+              "prBodyTemplate": $prBodyTemplate,
+              "dependencyDashboardHeader": $dashboardHeader,
+              "dependencyDashboardFooter": $dashboardFooter
+            }')
+
+          if [ $? -ne 0 ]; then
+            echo "Error: Failed to merge templates into config"
+            exit 1
+          fi
+
           final_config="$updated_config"
         else
           final_config="$zzglobal_config"
+        fi
+
+        # Validate final config
+        if ! echo "${final_config}" | jq . > /dev/null 2>&1; then
+          echo "Error: Final config is not valid JSON"
+          exit 1
         fi
 
         # Create outputs for this configuration
