@@ -1,0 +1,25 @@
+---
+name: Renovate (Basic)
+
+on:
+  push:
+    branches:
+      - main
+      - 'renovate/**'
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *' # Run every 6 hours
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: bfra-me/renovate-action@v7
+        with:
+          dry-run: ${{ github.event_name == 'pull_request' }}
+          renovate-app-id: ${{ secrets.APPLICATION_ID }}
+          renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          # Templates are enabled by default with @bfra-me branding
+          # This provides CI build links, documentation links, and branded content

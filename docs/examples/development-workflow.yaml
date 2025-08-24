@@ -1,0 +1,229 @@
+---
+name: Renovate (Development)
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'renovate/**'
+      - 'feature/**'
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      log-level:
+        description: Log level for debugging
+        required: false
+        default: debug
+        type: choice
+        options:
+          - silent
+          - error
+          - warn
+          - info
+          - debug
+          - trace
+      dry-run:
+        description: Run in dry-run mode
+        required: false
+        default: true
+        type: boolean
+  schedule:
+    # More frequent runs during development
+    - cron: '0 */2 * * 1-5' # Every 2 hours on weekdays
+
+jobs:
+  renovate:
+    name: Renovate (Development)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: bfra-me/renovate-action@v7
+        with:
+          # Development-friendly settings
+          dry-run: ${{ github.event.inputs.dry-run == 'true' || github.event_name == 'pull_request' }}
+          log-level: ${{ github.event.inputs.log-level || 'debug' }}
+          renovate-app-id: ${{ secrets.APPLICATION_ID }}
+          renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          # Development-focused PR header with debugging info
+          pr-header: |
+            🧪 **Development Dependency Update**
+
+            > **Environment**: Development | **Repository**: {{github.repository}}
+            >
+            > [![CI](https://github.com/{{github.repository}}/actions/runs/{{github.run_id}}/badge.svg)](https://github.com/{{github.repository}}/actions/runs/{{github.run_id}}) | [Logs](https://github.com/{{github.repository}}/actions/runs/{{github.run_id}}) | [Config](https://github.com/{{github.repository}}/blob/main/.github/renovate.json5)
+            >
+            > 🔧 **Debug Mode**: Detailed logging enabled for development environment
+          # Development-specific PR footer with debugging tools
+          pr-footer: |
+            ---
+
+            ## 🧪 Development Tools
+
+            <details>
+            <summary>🔍 Debugging Information</summary>
+
+            ### Configuration Debug
+            - **Workflow Run**: [{{github.run_id}}](https://github.com/{{github.repository}}/actions/runs/{{github.run_id}})
+            - **Config File**: [.github/renovate.json5](https://github.com/{{github.repository}}/blob/main/.github/renovate.json5)
+            - **Action Config**: [View Source](https://github.com/bfra-me/renovate-action/blob/main/action.yaml)
+
+            ### Useful Commands
+            ```bash
+            # Test configuration locally
+            renovate --dry-run --log-level=debug
+
+            # Validate configuration
+            renovate-config-validator .github/renovate.json5
+
+            # Check specific dependency
+            renovate --dry-run --log-level=debug --include-deps="package-name"
+            ```
+
+            ### Test Scenarios
+            - **Branch Protection**: Test with `dry-run: false` on feature branch
+            - **Config Changes**: Modify `.github/renovate.json5` and observe behavior
+            - **Template Testing**: Use `print-config: true` to debug templates
+
+            </details>
+
+            <details>
+            <summary>🛠️ Development Resources</summary>
+
+            ### Local Development
+            - **[Renovate CLI](https://github.com/renovatebot/renovate)** - Local testing
+            - **[Config Validator](https://docs.renovatebot.com/config-validation/)** - Validate configs
+            - **[GitHub App Setup](https://docs.renovatebot.com/modules/platform/github/#running-as-a-github-app)** - App configuration
+
+            ### Testing Tools
+            - **[Renovate Playground](https://app.renovatebot.com/)** - Online config testing
+            - **[JSON Schema](https://docs.renovatebot.com/renovate-schema.json)** - IDE validation
+            - **[Config Examples](https://github.com/renovatebot/renovate/tree/main/docs/usage/examples)** - Reference configs
+
+            ### Documentation
+            - **[API Documentation](https://docs.renovatebot.com/modules/manager/)** - Manager APIs
+            - **[Template Guide](https://docs.renovatebot.com/configuration-templates/)** - Template syntax
+            - **[Troubleshooting](https://docs.renovatebot.com/troubleshooting/)** - Common issues
+
+            </details>
+
+            ---
+
+            🧪 **Development Environment** | [Debug Guide](https://docs.renovatebot.com/troubleshooting/) | [Local Testing](https://github.com/renovatebot/renovate)
+          # Development dashboard with enhanced debugging
+          dependency-dashboard-header: |
+            🧪 **Development Dependency Dashboard**
+
+            > **Repository**: {{github.repository}} | **Mode**: Development/Testing
+
+            This dashboard is configured for development and testing purposes with enhanced debugging capabilities.
+
+            ## 🔧 Development Features
+
+            - **🐛 Debug Logging**: Detailed logs for troubleshooting
+            - **🧪 Dry Run**: Safe testing without actual changes
+            - **⚡ Frequent Updates**: Every 2 hours during weekdays
+            - **🔍 Config Validation**: Real-time configuration checking
+
+            ## 🛠️ Testing Controls
+
+            - **Manual Trigger**: Use "Run workflow" button with custom settings
+            - **Log Level Control**: Adjust logging verbosity as needed
+            - **Branch Testing**: Test on feature branches before main
+            - **Config Debugging**: Enable `print-config` to see resolved configuration
+          # Development dashboard footer with testing guides
+          dependency-dashboard-footer: |
+            ---
+
+            ## 🧪 Development & Testing
+
+            <details>
+            <summary>🛠️ Local Development Setup</summary>
+
+            ### Prerequisites
+            ```bash
+            # Install Renovate CLI
+            npm install -g renovate
+
+            # Set up environment
+            export GITHUB_TOKEN="your-token-here"
+            export LOG_LEVEL="debug"
+            ```
+
+            ### Local Testing
+            ```bash
+            # Test configuration
+            renovate --dry-run --log-level=debug {{github.repository}}
+
+            # Validate config file
+            renovate-config-validator .github/renovate.json5
+
+            # Test specific managers
+            renovate --dry-run --log-level=debug --include-deps="npm"
+            ```
+
+            ### Configuration Testing
+            ```bash
+            # Test template processing
+            renovate --dry-run --print-config
+
+            # Test against specific branch
+            renovate --dry-run --base-branches="develop"
+
+            # Debug package file detection
+            renovate --dry-run --log-level=trace
+            ```
+
+            </details>
+
+            <details>
+            <summary>🔍 Debugging Workflows</summary>
+
+            ### GitHub Actions Debugging
+            1. **Enable Debug Logging**: Set `log-level: debug` in workflow
+            2. **Print Configuration**: Use `print-config: true` to see resolved config
+            3. **Dry Run Testing**: Always test with `dry-run: true` first
+            4. **Step-by-step**: Use manual workflow dispatch to control execution
+
+            ### Configuration Issues
+            1. **JSON Validation**: Use JSON schema in your IDE
+            2. **Preset Resolution**: Check preset loading in logs
+            3. **Manager Detection**: Verify package file detection
+            4. **Branch Strategy**: Confirm branch protection settings
+
+            ### Template Debugging
+            1. **Variable Substitution**: Check `{{github.*}}` variable replacement
+            2. **Handlebars Syntax**: Validate template syntax with online tools
+            3. **Content Escaping**: Ensure proper JSON escaping in templates
+            4. **Conditional Logic**: Test `{{#if}}` conditions with different data
+
+            </details>
+
+            <details>
+            <summary>📚 Development Resources</summary>
+
+            ### Essential Documentation
+            - **[Renovate Configuration](https://docs.renovatebot.com/configuration-options/)** - All options
+            - **[GitHub Platform](https://docs.renovatebot.com/modules/platform/github/)** - GitHub-specific features
+            - **[Template Syntax](https://docs.renovatebot.com/configuration-templates/)** - Handlebars guide
+            - **[Self-hosted Configuration](https://docs.renovatebot.com/self-hosted-configuration/)** - Runner setup
+
+            ### Development Tools
+            - **[Renovate Playground](https://app.renovatebot.com/)** - Online testing
+            - **[JSON Schema Validator](https://www.jsonschemavalidator.net/)** - Config validation
+            - **[Handlebars Playground](https://handlebarsjs.com/playground.html)** - Template testing
+            - **[GitHub App Simulator](https://docs.github.com/en/developers/apps)** - App testing
+
+            ### Community Resources
+            - **[GitHub Discussions](https://github.com/renovatebot/renovate/discussions)** - Q&A
+            - **[Discord Server](https://discord.gg/renovate)** - Real-time help
+            - **[Stack Overflow](https://stackoverflow.com/questions/tagged/renovate)** - Tagged questions
+            - **[Example Configs](https://github.com/renovatebot/renovate/tree/main/docs/usage/examples)** - Reference
+
+            </details>
+
+            ---
+
+            🧪 **Development Mode Active** | [Troubleshooting Guide](https://docs.renovatebot.com/troubleshooting/) | [Development Docs](https://github.com/renovatebot/renovate/blob/main/docs/development/)
+          # Enable all debugging features for development
+          print-config: true
+          cache: false # Disable cache for development to ensure fresh runs
