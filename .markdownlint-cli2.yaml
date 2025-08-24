@@ -12,3 +12,4 @@ globs:
   - '!.cursor/rules/**'
   - '!.specstory/**'
   - '!.ai/**'
+  - '!.github/copilot-instructions.md'
