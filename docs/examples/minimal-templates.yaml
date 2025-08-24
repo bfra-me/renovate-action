@@ -1,0 +1,33 @@
+---
+name: Renovate (Minimal Templates)
+
+on:
+  push:
+    branches:
+      - main
+      - 'renovate/**'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * 1' # Weekly on Monday at 4 AM
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: bfra-me/renovate-action@v7
+        with:
+          dry-run: ${{ github.event_name == 'pull_request' }}
+          renovate-app-id: ${{ secrets.APPLICATION_ID }}
+          renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          # Minimal custom header with just CI link
+          pr-header: |
+            🤖 **Dependency Update** | [View CI Run](https://github.com/{{github.repository}}/actions/runs/{{github.run_id}})
+          # Simple footer
+          pr-footer: |
+            ---
+            ⚡ Automated by Renovate
+          # Minimal dashboard header
+          dependency-dashboard-header: |
+            📋 **Dependencies** | {{github.repository}}
+          # Clean and simple setup with minimal branding

@@ -1,0 +1,115 @@
+---
+name: Renovate (Organization Setup)
+
+on:
+  push:
+    branches:
+      - main
+      - 'renovate/**'
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # Run twice daily for organization-wide updates
+    - cron: '0 6,18 * * *'
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: bfra-me/renovate-action@v7
+        with:
+          dry-run: ${{ github.event_name == 'pull_request' }}
+          renovate-app-id: ${{ secrets.APPLICATION_ID }}
+          renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          # Organization-wide autodiscovery
+          autodiscover: true
+          autodiscover-filter: '["org/repo1", "org/repo2", "org/important-*"]'
+          # Organization-branded PR header
+          pr-header: |
+            🏢 **Organization Dependency Update**
+
+            > **Repository**: {{github.repository}} | **CI**: [![Build](https://github.com/{{github.repository}}/actions/runs/{{github.run_id}}/badge.svg)](https://github.com/{{github.repository}}/actions/runs/{{github.run_id}})
+            >
+            > 🔒 **Security Policy**: All updates follow [organization security guidelines](https://security.example.org/policy)
+          # Organization-specific PR footer
+          pr-footer: |
+            ---
+
+            ## 🏢 Organization Resources
+
+            - **[Dependency Policy](https://docs.example.org/dependencies)** - Organization standards
+            - **[Security Guidelines](https://security.example.org/policy)** - Security requirements
+            - **[Architecture Board](https://architecture.example.org/)** - Technical decisions
+            - **[DevOps Portal](https://devops.example.org/)** - Tools and resources
+
+            ### 🎯 Approval Process
+
+            1. **Automated**: Minor patches and security updates (auto-merge enabled)
+            2. **Review Required**: Major versions and breaking changes
+            3. **Architecture Review**: New dependencies or significant updates
+
+            ### 📞 Support Channels
+
+            - **Technical Issues**: [#devops-support](https://slack.example.org/devops)
+            - **Policy Questions**: [#architecture-board](https://slack.example.org/architecture)
+            - **Security Concerns**: [security@example.org](mailto:security@example.org)
+
+            ---
+
+            🏢 **Managed by Organization DevOps** | [Internal Wiki](https://wiki.example.org/renovate)
+          # Organization dashboard header
+          dependency-dashboard-header: |
+            🏢 **Organization Dependency Dashboard**
+
+            > **Repository**: {{github.repository}} | **Organization**: Example Corp
+
+            This dashboard manages dependencies according to organization policies and security requirements.
+
+            ## 📋 Organization Standards
+
+            - **✅ Approved**: Dependencies meeting security and architecture standards
+            - **⏳ Under Review**: Updates requiring architecture board approval
+            - **🔒 Security**: Critical security updates (auto-approved)
+            - **🚫 Blocked**: Dependencies not meeting organization policies
+
+            ## 🎯 Quick Actions
+
+            - **Security Updates**: Automatically approved and merged
+            - **Minor Updates**: Auto-merge after CI validation
+            - **Major Updates**: Requires architecture team review
+            - **New Dependencies**: Requires security and legal review
+          # Organization dashboard footer
+          dependency-dashboard-footer: |
+            ---
+
+            ## 🏢 Organization Policies
+
+            ### 📜 Dependency Management Policy
+
+            All dependency updates must comply with:
+            - **[Security Policy](https://security.example.org/policy)** - Vulnerability scanning and approval
+            - **[Architecture Standards](https://architecture.example.org/standards)** - Technical compatibility
+            - **[Legal Compliance](https://legal.example.org/licenses)** - License compatibility
+
+            ### 🔄 Update Schedules
+
+            - **Security Updates**: Immediate (24/7 monitoring)
+            - **Minor Updates**: Daily during business hours
+            - **Major Updates**: Weekly review cycle
+            - **New Dependencies**: Monthly architecture board review
+
+            ### 📞 Escalation Contacts
+
+            | Issue Type | Contact | Response Time |
+            |------------|---------|---------------|
+            | Security Vulnerability | [security@example.org](mailto:security@example.org) | 2 hours |
+            | Build Failures | [#devops-oncall](https://slack.example.org/oncall) | 4 hours |
+            | Policy Questions | [#architecture-board](https://slack.example.org/architecture) | 1 business day |
+            | General Support | [#renovate-support](https://slack.example.org/renovate) | 1 business day |
+
+            ---
+
+            🏢 **Organization DevOps Team** | [Runbook](https://runbook.example.org/renovate) | [Metrics](https://metrics.example.org/renovate)
+          # Enable caching for organization-wide runs
+          cache: true

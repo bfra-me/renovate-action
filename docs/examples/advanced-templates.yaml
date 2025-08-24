@@ -1,0 +1,199 @@
+---
+name: Renovate (Advanced Templates)
+
+on:
+  push:
+    branches:
+      - main
+      - 'renovate/**'
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: bfra-me/renovate-action@v7
+        with:
+          dry-run: ${{ github.event_name == 'pull_request' }}
+          renovate-app-id: ${{ secrets.APPLICATION_ID }}
+          renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          # Advanced PR body template with conditional content
+          pr-body-template: |
+            ## 📦 Dependency Updates for {{github.repository}}
+
+            [![CI Status](https://github.com/{{github.repository}}/actions/runs/{{github.run_id}}/badge.svg)](https://github.com/{{github.repository}}/actions/runs/{{github.run_id}})
+
+            {{#if displayInstructions}}
+            ### 🔄 Changes in this PR
+
+            {{#each updates as |update|}}
+            {{#if update.isSecurityUpdate}}
+            🔒 **Security Update**: {{update.depName}} {{update.displayFrom}} → {{update.displayTo}}
+            {{else}}
+            📈 **Update**: {{update.depName}} {{update.displayFrom}} → {{update.displayTo}}
+            {{/if}}
+            {{/each}}
+
+            ### 📊 Package Information
+
+            | Package | Type | Current | New | Age | Adoption | Passing | Confidence |
+            |---------|------|---------|-----|-----|----------|---------|------------|
+            {{#each updates as |update|}}
+            | {{update.depName}} | {{update.depType}} | {{update.currentVersion}} | {{update.newVersion}} | [![age](https://badges.renovateapi.com/packages/{{update.datasource}}/{{update.depName}}/{{update.newVersion}}/age-slim)](https://docs.renovatebot.com/merge-confidence/) | [![adoption](https://badges.renovateapi.com/packages/{{update.datasource}}/{{update.depName}}/{{update.newVersion}}/adoption-slim)](https://docs.renovatebot.com/merge-confidence/) | [![passing](https://badges.renovateapi.com/packages/{{update.datasource}}/{{update.depName}}/{{update.newVersion}}/compatibility-slim/{{update.currentVersion}})](https://docs.renovatebot.com/merge-confidence/) | [![confidence](https://badges.renovateapi.com/packages/{{update.datasource}}/{{update.depName}}/{{update.newVersion}}/confidence-slim/{{update.currentVersion}})](https://docs.renovatebot.com/merge-confidence/) |
+            {{/each}}
+            {{/if}}
+
+            {{#if hasReleaseNotes}}
+            ## 📋 Release Notes
+
+            {{#each updates as |update|}}
+            {{#if update.hasReleaseNotes}}
+            <details>
+            <summary>{{update.depName}} ({{update.displayFrom}} → {{update.displayTo}})</summary>
+
+            {{update.releaseNotes}}
+            </details>
+            {{/if}}
+            {{/each}}
+            {{/if}}
+          # Comprehensive PR header
+          pr-header: |
+            <!-- Advanced Renovate PR Template -->
+
+            > 🚀 **Automated Dependency Management**
+            >
+            > **Repository**: {{github.repository}} | **Run**: [{{github.run_id}}](https://github.com/{{github.repository}}/actions/runs/{{github.run_id}}) | **Branch**: `${{ github.head_ref || github.ref_name }}`
+            >
+            > [![CI](https://github.com/{{github.repository}}/actions/runs/{{github.run_id}}/badge.svg)](https://github.com/{{github.repository}}/actions/runs/{{github.run_id}}) [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project={{github.repository}}&metric=alert_status)](https://sonarcloud.io/dashboard?id={{github.repository}})
+          # Detailed PR footer
+          pr-footer: |
+            ---
+
+            <details>
+            <summary>🔧 Renovate Configuration</summary>
+
+            ### Configuration Files
+            - [Main Config](.github/renovate.json5)
+            - [Global Preset](https://github.com/bfra-me/renovate-config)
+            - [Action Config](https://github.com/bfra-me/renovate-action/blob/main/action.yaml)
+
+            ### Useful Commands
+            - `@renovatebot recreate` - Recreate this PR from scratch
+            - `@renovatebot rebase` - Rebase this PR onto the base branch
+            - `@renovatebot schedule` - Show when this update was scheduled
+
+            ### Support
+            - [Renovate Docs](https://docs.renovatebot.com/)
+            - [Action Issues](https://github.com/bfra-me/renovate-action/issues)
+            - [Configuration Help](https://docs.renovatebot.com/help/)
+
+            </details>
+
+            ---
+
+            <div align="center">
+
+            🤖 **Advanced Renovate Setup** | Powered by [@bfra-me/renovate-action](https://github.com/bfra-me/renovate-action)
+
+            <sub>📊 Run ID: {{github.run_id}} • 🔄 Auto-managed dependencies • 🛡️ Security-first updates</sub>
+
+            </div>
+          # Advanced dashboard header
+          dependency-dashboard-header: |
+            <!-- Advanced Dependency Dashboard -->
+
+            > 📊 **Advanced Dependency Dashboard**
+            >
+            > **Repository**: {{github.repository}} | **Last Update**: {{ now }}
+
+            ## 🎯 Dashboard Overview
+
+            This dashboard provides comprehensive dependency management for {{github.repository}}. Use the controls below to manage Renovate's behavior and monitor update progress.
+
+            ### 📈 Statistics
+            - **Total Dependencies**: {{ stats.total }}
+            - **Outdated**: {{ stats.outdated }}
+            - **Security Issues**: {{ stats.security }}
+            - **Last Scan**: {{ stats.lastScan }}
+
+            ### 🔧 Quick Actions
+            - ✅ **Approve All Minor**: Check to approve all minor version updates
+            - 🔒 **Security First**: Prioritize security updates over feature updates
+            - 🚫 **Pause Updates**: Temporarily disable dependency updates
+            - 🔄 **Force Refresh**: Trigger immediate dependency scan
+          # Enhanced dashboard footer
+          dependency-dashboard-footer: |
+            ---
+
+            ## 📚 Advanced Resources
+
+            <details>
+            <summary>🔧 Configuration Management</summary>
+
+            ### Repository Configuration
+            - **[Local Config](.github/renovate.json5)** - Repository-specific overrides
+            - **[Preset Config](https://github.com/bfra-me/renovate-config)** - Organization defaults
+            - **[Action Source](https://github.com/bfra-me/renovate-action)** - Self-hosted runner
+
+            ### Debugging Tools
+            - Use `print-config: true` in workflow to debug configuration
+            - Check [Action Logs](https://github.com/{{github.repository}}/actions) for execution details
+            - Review [Renovate Dashboard](https://app.renovatebot.com/) for insights
+
+            </details>
+
+            <details>
+            <summary>📖 Documentation & Support</summary>
+
+            ### Core Documentation
+            - **[Renovate Docs](https://docs.renovatebot.com/)** - Official documentation
+            - **[Configuration Options](https://docs.renovatebot.com/configuration-options/)** - Complete reference
+            - **[Self-hosted Guide](https://docs.renovatebot.com/self-hosted-configuration/)** - Setup instructions
+
+            ### Community & Support
+            - **[GitHub Discussions](https://github.com/renovatebot/renovate/discussions)** - Community Q&A
+            - **[Stack Overflow](https://stackoverflow.com/questions/tagged/renovate)** - Tagged questions
+            - **[Discord Community](https://discord.gg/renovate)** - Real-time chat support
+
+            </details>
+
+            <details>
+            <summary>🚨 Troubleshooting</summary>
+
+            ### Common Issues
+            - **Rate Limiting**: Check GitHub API limits and App permissions
+            - **Configuration Errors**: Validate JSON syntax in renovate.json5
+            - **Merge Conflicts**: Use `@renovatebot rebase` command
+
+            ### Debug Mode
+            ```yaml
+            - uses: bfra-me/renovate-action@v5
+              with:
+                log-level: debug
+                print-config: true
+                dry-run: true  # Safe testing
+            ```
+
+            ### Getting Help
+            1. Check [known issues](https://github.com/bfra-me/renovate-action/issues)
+            2. Review [configuration examples](https://github.com/bfra-me/renovate-action/tree/main/docs/examples)
+            3. Create [new issue](https://github.com/bfra-me/renovate-action/issues/new) with logs
+
+            </details>
+
+            ---
+
+            <div align="center">
+
+            🤖 **Advanced Dependency Management** | [@bfra-me/renovate-action](https://github.com/bfra-me/renovate-action)
+
+            <sub>🔄 Auto-updates • 🛡️ Security scanning • 📊 Dependency insights • 🚀 CI integration</sub>
+
+            </div>
+          # Enable all debugging and validation features
+          print-config: true
+          log-level: debug
