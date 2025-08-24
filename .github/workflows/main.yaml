@@ -125,6 +125,7 @@ jobs:
           log-level: debug
           renovate-app-id: ${{ secrets.APPLICATION_ID }}
           renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          enable-custom-templates: true
           print-config: true
       # Test template functionality with templates disabled
       - if: github.repository_owner == 'bfra-me' && github.ref_name != github.event.repository.default_branch && needs.setup.outputs.renovate-changed != 'true'
@@ -158,6 +159,7 @@ jobs:
           dependency-dashboard-footer: |
             ---
             🔧 **Test Footer**: Template functionality validation complete.
+          enable-custom-templates: true
           print-config: true
 
   release:
