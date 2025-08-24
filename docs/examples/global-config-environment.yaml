@@ -1,0 +1,59 @@
+---
+name: Environment-Specific Renovate Configuration
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'renovate/**'
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * *' # Daily at 6 AM
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: bfra-me/renovate-action@v7
+        with:
+          renovate-app-id: ${{ secrets.APPLICATION_ID }}
+          renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          dry-run: ${{ github.event_name == 'pull_request' }}
+          cache: true
+          log-level: info
+          # Environment-specific configuration using GitHub context
+          global-config: |
+            {
+              "extends": ["config:base"],
+              "schedule": ${{ github.ref == 'refs/heads/main' && '["at any time"]' || '["after 10pm every weekday"]' }},
+              "automerge": ${{ github.ref == 'refs/heads/main' && 'false' || 'true' }},
+              "prHourlyLimit": ${{ github.ref == 'refs/heads/main' && '5' || '2' }},
+              "onboardingConfig": {
+                "extends": ["config:base"],
+                "schedule": ${{ github.ref == 'refs/heads/main' && '["at any time"]' || '["after 10pm every weekday"]' }},
+                "labels": ["dependencies", "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"],
+                "commitMessagePrefix": "chore(deps): ",
+                "automerge": false
+              },
+              "packageRules": [
+                {
+                  "description": "Production branch - conservative updates",
+                  "enabled": ${{ github.ref == 'refs/heads/main' }},
+                  "matchUpdateTypes": ["major"],
+                  "addLabels": ["needs-review", "breaking-change"],
+                  "automerge": false
+                },
+                {
+                  "description": "Development branch - aggressive updates",
+                  "enabled": ${{ github.ref != 'refs/heads/main' }},
+                  "matchUpdateTypes": ["minor", "patch"],
+                  "automerge": true,
+                  "schedule": ["at any time"]
+                }
+              ],
+              "labels": ["dependencies"],
+              "timezone": "America/New_York"
+            }
