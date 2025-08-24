@@ -1,0 +1,39 @@
+---
+name: Renovate with Global Configuration
+
+on:
+  push:
+    branches:
+      - main
+      - 'renovate/**'
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: bfra-me/renovate-action@v7
+        with:
+          renovate-app-id: ${{ secrets.APPLICATION_ID }}
+          renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          dry-run: ${{ github.event_name == 'pull_request' }}
+          cache: true
+          log-level: info
+          # Basic global configuration - customize onboarding
+          global-config: |
+            {
+              "onboardingConfig": {
+                "extends": ["config:base", "group:allNonMajor"],
+                "schedule": ["before 5am on Monday"],
+                "labels": ["dependencies", "renovate"],
+                "commitMessagePrefix": "chore(deps): ",
+                "prTitle": "deps: {{depName}} to {{newVersion}}"
+              },
+              "prHourlyLimit": 2,
+              "prConcurrentLimit": 3,
+              "timezone": "America/New_York"
+            }

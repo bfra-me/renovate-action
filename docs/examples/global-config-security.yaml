@@ -1,0 +1,94 @@
+---
+name: Security-Focused Renovate Configuration
+
+on:
+  push:
+    branches:
+      - main
+      - 'renovate/**'
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * *' # Daily at 3 AM
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: bfra-me/renovate-action@v7
+        with:
+          renovate-app-id: ${{ secrets.APPLICATION_ID }}
+          renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          dry-run: ${{ github.event_name == 'pull_request' }}
+          cache: true
+          log-level: info
+          # Security-focused configuration with vulnerability alerts
+          global-config: |
+            {
+              "extends": ["config:base", "security:openssf-scorecard"],
+              "vulnerabilityAlerts": {
+                "enabled": true,
+                "automerge": true,
+                "schedule": ["at any time"]
+              },
+              "onboardingConfig": {
+                "extends": ["config:base", "security:openssf-scorecard"],
+                "vulnerabilityAlerts": {
+                  "enabled": true
+                },
+                "labels": ["dependencies", "security"],
+                "commitMessagePrefix": "fix(security): ",
+                "automerge": false
+              },
+              "packageRules": [
+                {
+                  "description": "Security patches - immediate attention",
+                  "matchDatasources": ["npm", "docker", "github-releases"],
+                  "vulnerabilityAlerts": true,
+                  "automerge": true,
+                  "schedule": ["at any time"],
+                  "prPriority": 10,
+                  "addLabels": ["security", "critical"],
+                  "commitMessagePrefix": "fix(security): ",
+                  "prTitle": "🚨 Security: {{depName}} to {{newVersion}}"
+                },
+                {
+                  "description": "Major version updates - manual review required",
+                  "matchUpdateTypes": ["major"],
+                  "automerge": false,
+                  "addLabels": ["breaking-change", "needs-review"],
+                  "schedule": ["before 5am on Monday"],
+                  "prPriority": 1
+                },
+                {
+                  "description": "Docker base images - pin versions for security",
+                  "matchManagers": ["dockerfile"],
+                  "matchPackageNames": ["node", "alpine", "ubuntu"],
+                  "rangeStrategy": "pin",
+                  "automerge": false,
+                  "addLabels": ["docker", "security"]
+                },
+                {
+                  "description": "GitHub Actions - pin to commit SHA",
+                  "matchManagers": ["github-actions"],
+                  "rangeStrategy": "pin",
+                  "automerge": false,
+                  "addLabels": ["github-actions", "security"],
+                  "commitMessagePrefix": "ci(security): "
+                }
+              ],
+              "schedule": ["after 2am and before 5am every weekday"],
+              "timezone": "UTC",
+              "prHourlyLimit": 3,
+              "prConcurrentLimit": 8,
+              "labels": ["dependencies", "security"],
+              "commitMessagePrefix": "chore(deps): ",
+              "prTitle": "{{semanticPrefix}}{{depName}} to {{newVersion}}",
+              "lockFileMaintenance": {
+                "enabled": true,
+                "automerge": false,
+                "schedule": ["before 3am on Monday"],
+                "addLabels": ["lockfile-maintenance"]
+              }
+            }
