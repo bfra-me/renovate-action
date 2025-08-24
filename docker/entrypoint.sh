@@ -9,7 +9,7 @@ curl -fsSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/downloa
 chmod a+x /usr/local/bin/yq
 yq --version
 
-# renovate: datasource=node-version
+# renovate: datasource=node-version depName=node
 export NODE_VERSION=22.11.0
 install-tool node $NODE_VERSION
 
