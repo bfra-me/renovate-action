@@ -23,6 +23,10 @@ inputs:
     description: Perform a dry run by logging messages instead of creating/updating/deleting branches and PRs.
     required: false
     default: 'false'
+  global-config:
+    description: Additional global configuration for Renovate as a JSON string. This will be merged with the default configuration while preserving security boundaries.
+    required: false
+    default: '{}'
   log-level:
     description: Set the log level.
     required: false
@@ -198,6 +202,7 @@ runs:
         renovate_app_slug: ${{ steps.get-renovate-app.outputs.app-slug }}
         cache: ${{ inputs.cache == 'true' }}
         enable_custom_templates: ${{ inputs.enable-custom-templates }}
+        global_config: ${{ inputs.global-config }}
         pr_body_template: ${{ inputs.pr-body-template }}
         pr_header: ${{ inputs.pr-header }}
         pr_footer: ${{ inputs.pr-footer }}
@@ -232,6 +237,77 @@ runs:
         renovate_git_author_email="${{ env.renovate_app_id }}+${renovate_username}@users.noreply.github.com"
         renovate_git_author="${renovate_username} <${renovate_git_author_email}>"
 
+        # Function to validate JSON
+        validate_json() {
+          local json_string="$1"
+          if [ -z "$json_string" ] || [ "$json_string" = "{}" ]; then
+            return 0  # Empty or default JSON is valid
+          fi
+
+          if echo "$json_string" | jq . > /dev/null 2>&1; then
+            return 0  # Valid JSON
+          else
+            return 1  # Invalid JSON
+          fi
+        }
+
+        # Function to merge global config securely
+        merge_global_config() {
+          local base_config="$1"
+          local user_config="$2"
+
+          # Validate base config first
+          if ! validate_json "$base_config"; then
+            echo "Error: Base zzglobal_config is not valid JSON"
+            exit 1
+          fi
+
+          # If user config is empty or default, just return base config
+          if [ -z "$user_config" ] || [ "$user_config" = "{}" ]; then
+            echo "$base_config"
+            return 0
+          fi
+
+          # Validate user config
+          if ! validate_json "$user_config"; then
+            echo "Warning: User global-config is not valid JSON, falling back to base config" >&2
+            echo "$base_config"
+            return 0
+          fi
+
+          # Extract and preserve critical security fields from base config
+          local base_allowed_commands
+          base_allowed_commands=$(echo "$base_config" | jq -c '.allowedCommands // []')
+
+          # Merge configs while protecting security fields
+          local merged_config
+          merged_config=$(echo "$base_config" | jq -c \
+            --argjson userConfig "$user_config" \
+            --argjson allowedCommands "$base_allowed_commands" \
+            '. * $userConfig | .allowedCommands = $allowedCommands')
+
+          if [ $? -ne 0 ]; then
+            echo "Warning: Failed to merge global configs, falling back to base config" >&2
+            echo "$base_config"
+            return 0
+          fi
+
+          echo "$merged_config"
+        }
+
+        # Merge user global config with base config
+        base_global_config="$zzglobal_config"
+        user_global_config="${{ env.global_config }}"
+
+        echo "Processing global configuration..."
+        if [ -n "$user_global_config" ] && [ "$user_global_config" != "{}" ]; then
+          echo "User provided global-config, merging with base configuration..."
+          merged_global_config=$(merge_global_config "$base_global_config" "$user_global_config")
+        else
+          echo "No user global-config provided, using base configuration..."
+          merged_global_config="$base_global_config"
+        fi
+
         # Process template variables and substitute GitHub Actions context
         if [ "${{ env.enable_custom_templates }}" = "true" ]; then
           # Substitute GitHub Actions context variables in templates
@@ -249,13 +325,13 @@ runs:
           escaped_dashboard_footer=$(printf '%s\n' "${processed_dashboard_footer}" | jq -Rs .)
 
           # Validate base config JSON first
-          if ! echo "${zzglobal_config}" | jq . > /dev/null 2>&1; then
-            echo "Error: Base zzglobal_config is not valid JSON"
+          if ! echo "${merged_global_config}" | jq . > /dev/null 2>&1; then
+            echo "Error: Merged global config is not valid JSON"
             exit 1
           fi
 
           # Add templates to global config
-          updated_config=$(echo "${zzglobal_config}" | jq \
+          updated_config=$(echo "${merged_global_config}" | jq \
             --argjson prHeader "${escaped_pr_header}" \
             --argjson prFooter "${escaped_pr_footer}" \
             --argjson prBodyTemplate "${escaped_pr_body_template}" \
@@ -276,7 +352,7 @@ runs:
 
           final_config="$updated_config"
         else
-          final_config="$zzglobal_config"
+          final_config="$merged_global_config"
         fi
 
         # Validate final config
