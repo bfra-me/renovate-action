@@ -1,8 +1,7 @@
 config: &config
   - .github/**
-  - .tool-versions
-  - .npmrc
-  - eslint.config.js
+  - pnpm-workspace.yaml
+  - '*.config.ts'
   - '**.json5?'
   - '**.md'
   - '**.yaml'
@@ -11,14 +10,12 @@ dist-changed:
   - added|modified: 'dist/**'
 src-changed: &src-changed
   - .github/workflows/**
-  - .tool-versions
-  - .npmrc
-  - __tests__/**
   - docker/**
   - src/**
   - action.yaml
   - package.json
   - pnpm-lock.yaml
+  - pnpm-workspace.yaml
   - tsconfig.json
 renovate-changed:
   - .github/workflows/renovate.yaml
