@@ -12,6 +12,9 @@ export * from './cache.js'
 // Configuration system
 export * from './config.js'
 
+// Data export utilities
+export * from './export.js'
+
 // Structured logging
 export type * from './logger.js'
 export * from './logger.js'
