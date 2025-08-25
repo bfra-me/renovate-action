@@ -182,6 +182,33 @@ outputs:
 
 runs:
   steps:
+    - name: Initialize Analytics
+      run: |
+        # Initialize analytics tracking
+        mkdir -p /tmp/renovate-analytics
+        echo "$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")" > /tmp/renovate-analytics/action-start-time.txt
+
+        # Record action start
+        node -e "
+        const fs = require('fs');
+        const path = require('path');
+
+        const analyticsDir = '/tmp/renovate-analytics';
+        const actionStart = {
+          startTime: '$(cat /tmp/renovate-analytics/action-start-time.txt)',
+          repository: '${{ github.repository }}',
+          runId: '${{ github.run_id }}',
+          workflow: '${{ github.workflow }}',
+          eventName: '${{ github.event_name }}',
+          actor: '${{ github.actor }}',
+          ref: '${{ github.ref }}',
+          sha: '${{ github.sha }}'
+        };
+
+        fs.writeFileSync(path.join(analyticsDir, 'action-context.json'), JSON.stringify(actionStart, null, 2));
+        console.log('Initialized analytics tracking');
+        "
+      shell: 'bash -Eeuo pipefail {0}'
     - id: get-renovate-app
       name: Get Renovate GitHub App Installation
       uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
@@ -189,6 +216,56 @@ runs:
         app-id: ${{ inputs.renovate-app-id }}
         private-key: ${{ inputs.renovate-app-private-key }}
         owner: ${{ github.repository_owner }}
+
+    - name: Record GitHub App Token Generation
+      run: |
+        # Record API metric for GitHub App token generation
+        token_success="${{ steps.get-renovate-app.outputs.token != '' }}"
+
+        node -e "
+        const fs = require('fs');
+        const path = require('path');
+
+        const analyticsDir = '/tmp/renovate-analytics';
+        if (!fs.existsSync(analyticsDir)) {
+          fs.mkdirSync(analyticsDir, { recursive: true });
+        }
+
+        const apiMetric = {
+          endpoint: '/app/installations/{installation_id}/access_tokens',
+          method: 'POST',
+          startTime: new Date().toISOString(),
+          endTime: new Date().toISOString(),
+          duration: 0, // GitHub Actions handles the timing
+          statusCode: ${token_success} ? 201 : 500,
+          success: ${token_success},
+          authMethod: 'github-app',
+          metadata: {
+            repository: '${{ github.repository }}',
+            runId: '${{ github.run_id }}',
+            appId: 'APP-***', // Obfuscated for security
+            appSlug: '${{ steps.get-renovate-app.outputs.app-slug }}',
+            operation: 'token-generation'
+          }
+        };
+
+        const metricsFile = path.join(analyticsDir, 'api-metrics.json');
+        let existingMetrics = [];
+
+        try {
+          if (fs.existsSync(metricsFile)) {
+            existingMetrics = JSON.parse(fs.readFileSync(metricsFile, 'utf8'));
+          }
+        } catch (error) {
+          console.log('Creating new API metrics file');
+        }
+
+        existingMetrics.push(apiMetric);
+        fs.writeFileSync(metricsFile, JSON.stringify(existingMetrics, null, 2));
+
+        console.log('Recorded GitHub App token generation metric:', JSON.stringify(apiMetric, null, 2));
+        "
+      shell: 'bash -Eeuo pipefail {0}'
 
     - name: Configure
       id: configure
@@ -463,11 +540,132 @@ runs:
         enableCrossOsArchive: true
         key: ${{ steps.configure.outputs.cache-key }}
         path: ${{ steps.configure.outputs.cache-dir }}
+      env:
+        ANALYTICS_CACHE_OPERATION: restore
+        ANALYTICS_CACHE_KEY: ${{ steps.configure.outputs.cache-key }}
+        ANALYTICS_CACHE_VERSION: ${{ env.RENOVATE_VERSION }}
+
+    - name: Record Cache Restore Metrics
+      if: steps.configure.outputs.enable-cache == 'true'
+      run: |
+        # Record cache restore operation metrics
+        cache_hit="${{ steps.renovate-cache.outputs.cache-hit }}"
+        cache_size=""
+
+        # Estimate cache size if directory exists
+        if [ -d "${{ steps.configure.outputs.cache-dir }}" ]; then
+          cache_size=$(du -sb "${{ steps.configure.outputs.cache-dir }}" 2>/dev/null | cut -f1 || echo "0")
+        fi
+
+        # Create analytics record using Node.js
+        node -e "
+        const fs = require('fs');
+        const path = require('path');
+
+        // Ensure analytics directory exists
+        const analyticsDir = '/tmp/renovate-analytics';
+        if (!fs.existsSync(analyticsDir)) {
+          fs.mkdirSync(analyticsDir, { recursive: true });
+        }
+
+        const cacheMetric = {
+          operation: 'restore',
+          key: '${{ steps.configure.outputs.cache-key }}',
+          version: '${{ env.RENOVATE_VERSION }}',
+          startTime: new Date().toISOString(),
+          endTime: new Date().toISOString(),
+          duration: 0, // Will be calculated by collector
+          success: true,
+          hit: cache_hit === 'true',
+          size: parseInt('${cache_size}') || 0,
+          metadata: {
+            repository: '${{ github.repository }}',
+            runId: '${{ github.run_id }}',
+            workflow: '${{ github.workflow }}'
+          }
+        };
+
+        const metricsFile = path.join(analyticsDir, 'cache-metrics.json');
+        let existingMetrics = [];
+
+        try {
+          if (fs.existsSync(metricsFile)) {
+            existingMetrics = JSON.parse(fs.readFileSync(metricsFile, 'utf8'));
+          }
+        } catch (error) {
+          console.log('Creating new cache metrics file');
+        }
+
+        existingMetrics.push(cacheMetric);
+        fs.writeFileSync(metricsFile, JSON.stringify(existingMetrics, null, 2));
+
+        console.log('Recorded cache restore metric:', JSON.stringify(cacheMetric, null, 2));
+        "
+      shell: 'bash -Eeuo pipefail {0}'
 
     - name: Prepare Renovate Cache
       if: steps.configure.outputs.enable-cache == 'true'
       run: |
+        start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+
+        # Record cache prepare start
+        node -e "
+        const fs = require('fs');
+        const path = require('path');
+
+        const analyticsDir = '/tmp/renovate-analytics';
+        if (!fs.existsSync(analyticsDir)) {
+          fs.mkdirSync(analyticsDir, { recursive: true });
+        }
+
+        fs.writeFileSync(path.join(analyticsDir, 'cache-prepare-start.txt'), '${start_time}');
+        "
+
         [ -d /tmp/renovate ] && sudo chown -R runneradmin:root /tmp/renovate || true
+
+        end_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+
+        # Record cache prepare completion
+        node -e "
+        const fs = require('fs');
+        const path = require('path');
+
+        const analyticsDir = '/tmp/renovate-analytics';
+        const startTime = fs.readFileSync(path.join(analyticsDir, 'cache-prepare-start.txt'), 'utf8').trim();
+        const endTime = '${end_time}';
+        const duration = new Date(endTime).getTime() - new Date(startTime).getTime();
+
+        const cacheMetric = {
+          operation: 'prepare',
+          key: '${{ steps.configure.outputs.cache-key }}',
+          version: '${{ env.RENOVATE_VERSION }}',
+          startTime: startTime,
+          endTime: endTime,
+          duration: duration,
+          success: true,
+          metadata: {
+            repository: '${{ github.repository }}',
+            runId: '${{ github.run_id }}',
+            workflow: '${{ github.workflow }}'
+          }
+        };
+
+        const metricsFile = path.join(analyticsDir, 'cache-metrics.json');
+        let existingMetrics = [];
+
+        try {
+          if (fs.existsSync(metricsFile)) {
+            existingMetrics = JSON.parse(fs.readFileSync(metricsFile, 'utf8'));
+          }
+        } catch (error) {
+          console.log('Creating new cache metrics file');
+        }
+
+        existingMetrics.push(cacheMetric);
+        fs.writeFileSync(metricsFile, JSON.stringify(existingMetrics, null, 2));
+
+        console.log('Recorded cache prepare metric:', JSON.stringify(cacheMetric, null, 2));
+        "
       shell: 'bash -Eeuo pipefail {0}'
 
     - name: Renovate ${{ steps.configure.outputs.renovate-version }}
@@ -519,9 +717,134 @@ runs:
         GH_REPO: ${{ github.event.repository.full_name }}
         GH_TOKEN: ${{ steps.get-renovate-app.outputs.token }}
       run: |
+        start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+
+        # Record cache finalize start
+        node -e "
+        const fs = require('fs');
+        const path = require('path');
+
+        const analyticsDir = '/tmp/renovate-analytics';
+        if (!fs.existsSync(analyticsDir)) {
+          fs.mkdirSync(analyticsDir, { recursive: true });
+        }
+
+        fs.writeFileSync(path.join(analyticsDir, 'cache-finalize-start.txt'), '${start_time}');
+        "
+
+        # Fix cache ownership and delete old cache
         [ -d /tmp/renovate ] && sudo chown -R $(whoami) /tmp/renovate
-        gh api -X DELETE /repos/{owner}/{repo}/actions/caches?key=${{ steps.configure.outputs.cache-key }} ||
+
+        # Record cache deletion API call start
+        api_start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+
+        if gh api -X DELETE /repos/{owner}/{repo}/actions/caches?key=${{ steps.configure.outputs.cache-key }}; then
+          api_end_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          api_success=true
+          api_status=204
+          api_error=""
+          echo "Successfully deleted cache for $GH_REPO"
+        else
+          api_end_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          api_success=false
+          api_status=500
+          api_error="Could not delete cache for $GH_REPO"
           echo "Could not delete cache for $GH_REPO"
+        fi
+
+        # Record cache deletion API metric
+        node -e "
+        const fs = require('fs');
+        const path = require('path');
+
+        const analyticsDir = '/tmp/renovate-analytics';
+        if (!fs.existsSync(analyticsDir)) {
+          fs.mkdirSync(analyticsDir, { recursive: true });
+        }
+
+        const duration = new Date('${api_end_time}').getTime() - new Date('${api_start_time}').getTime();
+
+        const apiMetric = {
+          endpoint: '/repos/{owner}/{repo}/actions/caches',
+          method: 'DELETE',
+          startTime: '${api_start_time}',
+          endTime: '${api_end_time}',
+          duration: duration,
+          statusCode: ${api_status},
+          success: ${api_success},
+          authMethod: 'github-app',
+          error: '${api_error}' || undefined,
+          metadata: {
+            repository: '${{ github.repository }}',
+            runId: '${{ github.run_id }}',
+            operation: 'cache-deletion',
+            cacheKey: '${{ steps.configure.outputs.cache-key }}'.substring(0, 20) + '...'
+          }
+        };
+
+        const metricsFile = path.join(analyticsDir, 'api-metrics.json');
+        let existingMetrics = [];
+
+        try {
+          if (fs.existsSync(metricsFile)) {
+            existingMetrics = JSON.parse(fs.readFileSync(metricsFile, 'utf8'));
+          }
+        } catch (error) {
+          console.log('Creating new API metrics file');
+        }
+
+        existingMetrics.push(apiMetric);
+        fs.writeFileSync(metricsFile, JSON.stringify(existingMetrics, null, 2));
+
+        console.log('Recorded cache deletion API metric:', JSON.stringify(apiMetric, null, 2));
+        "
+
+        end_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+        cache_operation_success=$?
+
+        # Record cache finalize completion
+        node -e "
+        const fs = require('fs');
+        const path = require('path');
+
+        const analyticsDir = '/tmp/renovate-analytics';
+        const startTime = fs.readFileSync(path.join(analyticsDir, 'cache-finalize-start.txt'), 'utf8').trim();
+        const endTime = '${end_time}';
+        const duration = new Date(endTime).getTime() - new Date(startTime).getTime();
+
+        const cacheMetric = {
+          operation: 'finalize',
+          key: '${{ steps.configure.outputs.cache-key }}',
+          version: '${{ env.RENOVATE_VERSION }}',
+          startTime: startTime,
+          endTime: endTime,
+          duration: duration,
+          success: ${cache_operation_success} === 0,
+          metadata: {
+            repository: '${{ github.repository }}',
+            runId: '${{ github.run_id }}',
+            workflow: '${{ github.workflow }}',
+            cacheHit: '${{ steps.renovate-cache.outputs.cache-hit }}',
+            eventName: '${{ github.event_name }}'
+          }
+        };
+
+        const metricsFile = path.join(analyticsDir, 'cache-metrics.json');
+        let existingMetrics = [];
+
+        try {
+          if (fs.existsSync(metricsFile)) {
+            existingMetrics = JSON.parse(fs.readFileSync(metricsFile, 'utf8'));
+          }
+        } catch (error) {
+          console.log('Creating new cache metrics file');
+        }
+
+        existingMetrics.push(cacheMetric);
+        fs.writeFileSync(metricsFile, JSON.stringify(existingMetrics, null, 2));
+
+        console.log('Recorded cache finalize metric:', JSON.stringify(cacheMetric, null, 2));
+        "
       shell: 'bash -Eeuo pipefail {0}'
 
     - name: Save Renovate cache
@@ -534,4 +857,154 @@ runs:
         enableCrossOsArchive: true
         key: ${{ steps.configure.outputs.cache-key }}
         path: ${{ steps.configure.outputs.cache-dir }}
+
+    - name: Record Cache Save Metrics
+      if: |
+        (success() || failure()) &&
+        steps.configure.outputs.enable-cache == 'true' &&
+        steps.renovate-cache.outputs.cache-hit != 'true' || github.event_name == 'push'
+      run: |
+        # Calculate cache size after save
+        cache_size=""
+        cache_save_success=true
+
+        if [ -d "${{ steps.configure.outputs.cache-dir }}" ]; then
+          cache_size=$(du -sb "${{ steps.configure.outputs.cache-dir }}" 2>/dev/null | cut -f1 || echo "0")
+        else
+          cache_save_success=false
+        fi
+
+        # Record cache save operation metrics
+        node -e "
+        const fs = require('fs');
+        const path = require('path');
+
+        const analyticsDir = '/tmp/renovate-analytics';
+        if (!fs.existsSync(analyticsDir)) {
+          fs.mkdirSync(analyticsDir, { recursive: true });
+        }
+
+        const cacheMetric = {
+          operation: 'save',
+          key: '${{ steps.configure.outputs.cache-key }}',
+          version: '${{ env.RENOVATE_VERSION }}',
+          startTime: new Date().toISOString(),
+          endTime: new Date().toISOString(),
+          duration: 0, // Cache save duration is handled by Actions
+          success: ${cache_save_success},
+          size: parseInt('${cache_size}') || 0,
+          metadata: {
+            repository: '${{ github.repository }}',
+            runId: '${{ github.run_id }}',
+            workflow: '${{ github.workflow }}',
+            cacheHit: '${{ steps.renovate-cache.outputs.cache-hit }}',
+            eventName: '${{ github.event_name }}'
+          }
+        };
+
+        const metricsFile = path.join(analyticsDir, 'cache-metrics.json');
+        let existingMetrics = [];
+
+        try {
+          if (fs.existsSync(metricsFile)) {
+            existingMetrics = JSON.parse(fs.readFileSync(metricsFile, 'utf8'));
+          }
+        } catch (error) {
+          console.log('Creating new cache metrics file');
+        }
+
+        existingMetrics.push(cacheMetric);
+        fs.writeFileSync(metricsFile, JSON.stringify(existingMetrics, null, 2));
+
+        console.log('Recorded cache save metric:', JSON.stringify(cacheMetric, null, 2));
+        "
+      shell: 'bash -Eeuo pipefail {0}'
+
+    - name: Collect Analytics Data
+      if: always()
+      run: |
+        # Collect and consolidate all analytics data
+        end_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+        start_time=$(cat /tmp/renovate-analytics/action-start-time.txt 2>/dev/null || echo "${end_time}")
+
+        node -e "
+        const fs = require('fs');
+        const path = require('path');
+
+        const analyticsDir = '/tmp/renovate-analytics';
+
+        // Load existing data
+        let cacheMetrics = [];
+        let dockerMetrics = [];
+        let apiMetrics = [];
+        let failureMetrics = [];
+
+        try {
+          if (fs.existsSync(path.join(analyticsDir, 'cache-metrics.json'))) {
+            cacheMetrics = JSON.parse(fs.readFileSync(path.join(analyticsDir, 'cache-metrics.json'), 'utf8'));
+          }
+          if (fs.existsSync(path.join(analyticsDir, 'docker-metrics.json'))) {
+            dockerMetrics = JSON.parse(fs.readFileSync(path.join(analyticsDir, 'docker-metrics.json'), 'utf8'));
+          }
+          if (fs.existsSync(path.join(analyticsDir, 'api-metrics.json'))) {
+            apiMetrics = JSON.parse(fs.readFileSync(path.join(analyticsDir, 'api-metrics.json'), 'utf8'));
+          }
+          if (fs.existsSync(path.join(analyticsDir, 'failure-metrics.json'))) {
+            failureMetrics = JSON.parse(fs.readFileSync(path.join(analyticsDir, 'failure-metrics.json'), 'utf8'));
+          }
+        } catch (error) {
+          console.log('Error reading analytics files:', error.message);
+        }
+
+        const duration = new Date('${end_time}').getTime() - new Date('${start_time}').getTime();
+
+        // Create final analytics event
+        const analyticsEvent = {
+          id: 'action-' + '${end_time}'.replace(/[^0-9]/g, ''),
+          timestamp: '${end_time}',
+          repository: {
+            owner: '${{ github.repository_owner }}',
+            repo: '${{ github.event.repository.name }}',
+            fullName: '${{ github.repository }}',
+            id: ${{ github.event.repository.id }},
+            visibility: '${{ github.event.repository.private }}' === 'true' ? 'private' : 'public'
+          },
+          workflow: {
+            runId: '${{ github.run_id }}',
+            runNumber: '${{ github.run_number }}',
+            workflowName: '${{ github.workflow }}',
+            eventName: '${{ github.event_name }}',
+            ref: '${{ github.ref }}',
+            sha: '${{ github.sha }}',
+            actor: '${{ github.actor }}'
+          },
+          cache: cacheMetrics,
+          docker: dockerMetrics,
+          api: apiMetrics,
+          failures: failureMetrics,
+          action: {
+            startTime: '${start_time}',
+            endTime: '${end_time}',
+            duration: duration,
+            success: '${{ job.status }}' === 'success',
+            renovateVersion: '${{ env.RENOVATE_VERSION }}',
+            actionVersion: '${{ github.sha }}',
+            exitCode: 0
+          },
+          schemaVersion: '1.0.0'
+        };
+
+        // Save consolidated analytics
+        fs.writeFileSync(path.join(analyticsDir, 'analytics-event.json'), JSON.stringify(analyticsEvent, null, 2));
+
+        console.log('📊 Analytics Summary:');
+        console.log('- Cache operations:', cacheMetrics.length);
+        console.log('- Docker operations:', dockerMetrics.length);
+        console.log('- API requests:', apiMetrics.length);
+        console.log('- Failures recorded:', failureMetrics.length);
+        console.log('- Total duration:', Math.round(duration / 1000) + 's');
+        console.log('');
+        console.log('Analytics data saved to /tmp/renovate-analytics/analytics-event.json');
+        "
+      shell: 'bash -Eeuo pipefail {0}'
   using: composite
