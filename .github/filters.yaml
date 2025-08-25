@@ -20,6 +20,7 @@ src-changed: &src-changed
 renovate-changed:
   - .github/workflows/renovate.yaml
   - .github/renovate.json5
+  - docker/entrypoint.sh
   - action.yaml
 should-check:
   - added|modified: *config

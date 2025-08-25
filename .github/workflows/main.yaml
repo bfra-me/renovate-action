@@ -170,6 +170,7 @@ jobs:
     needs: [setup, check, test, build]
     outputs:
       commit: ${{ steps.merge.outputs.commit }}
+      published: ${{ steps.semantic-release.outputs.new-release-published }}
       version: ${{ steps.semantic-release.outputs.version }}
     permissions:
       contents: write
@@ -258,11 +259,9 @@ jobs:
             gh api -X PATCH repos/{owner}/{repo}/git/${ref} -f sha=$sha -F force=true
           fi
 
-      - name: Dispatch Renovate workflow in the .github repository
-        if: ${{ env.DRY_RUN != 'true' && steps.semantic-release.outputs.new-release-published == 'true' }}
-        env:
-          GH_TOKEN: ${{ steps.get-app-token.outputs.token }}
-          ORG: ${{ github.repository_owner }}
-        run: |
-          echo "Triggering workflow_dispatch for $ORG/.github"
-          gh workflow run renovate.yaml --repo $ORG/.github
+  trigger-org-renovate:
+    name: Dispatch Renovate workflow in the .github repository
+    if: github.repository == 'bfra-me/renovate-action' && needs.release.outputs.published == 'true'
+    needs: release
+    secrets: inherit
+    uses: bfra-me/.github/.github/workflows/trigger-org-renovate.yaml@5b99871fcafe4ba4c574449365db1afabb7509d7 # v4.1.0
