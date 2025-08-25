@@ -11,12 +11,14 @@ Key features:
 - Advanced caching for repository and dependency data
 - Composite action architecture with multi-step workflow orchestration
 - Support for autodiscovery, filtering, and custom Renovate configurations
+- Custom PR and issue templates with @bfra-me branding
+- Global configuration input support for flexible deployment
 
 ## Documentation
 
 - [README](README.md): Main project documentation with usage examples and setup instructions
-- [Copilot Instructions](.github/copilot-instructions.md): Comprehensive project overview, architecture documentation, and development guidelines
 - [License](LICENSE.md): MIT license terms and conditions
+- [Testing Strategy](docs/testing-strategy.md): Comprehensive three-tier testing approach including unit, integration, and self-tests
 
 ## Action Definition
 
@@ -24,21 +26,40 @@ Key features:
 - [Renovate Configuration](.github/renovate.json5): Renovate bot configuration with custom managers and package rules
 - [Package Configuration](package.json): Project dependencies, scripts, and build configuration
 
+## Specifications
+
+- [Custom Templates Feature](.ai/plan/feature-renovate-templates-1.md): Implementation plan for custom PR and issue templates with @bfra-me branding
+- [Global Config Feature](.ai/plan/feature-global-config-input-1.md): Implementation plan for global configuration input support
+- [Analytics Reporting Feature](.ai/plan/feature-analytics-reporting-system-1.md): Implementation plan for enhanced analytics and reporting system
+
 ## Examples
+
+- [Examples Overview](docs/examples/README.md): Comprehensive guide to template and configuration examples
+- [Basic Renovate](docs/examples/basic-renovate.yaml): Standard Renovate workflow with default templates
+- [Custom Templates](docs/examples/custom-templates.yaml): Example with custom PR and issue templates
+- [Global Config Basic](docs/examples/global-config-basic.yaml): Basic global configuration with onboarding customization
+- [Global Config Advanced](docs/examples/global-config-advanced.yaml): Advanced configuration with automerge and package rules
+- [Organization Setup](docs/examples/organization-setup.yaml): Template for organization-wide Renovate setup
+
+## Workflows
 
 - [Main Workflow](.github/workflows/main.yaml): CI/CD workflow demonstrating testing and validation patterns
 - [Renovate Workflow](.github/workflows/renovate.yaml): Production example of using the action for automated dependency updates
+- [CodeQL Analysis](.github/workflows/codeql-analysis.yaml): Security analysis and code scanning workflow
+- [Dependency Review](.github/workflows/dependency-review.yaml): Automated dependency vulnerability scanning
 
 ## Testing
 
-- [Testing Strategy](docs/testing-strategy.md): Comprehensive three-tier testing approach including unit, integration, and self-tests
 - [Main Source](src/main.ts): TypeScript entry point and core action logic
 - [Unit Tests](src/__tests__/main.test.ts): Vitest-based unit tests for TypeScript functions
+- [Wait Module](src/wait.ts): Utility module for async operations
 
 ## Optional
 
 - [Action Report](docs/renovate-action-report.md): Detailed project analysis and implementation reports
 - [Docker Entrypoint](docker/entrypoint.sh): Docker container setup script for installing tools and dependencies
 - [Build Configuration](tsup.config.ts): TypeScript build configuration using tsup for ESM bundling
-- [CodeQL Workflow](.github/workflows/codeql-analysis.yaml): Security analysis and code scanning workflow
-- [Dependency Review](.github/workflows/dependency-review.yaml): Automated dependency vulnerability scanning
+- [ESLint Configuration](eslint.config.ts): TypeScript ESLint configuration for code quality
+- [Scorecard Workflow](.github/workflows/scorecard.yaml): Supply-chain security analysis workflow
+- [Repository Settings Workflow](.github/workflows/update-repo-settings.yaml): Automated repository configuration management
+- [Code Owners](.github/CODEOWNERS): Repository ownership and review assignments
