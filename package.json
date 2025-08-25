@@ -23,7 +23,7 @@
   "main": "dist/index.js",
   "scripts": {
     "bootstrap": "pnpm install --prefer-offline --loglevel warn",
-    "build": "tsup",
+    "build": "tsup && pnpm -r --stream run build",
     "check": "pnpm run check-types && pnpm run lint",
     "check-types": "tsc --noEmit",
     "dev": "tsup --watch",
