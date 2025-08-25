@@ -1,0 +1,57 @@
+{
+  "name": "@bfra.me/renovate-action-analytics",
+  "version": "0.0.0-semantic-release",
+  "private": true,
+  "description": "Analytics and reporting infrastructure for Renovate action",
+  "keywords": [
+    "analytics",
+    "renovate",
+    "github-actions",
+    "metrics",
+    "monitoring"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bfra-me/renovate-action.git",
+    "directory": "packages/analytics"
+  },
+  "license": "MIT",
+  "author": "Marcus R. Brown <git@mrbro.dev>",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "check": "pnpm run check-types && pnpm run lint",
+    "check-types": "tsc --noEmit",
+    "dev": "tsup --watch",
+    "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@actions/cache": "^4.0.5",
+    "@actions/core": "^1.11.1"
+  },
+  "devDependencies": {
+    "@bfra.me/eslint-config": "^0.27.1",
+    "@bfra.me/tsconfig": "^0.12.0",
+    "@types/node": "^22.17.2",
+    "eslint": "^9.34.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
