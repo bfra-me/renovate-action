@@ -1,0 +1,1 @@
+{extends: relaxed, rules: {line-length: {max: 256}}}
