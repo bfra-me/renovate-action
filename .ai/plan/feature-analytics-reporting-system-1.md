@@ -3,7 +3,7 @@ goal: Build comprehensive analytics and reporting system for Renovate action per
 version: 1.0
 date_created: 2025-08-02
 last_updated: 2025-08-25
-owner: Marcus R. Brown
+owner: Marcus R. Brown <git@mrbro.dev>
 status: 'In Progress'
 tags: ['feature', 'analytics', 'dashboard', 'github-pages', 'astro-starlight', 'monitoring']
 ---
