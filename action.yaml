@@ -237,8 +237,8 @@ runs:
           startTime: new Date().toISOString(),
           endTime: new Date().toISOString(),
           duration: 0, // GitHub Actions handles the timing
-          statusCode: ${token_success} ? 201 : 500,
-          success: ${token_success},
+          statusCode: '${token_success}' === 'true' ? 201 : 500,
+          success: '${token_success}' === 'true',
           authMethod: 'github-app',
           metadata: {
             repository: '${{ github.repository }}',
@@ -576,7 +576,7 @@ runs:
           endTime: new Date().toISOString(),
           duration: 0, // Will be calculated by collector
           success: true,
-          hit: cache_hit === 'true',
+          hit: '${cache_hit}' === 'true',
           size: parseInt('${cache_size}') || 0,
           metadata: {
             repository: '${{ github.repository }}',
@@ -771,7 +771,7 @@ runs:
           endTime: '${api_end_time}',
           duration: duration,
           statusCode: ${api_status},
-          success: ${api_success},
+          success: '${api_success}' === 'true',
           authMethod: 'github-app',
           error: '${api_error}' || undefined,
           metadata: {
@@ -819,7 +819,7 @@ runs:
           startTime: startTime,
           endTime: endTime,
           duration: duration,
-          success: ${cache_operation_success} === 0,
+          success: '${cache_operation_success}' === '0',
           metadata: {
             repository: '${{ github.repository }}',
             runId: '${{ github.run_id }}',
@@ -891,7 +891,7 @@ runs:
           startTime: new Date().toISOString(),
           endTime: new Date().toISOString(),
           duration: 0, // Cache save duration is handled by Actions
-          success: ${cache_save_success},
+          success: '${cache_save_success}' === 'true',
           size: parseInt('${cache_size}') || 0,
           metadata: {
             repository: '${{ github.repository }}',
@@ -966,7 +966,7 @@ runs:
             owner: '${{ github.repository_owner }}',
             repo: '${{ github.event.repository.name }}',
             fullName: '${{ github.repository }}',
-            id: ${{ github.event.repository.id }},
+            id: '${{ github.event.repository.id }}',
             visibility: '${{ github.event.repository.private }}' === 'true' ? 'private' : 'public'
           },
           workflow: {
