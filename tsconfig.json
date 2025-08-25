@@ -6,6 +6,6 @@
     "noEmit": true,
     "target": "ESNext"
   },
-  "exclude": ["dist", "node_modules", "**/*.test.ts"],
-  "include": ["**/*.ts"]
+  "files": [],
+  "references": [{"path": "./docs"}, {"path": "./packages/analytics"}, {"path": "./tsconfig.eslint.json"}]
 }

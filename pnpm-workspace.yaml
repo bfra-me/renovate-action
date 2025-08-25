@@ -1,9 +1,11 @@
 packages:
-  - 'packages/*'
+  - docs
+  - packages/*
 
 onlyBuiltDependencies:
   - '@swc/core'
   - esbuild
+  - sharp
   - simple-git-hooks
   - unrs-resolver
 

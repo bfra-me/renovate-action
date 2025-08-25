@@ -1,0 +1,94 @@
+---
+title: Renovate Action Analytics Dashboard
+description: Comprehensive performance analytics and monitoring for @bfra.me/renovate-action execution across repositories
+template: splash
+hero:
+  tagline: Monitor, analyze, and optimize your Renovate action performance with comprehensive analytics dashboards
+  image:
+    file: ../../assets/houston.webp
+  actions:
+    - text: View Dashboards
+      link: /dashboards/overview/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/bfra-me/renovate-action
+      icon: external
+      variant: secondary
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Features
+
+<CardGrid>
+  <Card title="Cache Performance Analytics" icon="open-book">
+    Track cache hit rates, sizes, and version migration performance across repositories with detailed timing metrics.
+  </Card>
+  <Card title="Docker Operations Monitoring" icon="setting">
+    Monitor Docker image pulls, container execution time, and tool installation performance with failure analysis.
+  </Card>
+  <Card title="GitHub API Usage Tracking" icon="github">
+    Analyze API usage patterns, rate limiting metrics, and authentication performance across all operations.
+  </Card>
+  <Card title="Failure Scenario Analysis" icon="warning">
+    Categorized failure tracking matching troubleshooting guide categories with detailed error analysis.
+  </Card>
+  <Card title="Multi-Repository Overview" icon="document">
+    Aggregated analytics across multiple repositories with comparison views and trend analysis.
+  </Card>
+  <Card title="Interactive Dashboards" icon="approve-check">
+    Modern, responsive dashboards with filtering, sorting, and time-range selection capabilities.
+  </Card>
+</CardGrid>
+
+## Getting Started
+
+The Renovate Action Analytics Dashboard provides comprehensive insights into your Renovate action performance. Choose from the following analytics views:
+
+- **[Cache Performance](/dashboards/cache/)** - Analyze cache hit rates, sizes, and migration data
+- **[Docker Operations](/dashboards/docker/)** - Monitor container performance and tool installations
+- **[API Usage](/dashboards/api/)** - Track GitHub API usage and rate limiting
+- **[Failure Analysis](/dashboards/failures/)** - Categorized error tracking and troubleshooting
+- **[Multi-Repository Overview](/dashboards/overview/)** - Aggregated cross-repository analytics
+
+## Data Collection
+
+Analytics data is collected automatically when the Renovate action runs with analytics enabled. The system captures:
+
+- Cache operation metrics (restore, save, hit rates, sizes)
+- Docker performance data (image pulls, tool installations, execution timing)
+- GitHub API usage patterns (rate limits, authentication, response times)
+- Failure scenarios with categorized error tracking
+- Repository metadata and workflow context
+
+All data is sanitized to prevent secrets leakage and stored using GitHub Actions Cache infrastructure.
+
+## Dashboard Architecture
+
+Built with modern web technologies:
+
+- **[Astro](https://astro.build/)** with **[Starlight](https://starlight.astro.build/)** for documentation framework
+- **[Chart.js](https://www.chartjs.org/)** for interactive visualizations
+- **GitHub Actions Cache API** for data storage and retrieval
+- **Responsive design** optimized for desktop and mobile viewing
+- **Dark mode support** with automatic theme detection
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Next steps
+
+<CardGrid stagger>
+	<Card title="Update content" icon="pencil">
+		Edit `src/content/docs/index.mdx` to see this page change.
+	</Card>
+	<Card title="Add new content" icon="add-document">
+		Add Markdown or MDX files to `src/content/docs` to create new pages.
+	</Card>
+	<Card title="Configure your site" icon="setting">
+		Edit your `sidebar` and other config in `astro.config.mjs`.
+	</Card>
+	<Card title="Read the docs" icon="open-book">
+		Learn more in [the Starlight Docs](https://starlight.astro.build/).
+	</Card>
+</CardGrid>
