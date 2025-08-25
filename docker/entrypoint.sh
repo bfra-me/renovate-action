@@ -10,7 +10,7 @@ chmod a+x /usr/local/bin/yq
 yq --version
 
 # renovate: datasource=node-version depName=node
-export NODE_VERSION=22.11.0
+export NODE_VERSION=22.18.0
 install-tool node $NODE_VERSION
 
 # renovate: datasource=npm depName=pnpm
