@@ -1,0 +1,28 @@
+{
+  "name": "@bfra.me/renovate-action-analytics-dashboard",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Analytics dashboard for Renovate action performance tracking",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check && pnpm run check-types",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.35.2",
+    "astro": "^5.6.1",
+    "chart.js": "^4.4.8",
+    "chartjs-adapter-date-fns": "^3.0.0",
+    "date-fns": "^4.1.0",
+    "sharp": "^0.34.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.17.2",
+    "typescript": "^5.9.2"
+  }
+}

@@ -1,4 +1,7 @@
-# Testing Strategy for Renovate Action
+---
+title: Testing Strategy for Renovate Action
+description: Three-tier testing strategy for validating Renovate action functionality
+---
 
 ## Overview
 

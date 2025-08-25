@@ -63,6 +63,7 @@ jobs:
           cache: pnpm
           node-version: ${{ needs.setup.outputs.node-version }}
       - run: pnpm bootstrap
+      - run: pnpm build
       - run: pnpm check
 
   build:
