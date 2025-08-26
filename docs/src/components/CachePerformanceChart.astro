@@ -1,0 +1,387 @@
+---
+/**
+ * Cache Performance Chart Component
+ * Displays cache hit rates, operation times, and size metrics using Chart.js
+ */
+
+interface Props {
+  repositoryName?: string
+  className?: string
+}
+
+const { repositoryName = 'renovate-action', className = '' } = Astro.props
+---
+
+<div class={`cache-performance-chart ${className}`}>
+  <div class="chart-header">
+    <h3>Cache Performance Metrics</h3>
+    <p class="chart-description">
+      Cache hit rates, operation timings, and storage metrics for {repositoryName}
+    </p>
+  </div>
+
+  <div class="charts-container">
+    <!-- Cache Hit Rate Chart -->
+    <div class="chart-section">
+      <h4>Cache Hit Rate</h4>
+      <canvas id="cacheHitRateChart" width="400" height="200"></canvas>
+    </div>
+
+    <!-- Operation Timing Chart -->
+    <div class="chart-section">
+      <h4>Operation Performance (ms)</h4>
+      <canvas id="cacheTimingChart" width="400" height="200"></canvas>
+    </div>
+
+    <!-- Cache Size Over Time -->
+    <div class="chart-section">
+      <h4>Cache Size Trends (MB)</h4>
+      <canvas id="cacheSizeChart" width="400" height="200"></canvas>
+    </div>
+  </div>
+
+  <!-- Summary Statistics -->
+  <div class="cache-stats">
+    <div class="stat-card">
+      <span class="stat-label">Hit Rate</span>
+      <span class="stat-value" id="hitRateValue">--</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Avg Restore Time</span>
+      <span class="stat-value" id="restoreTimeValue">--</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Avg Save Time</span>
+      <span class="stat-value" id="saveTimeValue">--</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Total Size</span>
+      <span class="stat-value" id="totalSizeValue">--</span>
+    </div>
+  </div>
+</div>
+
+<style>
+.cache-performance-chart {
+  background: var(--sl-color-bg-nav);
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+
+.chart-header {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.chart-header h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--sl-color-white);
+  font-size: 1.5rem;
+}
+
+.chart-description {
+  margin: 0;
+  color: var(--sl-color-gray-2);
+  font-size: 0.9rem;
+}
+
+.charts-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.chart-section {
+  background: var(--sl-color-bg-sidebar);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.chart-section h4 {
+  margin: 0 0 1rem 0;
+  color: var(--sl-color-white);
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.chart-section canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 200px;
+}
+
+.cache-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  background: var(--sl-color-bg-sidebar);
+  border: 1px solid var(--sl-color-gray-6);
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--sl-color-accent);
+}
+
+.stat-label {
+  display: block;
+  color: var(--sl-color-gray-2);
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  display: block;
+  color: var(--sl-color-white);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .charts-container {
+    grid-template-columns: 1fr;
+  }
+
+  .cache-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .cache-stats {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<script>
+import { Chart, registerables } from 'chart.js'
+import 'chartjs-adapter-date-fns'
+import { createAnalyticsClient } from '../utils/analytics-client.ts'
+
+// Register Chart.js components
+Chart.register(...registerables)
+
+// Chart configuration
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  scales: {
+    y: {
+      beginAtZero: true,
+      grid: {
+        color: 'rgba(255, 255, 255, 0.1)',
+      },
+      ticks: {
+        color: 'rgba(255, 255, 255, 0.7)',
+      },
+    },
+    x: {
+      grid: {
+        color: 'rgba(255, 255, 255, 0.1)',
+      },
+      ticks: {
+        color: 'rgba(255, 255, 255, 0.7)',
+      },
+    },
+  },
+  plugins: {
+    legend: {
+      labels: {
+        color: 'rgba(255, 255, 255, 0.8)',
+      },
+    },
+  },
+}
+
+// Initialize charts
+function initializeCacheCharts() {
+  // Cache Hit Rate Chart (Doughnut)
+  const hitRateCtx = document.getElementById('cacheHitRateChart') as HTMLCanvasElement
+  if (hitRateCtx) {
+    new Chart(hitRateCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Cache Hits', 'Cache Misses'],
+        datasets: [{
+          data: [75, 25], // Example data - will be replaced with real data
+          backgroundColor: [
+            'rgba(34, 197, 94, 0.8)', // Green for hits
+            'rgba(239, 68, 68, 0.8)',  // Red for misses
+          ],
+          borderColor: [
+            'rgba(34, 197, 94, 1)',
+            'rgba(239, 68, 68, 1)',
+          ],
+          borderWidth: 2,
+        }],
+      },
+      options: {
+        ...chartOptions,
+        plugins: {
+          ...chartOptions.plugins,
+          legend: {
+            ...chartOptions.plugins.legend,
+            position: 'bottom',
+          },
+        },
+      },
+    })
+  }
+
+  // Operation Timing Chart (Bar)
+  const timingCtx = document.getElementById('cacheTimingChart') as HTMLCanvasElement
+  if (timingCtx) {
+    new Chart(timingCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Restore', 'Save', 'Prepare', 'Finalize'],
+        datasets: [{
+          label: 'Average Time (ms)',
+          data: [1200, 3500, 800, 400], // Example data
+          backgroundColor: 'rgba(59, 130, 246, 0.8)',
+          borderColor: 'rgba(59, 130, 246, 1)',
+          borderWidth: 1,
+        }],
+      },
+      options: {
+        ...chartOptions,
+        scales: {
+          ...chartOptions.scales,
+          y: {
+            ...chartOptions.scales.y,
+            title: {
+              display: true,
+              text: 'Time (milliseconds)',
+              color: 'rgba(255, 255, 255, 0.8)',
+            },
+          },
+        },
+      },
+    })
+  }
+
+  // Cache Size Over Time Chart (Line)
+  const sizeCtx = document.getElementById('cacheSizeChart') as HTMLCanvasElement
+  if (sizeCtx) {
+    const now = new Date()
+    const sizeData = []
+
+    // Generate sample time series data
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000)
+      sizeData.push({
+        x: date.toISOString().split('T')[0],
+        y: Math.random() * 500 + 100, // Random size between 100-600 MB
+      })
+    }
+
+    new Chart(sizeCtx, {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Cache Size (MB)',
+          data: sizeData,
+          borderColor: 'rgba(168, 85, 247, 1)',
+          backgroundColor: 'rgba(168, 85, 247, 0.1)',
+          fill: true,
+          tension: 0.4,
+        }],
+      },
+      options: {
+        ...chartOptions,
+        scales: {
+          ...chartOptions.scales,
+          x: {
+            ...chartOptions.scales.x,
+            type: 'time',
+            time: {
+              unit: 'day',
+              displayFormats: {
+                day: 'MMM dd',
+              },
+            },
+            title: {
+              display: true,
+              text: 'Date',
+              color: 'rgba(255, 255, 255, 0.8)',
+            },
+          },
+          y: {
+            ...chartOptions.scales.y,
+            title: {
+              display: true,
+              text: 'Size (MB)',
+              color: 'rgba(255, 255, 255, 0.8)',
+            },
+          },
+        },
+      },
+    })
+  }
+}
+
+// Update statistics display
+function updateCacheStats(data: any) {
+  const hitRateElement = document.getElementById('hitRateValue')
+  const restoreTimeElement = document.getElementById('restoreTimeValue')
+  const saveTimeElement = document.getElementById('saveTimeValue')
+  const totalSizeElement = document.getElementById('totalSizeValue')
+
+  if (hitRateElement && data?.cache?.hitRate) {
+    hitRateElement.textContent = `${(data.cache.hitRate * 100).toFixed(1)}%`
+  }
+
+  if (restoreTimeElement && data?.cache?.averageRestoreTime) {
+    restoreTimeElement.textContent = `${(data.cache.averageRestoreTime / 1000).toFixed(1)}s`
+  }
+
+  if (saveTimeElement && data?.cache?.averageSaveTime) {
+    saveTimeElement.textContent = `${(data.cache.averageSaveTime / 1000).toFixed(1)}s`
+  }
+
+  if (totalSizeElement && data?.cache?.totalSizeBytes) {
+    const totalMB = data.cache.totalSizeBytes / (1024 * 1024)
+    totalSizeElement.textContent = `${totalMB.toFixed(1)} MB`
+  }
+}
+
+// Load analytics data and update charts
+async function loadCacheAnalytics() {
+  try {
+    const client = createAnalyticsClient()
+    if (!client) {
+      console.warn('Analytics client not available')
+      return
+    }
+
+    const repositoryName = 'renovate-action' // This would come from props in a real implementation
+    const data = await client.getAggregatedData(repositoryName)
+
+    if (data) {
+      updateCacheStats(data)
+    }
+  } catch (error) {
+    console.error('Failed to load cache analytics:', error)
+  }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  initializeCacheCharts()
+  loadCacheAnalytics()
+})
+</script>
