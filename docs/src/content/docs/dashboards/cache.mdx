@@ -1,0 +1,100 @@
+---
+title: 'Cache Performance Dashboard'
+description: 'Analytics dashboard for cache performance metrics, hit rates, and operation timings'
+---
+
+import CachePerformanceChart from '../../../components/CachePerformanceChart.astro'
+
+# Cache Performance Dashboard
+
+Monitor and analyze cache performance across your Renovate actions. This dashboard provides insights into cache hit rates, operation timings, and storage trends to help optimize your workflows.
+
+## Overview
+
+The cache system is a critical component for Renovate action performance. Effective caching can reduce execution time significantly by avoiding redundant downloads and computations.
+
+### Key Metrics
+
+- **Hit Rate**: Percentage of cache lookups that result in cache hits
+- **Operation Timing**: Average time for restore, save, prepare, and finalize operations
+- **Storage Trends**: Cache size growth and cleanup patterns over time
+- **Version Migration**: Performance impact of cache key versioning
+
+<CachePerformanceChart />
+
+## Performance Analysis
+
+### Cache Hit Rate Optimization
+
+A healthy cache hit rate typically ranges from 60-90%, depending on your repository's update frequency and cache configuration.
+
+**Factors affecting hit rate:**
+- Repository activity level
+- Cache key versioning strategy
+- Cache TTL settings
+- Dependency update patterns
+
+### Operation Timing Insights
+
+Cache operations should complete within these typical ranges:
+- **Restore**: 1-5 seconds (network dependent)
+- **Save**: 2-10 seconds (size dependent)
+- **Prepare**: < 1 second (local operations)
+- **Finalize**: < 1 second (cleanup operations)
+
+### Storage Management
+
+Monitor cache size trends to ensure efficient storage usage:
+- Large caches (>1GB) may indicate accumulation of stale data
+- Rapid size fluctuations suggest frequent cache invalidation
+- Steady growth patterns are normal for active repositories
+
+## Troubleshooting
+
+### Low Hit Rates
+
+If cache hit rates are consistently below 50%:
+
+1. **Check cache key stability** - Frequent key changes invalidate caches
+2. **Review TTL settings** - Too short TTL causes premature expiration
+3. **Analyze dependency patterns** - Frequent updates reduce cache effectiveness
+
+### Slow Operations
+
+For operations taking longer than expected:
+
+1. **Network latency** - Consider repository location and CDN usage
+2. **Cache size** - Large caches take longer to restore/save
+3. **Storage backend** - GitHub Actions cache performance varies by region
+
+### Storage Issues
+
+For storage-related problems:
+
+1. **Monitor size limits** - GitHub Actions has 10GB per repository limit
+2. **Implement retention policies** - Regular cleanup prevents storage bloat
+3. **Optimize cache content** - Exclude unnecessary files from caching
+
+## Best Practices
+
+### Cache Key Strategy
+
+- Use semantic versioning for cache keys
+- Include relevant context (Node.js version, dependencies hash)
+- Avoid including dynamic values (timestamps, run IDs)
+
+### Size Optimization
+
+- Exclude temporary files and logs
+- Compress cache content when possible
+- Implement incremental caching for large workspaces
+
+### Monitoring
+
+- Set up alerts for hit rate degradation
+- Monitor operation timing trends
+- Track storage usage against limits
+
+---
+
+*Analytics data is updated after each Renovate action execution. Historical data retention follows GitHub Actions cache policies.*

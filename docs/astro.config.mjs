@@ -6,6 +6,17 @@ import {defineConfig} from 'astro/config'
 export default defineConfig({
   site: 'https://bfra-me.github.io',
   base: '/renovate-action',
+  // Build optimizations for GitHub Pages
+  build: {
+    assets: '_astro',
+    inlineStylesheets: 'auto',
+  },
+  // Improved compatibility settings
+  vite: {
+    build: {
+      assetsInlineLimit: 0, // Ensure assets are properly handled
+    },
+  },
   integrations: [
     starlight({
       title: 'Renovate Action Analytics',
@@ -22,7 +33,15 @@ export default defineConfig({
         },
       ],
       customCss: ['./src/styles/custom.css'],
+      // Enable pagination for better navigation
+      pagination: true,
+      // Table of contents configuration
+      tableOfContents: {
+        minHeadingLevel: 2,
+        maxHeadingLevel: 4,
+      },
       sidebar: [
+        // Dashboard navigation will be enabled as pages are created
         // {
         //   label: 'Overview',
         //   items: [
@@ -30,16 +49,16 @@ export default defineConfig({
         //     {label: 'Dashboard Overview', slug: 'overview/dashboard'},
         //   ],
         // },
-        // {
-        //   label: 'Analytics Dashboards',
-        //   items: [
-        //     {label: 'Cache Performance', slug: 'dashboards/cache'},
-        //     {label: 'Docker Operations', slug: 'dashboards/docker'},
-        //     {label: 'API Usage', slug: 'dashboards/api'},
-        //     {label: 'Failure Analysis', slug: 'dashboards/failures'},
-        //     {label: 'Multi-Repository Overview', slug: 'dashboards/overview'},
-        //   ],
-        // },
+        {
+          label: 'Analytics Dashboards',
+          items: [
+            {label: 'Cache Performance', slug: 'dashboards/cache'},
+            // {label: 'Docker Operations', slug: 'dashboards/docker'},
+            // {label: 'API Usage', slug: 'dashboards/api'},
+            // {label: 'Failure Analysis', slug: 'dashboards/failures'},
+            // {label: 'Multi-Repository Overview', slug: 'dashboards/overview'},
+          ],
+        },
         // {
         //   label: 'Reference',
         //   items: [
