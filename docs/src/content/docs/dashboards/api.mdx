@@ -1,0 +1,17 @@
+---
+title: GitHub API Usage Dashboard
+---
+
+import ApiUsageChart from '../../../components/ApiUsageChart.astro';
+
+# GitHub API Usage Dashboard
+
+This dashboard visualizes GitHub API usage, rate limiting, and authentication metrics collected from the Renovate action analytics system.
+
+<ApiUsageChart />
+
+- **Rate Limit Remaining**: Shows how many API requests are left before hitting the limit.
+- **Authentication Method**: Indicates if requests use GitHub App, PAT, or none.
+- **Status Codes**: Displays success/failure and error details for each request.
+
+_Analytics data is updated with each workflow run. For more details, see the [analytics documentation](../overview/analytics.md)._

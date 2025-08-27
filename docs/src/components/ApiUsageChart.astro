@@ -1,0 +1,136 @@
+---
+import { createAnalyticsClient } from '../utils/analytics-client.ts';
+
+const repositoryName = 'renovate-action';
+let apiData = null;
+let errorMsg = null;
+
+try {
+  const client = createAnalyticsClient();
+  if (client) {
+    const agg = await client.getAggregatedData(repositoryName);
+    apiData = agg?.api ?? null;
+  }
+} catch (err) {
+  errorMsg = err instanceof Error ? err.message : String(err);
+}
+---
+
+<div class="api-usage-dashboard">
+  <h3>GitHub API Usage Dashboard</h3>
+  <div class="api-metrics-summary">
+    <div><strong>Total Requests:</strong> {apiData ? apiData.totalRequests : '--'}</div>
+    <div><strong>Avg Response Time:</strong> {apiData ? Math.round(apiData.averageResponseTime) + ' ms' : '--'}</div>
+    <div><strong>Rate Limit Hits:</strong> {apiData ? apiData.rateLimitHits : '--'}</div>
+  </div>
+  <div class="api-auth-chart">
+    <canvas id="apiRateLimitChart" width="400" height="200"></canvas>
+  </div>
+  <div class="api-auth-table">
+    <h4>Authentication Method Usage</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>Requests</th>
+        </tr>
+      </thead>
+      <tbody>
+        {apiData ? Object.entries(apiData.authenticationMethods).map(([method, count]) => (
+          <tr>
+            <td>{method}</td>
+            <td>{count}</td>
+          </tr>
+        )) : <tr><td colspan="2">--</td></tr>}
+      </tbody>
+    </table>
+  </div>
+  {errorMsg && <div class="error">Failed to load API analytics: {errorMsg}</div>}
+</div>
+
+<script>
+import { Chart, registerables } from 'chart.js'
+
+// Register Chart.js components
+Chart.register(...registerables)
+
+// Initialize charts when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  const apiData = globalThis.apiData
+  if (apiData && apiData.authenticationMethods) {
+    const ctx = document.getElementById('apiRateLimitChart')
+    if (ctx && ctx instanceof HTMLCanvasElement) {
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(apiData.authenticationMethods),
+          datasets: [
+            {
+              label: 'Auth Method Usage',
+              data: Object.values(apiData.authenticationMethods),
+              backgroundColor: [
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(255, 99, 132, 0.7)',
+              ],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: 'GitHub API Auth Method Usage',
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      })
+    }
+  }
+})
+</script>
+
+<script define:vars={{ apiData }} is:inline>
+// Make apiData available to the chart script
+globalThis.apiData = apiData
+</script>
+
+<style>
+.api-usage-dashboard {
+  background: var(--sl-color-bg-nav);
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+.api-metrics-summary {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+.api-auth-chart {
+  margin-bottom: 2rem;
+}
+.api-auth-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.api-auth-table th, .api-auth-table td {
+  border: 1px solid var(--sl-color-gray-6);
+  padding: 0.5rem 1rem;
+  text-align: left;
+}
+.api-auth-table th {
+  background: var(--sl-color-bg-sidebar);
+}
+.error {
+  color: var(--sl-color-red);
+  margin-top: 1rem;
+}
+</style>
