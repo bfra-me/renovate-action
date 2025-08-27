@@ -1,0 +1,148 @@
+---
+title: 'Docker Performance Dashboard'
+description: 'Analytics dashboard for Docker container operations, tool installations, and performance metrics'
+---
+
+import DockerPerformanceChart from '../../../components/DockerPerformanceChart.astro'
+
+# Docker Performance Dashboard
+
+Monitor and analyze Docker container performance across your Renovate actions. This dashboard provides insights into image pull times, container execution performance, tool installation metrics, and operation success rates.
+
+## Overview
+
+Docker containers provide the isolated execution environment for Renovate operations. Understanding container performance is crucial for optimizing action execution time and reliability.
+
+### Key Metrics
+
+- **Image Pull Time**: Time required to download container images
+- **Container Run Time**: Execution duration for containerized operations
+- **Tool Installation**: Performance of tool setup within containers
+- **Success Rate**: Percentage of successful Docker operations
+- **Operation Volume**: Frequency and patterns of Docker operations over time
+
+<DockerPerformanceChart />
+
+## Performance Analysis
+
+### Image Pull Optimization
+
+Efficient image pulling is critical for fast action startup times:
+
+**Typical pull times:**
+- **Base images** (< 500MB): 10-30 seconds
+- **Language runtimes** (Node.js, Python): 15-45 seconds
+- **Tool-heavy images**: 30-90 seconds
+
+**Optimization strategies:**
+- Use official, well-cached images
+- Prefer smaller base images (Alpine Linux)
+- Layer caching in registries
+- Regional registry proximity
+
+### Container Execution Performance
+
+Container run times vary significantly based on workload:
+
+**Performance factors:**
+- **CPU allocation**: Affects compute-intensive operations
+- **Memory limits**: Impacts large dependency trees
+- **I/O performance**: Critical for file system operations
+- **Network connectivity**: Affects package downloads
+
+### Tool Installation Metrics
+
+Tool installation within containers affects total execution time:
+
+**Common tools and typical install times:**
+- **Node.js & npm/pnpm**: 8-20 seconds
+- **Python & pip**: 10-25 seconds
+- **Git & version control**: 3-8 seconds
+- **Language-specific tools**: 5-30 seconds
+
+**Installation optimization:**
+- Use container images with pre-installed tools
+- Cache tool installations between runs
+- Parallelize independent tool installations
+- Use package manager caching
+
+### Success Rate Analysis
+
+Monitor operation success rates to identify reliability issues:
+
+**Target success rates:**
+- **Image pulls**: > 95% (network dependent)
+- **Container starts**: > 98% (resource dependent)
+- **Tool installations**: > 90% (dependency dependent)
+- **Overall operations**: > 85% (combined factors)
+
+**Common failure categories:**
+- **Network timeouts**: Registry connectivity issues
+- **Resource constraints**: Memory or disk limitations
+- **Permission errors**: Container security configurations
+- **Dependency conflicts**: Tool installation failures
+
+## Troubleshooting Guide
+
+### High Pull Times
+
+If image pull times are consistently high:
+
+1. **Check registry location**: Use geographically closer registries
+2. **Image size optimization**: Switch to smaller base images
+3. **Network connectivity**: Verify runner network performance
+4. **Registry caching**: Ensure proper layer caching
+
+### Container Execution Issues
+
+For slow container execution:
+
+1. **Resource allocation**: Increase CPU/memory limits
+2. **Image optimization**: Use lightweight images
+3. **Parallel operations**: Reduce sequential dependencies
+4. **Monitoring**: Add performance instrumentation
+
+### Tool Installation Failures
+
+When tool installations fail frequently:
+
+1. **Dependency resolution**: Check package availability
+2. **Network issues**: Verify package registry access
+3. **Permission problems**: Review container security settings
+4. **Version conflicts**: Pin specific tool versions
+
+### Low Success Rates
+
+For consistently low success rates:
+
+1. **Error pattern analysis**: Categorize failure types
+2. **Resource monitoring**: Check system resource usage
+3. **Retry logic**: Implement appropriate retry strategies
+4. **Fallback mechanisms**: Provide alternative execution paths
+
+## Best Practices
+
+### Container Configuration
+
+- **Use official images**: Prefer maintained base images
+- **Pin versions**: Avoid `latest` tags for reproducibility
+- **Minimal installs**: Only include necessary tools
+- **Security scanning**: Regular vulnerability assessments
+
+### Performance Monitoring
+
+- **Baseline metrics**: Establish performance expectations
+- **Trend analysis**: Monitor performance over time
+- **Alerting**: Set up notifications for performance degradation
+- **Capacity planning**: Anticipate resource needs
+
+### Resource Management
+
+- **Right-sizing**: Allocate appropriate CPU/memory
+- **Cleanup procedures**: Remove unused containers/images
+- **Storage management**: Monitor disk usage patterns
+- **Network optimization**: Minimize external dependencies
+
+---
+
+*This dashboard provides real-time insights into Docker performance across your Renovate action executions. Use these metrics to optimize container configurations and improve overall action performance.*
