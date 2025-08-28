@@ -95,7 +95,9 @@ export class AnalyticsCache {
    * Generate a cache key from components.
    */
   generateKey(keyComponents: CacheKey): string {
-    const parts = [keyComponents.prefix, keyComponents.repository, keyComponents.type, keyComponents.version]
+    // Convert repository slashes to dashes for cache key compatibility
+    const repositoryKey = keyComponents.repository.replaceAll('/', '-')
+    const parts = [keyComponents.prefix, repositoryKey, keyComponents.type, keyComponents.version]
 
     if (typeof keyComponents.timestamp === 'string' && keyComponents.timestamp.length > 0) {
       parts.push(keyComponents.timestamp)
@@ -145,6 +147,18 @@ export class AnalyticsCache {
     events: readonly AnalyticsEvent[],
     timestamp?: string,
   ): Promise<CacheResult<readonly AnalyticsEvent[]>> {
+    // Validate input
+    if (events.length === 0) {
+      return {
+        success: false,
+        data: events,
+        error: 'Cannot store empty events array',
+        key: '',
+        duration: 0,
+        size: 0,
+      }
+    }
+
     const keyComponents: CacheKey = {
       prefix: this.analyticsConfig.cacheKeyPrefix,
       repository,
@@ -376,7 +390,7 @@ export class AnalyticsCache {
                 } else {
                   this.logger.debug('Cache miss', {key, attempt})
                   return {
-                    success: true,
+                    success: false,
                     key,
                     duration: 0, // Will be filled by withTiming
                     hit: false,
@@ -480,7 +494,7 @@ export function getRepositoryIdentifier(): string {
   if (typeof repository !== 'string' || repository.length === 0) {
     throw new Error('GITHUB_REPOSITORY environment variable is not set')
   }
-  return repository.replace('/', '-') // Convert owner/repo to owner-repo for cache key
+  return repository // Return original format (owner/repo)
 }
 
 /**
@@ -488,15 +502,8 @@ export function getRepositoryIdentifier(): string {
  */
 export function isCacheAvailable(): boolean {
   try {
-    // Check if we're running in GitHub Actions environment
-    const cacheUrl = env.ACTIONS_CACHE_URL
-    const runtimeToken = env.ACTIONS_RUNTIME_TOKEN
-    return Boolean(
-      typeof cacheUrl === 'string' &&
-        cacheUrl.length > 0 &&
-        typeof runtimeToken === 'string' &&
-        runtimeToken.length > 0,
-    )
+    // Use the GitHub Actions Cache library's built-in availability check
+    return cache.isFeatureAvailable()
   } catch {
     return false
   }
