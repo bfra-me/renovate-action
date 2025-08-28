@@ -75,7 +75,7 @@
   ],
   platformAutomerge: true,
   postUpgradeTasks: {
-    commands: ['pnpm run bootstrap', 'pnpm run fix', 'pnpm run build'],
+    commands: ['pnpm run bootstrap', 'pnpm run build', 'pnpm run fix'],
     executionMode: 'branch',
   },
   rebaseWhen: 'behind-base-branch',
