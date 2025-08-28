@@ -117,7 +117,7 @@ export const BUILTIN_SENSITIVE_PATTERNS: readonly SensitivePattern[] = [
   // GitHub tokens
   {
     name: 'github-token',
-    pattern: /\b(gh[ops]_\w{36,255})\b/g,
+    pattern: /\b(gh[ops]_\w{6,255})\b/g,
     type: 'token',
     strategy: 'redact',
     caseSensitive: true,
@@ -242,9 +242,14 @@ export class DataSanitizer {
     })
 
     try {
-      const sanitizedData = this.sanitizeValue(data, foundTypes, count => {
-        sanitizedCount += count
-      })
+      const sanitizedData = this.sanitizeValue(
+        data,
+        foundTypes,
+        count => {
+          sanitizedCount += count
+        },
+        new WeakSet(),
+      )
 
       const wasModified = sanitizedCount > 0
 
@@ -300,7 +305,7 @@ export class DataSanitizer {
     // Check for common sensitive key patterns in JSON-like strings
     const keyPatterns = this.config.strategies
     for (const [keyType, strategy] of Object.entries(keyPatterns)) {
-      const keyPattern = new RegExp(`["']?${keyType}["']?\\s*[:=]\\s*["']?([^"',\\s}]+)["']?`, 'gi')
+      const keyPattern = new RegExp(`["']?[\\w]*${keyType}[\\w]*["']?\\s*[:=]\\s*["']?([^"',\\s}]+)["']?`, 'gi')
       const matches = [...sanitized.matchAll(keyPattern)]
 
       if (matches.length > 0) {
@@ -331,9 +336,11 @@ export class DataSanitizer {
     value: unknown,
     foundTypes: Set<SensitiveDataType>,
     countCallback: (count: number) => void,
+    visited = new WeakSet(),
   ): unknown {
     if (value === null || value === undefined) {
-      return value
+      // Convert null/undefined to safe placeholder for analytics
+      return value === undefined ? '[undefined]' : '[null]'
     }
 
     if (typeof value === 'string') {
@@ -350,14 +357,32 @@ export class DataSanitizer {
     }
 
     if (Array.isArray(value)) {
+      // Check for circular references
+      if (visited.has(value)) {
+        return '[Circular Reference]'
+      }
+      visited.add(value)
+
       if (!this.config.preserveStructure) {
+        visited.delete(value)
+        countCallback(1) // Count structure flattening as modification
         return '[Array]'
       }
-      return value.map(item => this.sanitizeValue(item, foundTypes, countCallback))
+      const result = value.map(item => this.sanitizeValue(item, foundTypes, countCallback, visited))
+      visited.delete(value)
+      return result
     }
 
     if (typeof value === 'object') {
+      // Check for circular references
+      if (visited.has(value)) {
+        return '[Circular Reference]'
+      }
+      visited.add(value)
+
       if (!this.config.preserveStructure) {
+        visited.delete(value)
+        countCallback(1) // Count structure flattening as modification
         return '[Object]'
       }
 
@@ -369,14 +394,47 @@ export class DataSanitizer {
           countCallback(1)
         }
 
-        // Sanitize the value
-        const sanitizedValue = this.sanitizeValue(val, foundTypes, countCallback)
-        sanitizedObj[sanitizedKey] = sanitizedValue
+        // Check if the key name indicates the value should be sanitized
+        let valueSanitized = false
+        const lowerKey = key.toLowerCase()
+        for (const [keyType] of Object.entries(this.config.strategies)) {
+          if (lowerKey.includes(keyType.toLowerCase())) {
+            // This key name suggests the value contains sensitive data
+            const strategy = this.config.strategies[keyType as SensitiveDataType]
+            if (typeof val === 'string') {
+              const sanitizedValue = this.applySanitizationStrategy(val, strategy)
+              if (strategy === 'remove') {
+                // Don't include the property at all
+                valueSanitized = true
+                foundTypes.add(keyType as SensitiveDataType)
+                countCallback(1)
+                break
+              } else {
+                sanitizedObj[sanitizedKey] = sanitizedValue
+                foundTypes.add(keyType as SensitiveDataType)
+                countCallback(1)
+                valueSanitized = true
+                break
+              }
+            }
+          }
+        }
+
+        if (!valueSanitized) {
+          // Sanitize the value normally
+          const sanitizedValue = this.sanitizeValue(val, foundTypes, countCallback, visited)
+          sanitizedObj[sanitizedKey] = sanitizedValue
+        }
       }
+      visited.delete(value)
       return sanitizedObj
     }
 
     // For other types, convert to string and sanitize
+    if (typeof value === 'function') {
+      return '[Function]'
+    }
+
     const stringValue = String(value)
     const {sanitized} = this.sanitizeString(stringValue)
     if (sanitized !== stringValue) {
@@ -391,7 +449,7 @@ export class DataSanitizer {
   private applySanitizationStrategy(value: string, strategy: SanitizationStrategy): string {
     switch (strategy) {
       case 'redact':
-        return '[REDACTED]'
+        return '***REDACTED***'
 
       case 'remove':
         return ''
@@ -412,12 +470,12 @@ export class DataSanitizer {
         // Simple hash for demonstration - in production, use a proper crypto library
         const hash = createHash('sha256')
         hash.update(value + this.config.hashSalt)
-        return `[HASH:${hash.digest('hex').slice(0, 8)}]`
+        return hash.digest('hex').slice(0, 16)
       }
 
       default:
         this.logger.warn('Unknown sanitization strategy, using redact', {strategy})
-        return '[REDACTED]'
+        return '***REDACTED***'
     }
   }
 
