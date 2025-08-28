@@ -290,6 +290,12 @@ export class AnalyticsLogger {
    * Format log entry for output based on configuration.
    */
   private formatLogMessage(entry: LogEntry): string {
+    // For GitHub Actions logging, always use plain text messages
+    // The Actions logging system provides its own formatting
+    if (this.config.useActionsLogging) {
+      return entry.message
+    }
+
     if (this.config.json) {
       return JSON.stringify(entry)
     }
