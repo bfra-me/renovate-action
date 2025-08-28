@@ -171,7 +171,7 @@ jobs:
     needs: [setup, check, test, build]
     outputs:
       commit: ${{ steps.merge.outputs.commit }}
-      published: ${{ steps.semantic-release.outputs.new-release-published }}
+      published: ${{ env.DRY_RUN != 'true' && steps.semantic-release.outputs.new-release-published }}
       version: ${{ steps.semantic-release.outputs.version }}
     permissions:
       contents: write
