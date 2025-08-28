@@ -1,0 +1,680 @@
+---
+/**
+ * Multi-Repository Overview Dashboard Component
+ * Displays aggregated analytics across multiple repositories with filtering and comparison
+ */
+
+import { createAnalyticsClient } from '../utils/analytics-client.ts';
+
+interface Props {
+  className?: string
+}
+
+const { className = '' } = Astro.props
+
+// Fetch analytics data for multiple repositories
+let repositoriesData: any[] = [];
+let errorMsg = null;
+
+try {
+  const client = createAnalyticsClient();
+  if (client) {
+    // Get list of repositories
+    const repositories = await client.listRepositories();
+
+    // Fetch aggregated data for each repository
+    const dataPromises = repositories.slice(0, 10).map(async (repo) => {
+      try {
+        const data = await client.getAggregatedData(repo);
+        return {
+          repository: repo,
+          ...data
+        };
+      } catch (err) {
+        console.warn(`Failed to fetch data for ${repo}:`, err);
+        return null;
+      }
+    });
+
+    const results = await Promise.all(dataPromises);
+    repositoriesData = results.filter(Boolean);
+  }
+} catch (err) {
+  errorMsg = err instanceof Error ? err.message : String(err);
+  console.warn('Failed to fetch multi-repository analytics data:', errorMsg);
+}
+
+// Calculate aggregate statistics
+const totalRepositories = repositoriesData.length;
+const totalFailures = repositoriesData.reduce((sum, repo) => sum + (repo.failures?.totalFailures || 0), 0);
+const avgCacheHitRate = repositoriesData.length > 0
+  ? repositoriesData.reduce((sum, repo) => sum + (repo.cache?.hitRate || 0), 0) / repositoriesData.length
+  : 0;
+const avgSuccessRate = repositoriesData.length > 0
+  ? repositoriesData.reduce((sum, repo) => sum + (repo.action?.successRate || 0), 0) / repositoriesData.length
+  : 0;
+
+// Prepare data for charts
+const repositoryNames = repositoriesData.map(repo => repo.repository || 'Unknown');
+const cacheHitRates = repositoriesData.map(repo => (repo.cache?.hitRate || 0) * 100);
+const successRates = repositoriesData.map(repo => (repo.action?.successRate || 0) * 100);
+const failureCounts = repositoriesData.map(repo => repo.failures?.totalFailures || 0);
+const avgDurations = repositoriesData.map(repo => (repo.action?.averageDuration || 0) / 60000); // Convert to minutes
+
+// Performance categories
+const performanceCategories = repositoriesData.map(repo => {
+  const cacheHit = repo.cache?.hitRate || 0;
+  const successRate = repo.action?.successRate || 0;
+
+  if (cacheHit > 0.8 && successRate > 0.9) return 'Excellent';
+  if (cacheHit > 0.6 && successRate > 0.8) return 'Good';
+  if (cacheHit > 0.4 && successRate > 0.7) return 'Fair';
+  return 'Needs Attention';
+});
+
+const performanceDistribution = performanceCategories.reduce((acc: Record<string, number>, category) => {
+  acc[category] = (acc[category] || 0) + 1;
+  return acc;
+}, {});
+---
+
+<div class={`multi-repo-overview ${className}`}>
+  <div class="overview-header">
+    <h3>Multi-Repository Analytics Overview</h3>
+    <p class="overview-description">
+      Aggregated performance metrics and trends across {totalRepositories} repositories
+    </p>
+  </div>
+
+  <!-- Summary Statistics -->
+  <div class="summary-stats">
+    <div class="stat-card primary">
+      <span class="stat-label">Total Repositories</span>
+      <span class="stat-value">{totalRepositories}</span>
+    </div>
+    <div class="stat-card success">
+      <span class="stat-label">Avg Cache Hit Rate</span>
+      <span class="stat-value">{(avgCacheHitRate * 100).toFixed(1)}%</span>
+    </div>
+    <div class="stat-card info">
+      <span class="stat-label">Avg Success Rate</span>
+      <span class="stat-value">{(avgSuccessRate * 100).toFixed(1)}%</span>
+    </div>
+    <div class="stat-card warning">
+      <span class="stat-label">Total Failures</span>
+      <span class="stat-value">{totalFailures}</span>
+    </div>
+  </div>
+
+  <div class="charts-container">
+    <!-- Performance Distribution -->
+    <div class="chart-section">
+      <h4>Repository Performance Distribution</h4>
+      <canvas id="performanceDistributionChart" width="400" height="200"></canvas>
+    </div>
+
+    <!-- Cache Hit Rates Comparison -->
+    <div class="chart-section">
+      <h4>Cache Hit Rates by Repository</h4>
+      <canvas id="cacheComparisonChart" width="400" height="200"></canvas>
+    </div>
+
+    <!-- Success Rates Comparison -->
+    <div class="chart-section">
+      <h4>Action Success Rates by Repository</h4>
+      <canvas id="successComparisonChart" width="400" height="200"></canvas>
+    </div>
+
+    <!-- Duration Comparison -->
+    <div class="chart-section">
+      <h4>Average Duration by Repository (minutes)</h4>
+      <canvas id="durationComparisonChart" width="400" height="200"></canvas>
+    </div>
+  </div>
+
+  <!-- Repository Details Table -->
+  <div class="repository-table">
+    <h4>Repository Details</h4>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Repository</th>
+            <th>Cache Hit Rate</th>
+            <th>Success Rate</th>
+            <th>Failures</th>
+            <th>Avg Duration</th>
+            <th>Performance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {repositoriesData.map((repo, index) => (
+            <tr>
+              <td class="repo-name">
+                <a href={`/dashboards/cache/?repo=${repo.repository}`}>
+                  {repo.repository}
+                </a>
+              </td>
+              <td class="metric-value">
+                <span class={`badge ${cacheHitRates[index] > 80 ? 'success' : cacheHitRates[index] > 60 ? 'warning' : 'danger'}`}>
+                  {cacheHitRates[index].toFixed(1)}%
+                </span>
+              </td>
+              <td class="metric-value">
+                <span class={`badge ${successRates[index] > 90 ? 'success' : successRates[index] > 80 ? 'warning' : 'danger'}`}>
+                  {successRates[index].toFixed(1)}%
+                </span>
+              </td>
+              <td class="metric-value">
+                <span class={`badge ${failureCounts[index] === 0 ? 'success' : failureCounts[index] < 5 ? 'warning' : 'danger'}`}>
+                  {failureCounts[index]}
+                </span>
+              </td>
+              <td class="metric-value">
+                {avgDurations[index].toFixed(1)}m
+              </td>
+              <td class="performance-badge">
+                <span class={`badge ${
+                  performanceCategories[index] === 'Excellent' ? 'success' :
+                  performanceCategories[index] === 'Good' ? 'info' :
+                  performanceCategories[index] === 'Fair' ? 'warning' : 'danger'
+                }`}>
+                  {performanceCategories[index]}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Insights and Recommendations -->
+  <div class="insights-section">
+    <h4>Performance Insights</h4>
+    <div class="insights-grid">
+      <div class="insight-card">
+        <h5>Top Performer</h5>
+        <p>
+          {repositoriesData.length > 0
+            ? repositoriesData.reduce((best, repo) =>
+                ((repo.cache?.hitRate || 0) + (repo.action?.successRate || 0)) >
+                ((best.cache?.hitRate || 0) + (best.action?.successRate || 0)) ? repo : best
+              ).repository
+            : 'No data'
+          }
+        </p>
+      </div>
+      <div class="insight-card">
+        <h5>Needs Attention</h5>
+        <p>
+          {repositoriesData.length > 0
+            ? repositoriesData.reduce((worst, repo) =>
+                ((repo.cache?.hitRate || 0) + (repo.action?.successRate || 0)) <
+                ((worst.cache?.hitRate || 0) + (worst.action?.successRate || 0)) ? repo : worst
+              ).repository
+            : 'No data'
+          }
+        </p>
+      </div>
+      <div class="insight-card">
+        <h5>Cache Optimization Opportunity</h5>
+        <p>
+          {repositoriesData.filter(repo => (repo.cache?.hitRate || 0) < 0.7).length} repositories
+          have cache hit rates below 70%
+        </p>
+      </div>
+      <div class="insight-card">
+        <h5>Reliability Opportunity</h5>
+        <p>
+          {repositoriesData.filter(repo => (repo.action?.successRate || 0) < 0.9).length} repositories
+          have success rates below 90%
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {errorMsg && (
+    <div class="error-message">
+      <p><strong>Analytics Error:</strong> {errorMsg}</p>
+      <p>Some repository data may be unavailable.</p>
+    </div>
+  )}
+</div>
+
+<style>
+.multi-repo-overview {
+  background: var(--sl-color-bg-nav);
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+
+.overview-header {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.overview-header h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--sl-color-white);
+  font-size: 1.5rem;
+}
+
+.overview-description {
+  margin: 0;
+  color: var(--sl-color-gray-2);
+  font-size: 0.9rem;
+}
+
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--sl-color-bg-sidebar);
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: center;
+  border-left: 4px solid var(--sl-color-accent);
+}
+
+.stat-card.primary {
+  border-left-color: #3b82f6;
+}
+
+.stat-card.success {
+  border-left-color: #16a34a;
+}
+
+.stat-card.info {
+  border-left-color: #0284c7;
+}
+
+.stat-card.warning {
+  border-left-color: #ea580c;
+}
+
+.stat-label {
+  display: block;
+  color: var(--sl-color-gray-2);
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  display: block;
+  color: var(--sl-color-white);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.charts-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.chart-section {
+  background: var(--sl-color-bg-sidebar);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.chart-section h4 {
+  margin: 0 0 1rem 0;
+  color: var(--sl-color-white);
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.chart-section canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 200px;
+}
+
+.repository-table {
+  background: var(--sl-color-bg-sidebar);
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.repository-table h4 {
+  margin: 0 0 1rem 0;
+  color: var(--sl-color-white);
+  font-size: 1.2rem;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--sl-color-gray-2);
+}
+
+th {
+  background: var(--sl-color-bg-nav);
+  color: var(--sl-color-white);
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--sl-color-gray-5);
+}
+
+td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--sl-color-gray-6);
+}
+
+.repo-name a {
+  color: var(--sl-color-accent);
+  text-decoration: none;
+}
+
+.repo-name a:hover {
+  text-decoration: underline;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  min-width: 50px;
+}
+
+.badge.success {
+  background: #16a34a;
+  color: white;
+}
+
+.badge.warning {
+  background: #ea580c;
+  color: white;
+}
+
+.badge.danger {
+  background: #dc2626;
+  color: white;
+}
+
+.badge.info {
+  background: #0284c7;
+  color: white;
+}
+
+.insights-section {
+  background: var(--sl-color-bg-sidebar);
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.insights-section h4 {
+  margin: 0 0 1rem 0;
+  color: var(--sl-color-white);
+  font-size: 1.2rem;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.insight-card {
+  background: var(--sl-color-bg-nav);
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+.insight-card h5 {
+  margin: 0 0 0.5rem 0;
+  color: var(--sl-color-accent);
+  font-size: 1rem;
+}
+
+.insight-card p {
+  margin: 0;
+  color: var(--sl-color-gray-2);
+  font-size: 0.9rem;
+}
+
+.error-message {
+  background: var(--sl-color-bg-sidebar);
+  border: 1px solid #dc2626;
+  border-radius: 6px;
+  padding: 1rem;
+  color: var(--sl-color-gray-2);
+}
+
+.error-message p {
+  margin: 0 0 0.5rem 0;
+}
+
+.error-message p:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .charts-container {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .insights-grid {
+    grid-template-columns: 1fr;
+  }
+
+  table {
+    font-size: 0.85rem;
+  }
+
+  th, td {
+    padding: 0.5rem;
+  }
+}
+</style>
+
+<script define:vars={{
+  repositoryNames,
+  cacheHitRates,
+  successRates,
+  failureCounts,
+  avgDurations,
+  performanceDistribution
+}} is:inline>
+// Import Chart.js and initialize charts when DOM is loaded
+import('https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.js').then(() => {
+  // Chart.js configuration
+  const chartDefaults = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: {
+          color: '#c5c5c5'
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: '#c5c5c5',
+          maxRotation: 45,
+          maxTicksLimit: 10
+        },
+        grid: {
+          color: '#3a3a3a'
+        }
+      },
+      y: {
+        ticks: {
+          color: '#c5c5c5'
+        },
+        grid: {
+          color: '#3a3a3a'
+        }
+      }
+    }
+  }
+
+  // Color schemes
+  const performanceColors = {
+    'Excellent': '#16a34a',
+    'Good': '#0284c7',
+    'Fair': '#ea580c',
+    'Needs Attention': '#dc2626'
+  }
+
+  // 1. Performance Distribution Chart
+  const performanceCtx = document.getElementById('performanceDistributionChart')
+  if (performanceCtx && Object.keys(performanceDistribution).length > 0) {
+    new Chart(performanceCtx, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(performanceDistribution),
+        datasets: [{
+          data: Object.values(performanceDistribution),
+          backgroundColor: Object.keys(performanceDistribution).map(cat => performanceColors[cat] || '#6b7280'),
+          borderColor: '#1f2937',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        ...chartDefaults,
+        plugins: {
+          ...chartDefaults.plugins,
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || ''
+                const value = context.parsed
+                const total = context.dataset.data.reduce((a, b) => a + b, 0)
+                const percentage = ((value / total) * 100).toFixed(1)
+                return `${label}: ${value} repositories (${percentage}%)`
+              }
+            }
+          }
+        }
+      }
+    })
+  }
+
+  // 2. Cache Hit Rates Comparison
+  const cacheCtx = document.getElementById('cacheComparisonChart')
+  if (cacheCtx && repositoryNames.length > 0) {
+    new Chart(cacheCtx, {
+      type: 'bar',
+      data: {
+        labels: repositoryNames,
+        datasets: [{
+          label: 'Cache Hit Rate (%)',
+          data: cacheHitRates,
+          backgroundColor: cacheHitRates.map(rate =>
+            rate > 80 ? '#16a34a' : rate > 60 ? '#ea580c' : '#dc2626'
+          ),
+          borderColor: '#1f2937',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        ...chartDefaults,
+        plugins: {
+          ...chartDefaults.plugins,
+          legend: { display: false }
+        },
+        scales: {
+          ...chartDefaults.scales,
+          y: {
+            ...chartDefaults.scales.y,
+            min: 0,
+            max: 100
+          }
+        }
+      }
+    })
+  }
+
+  // 3. Success Rates Comparison
+  const successCtx = document.getElementById('successComparisonChart')
+  if (successCtx && repositoryNames.length > 0) {
+    new Chart(successCtx, {
+      type: 'bar',
+      data: {
+        labels: repositoryNames,
+        datasets: [{
+          label: 'Success Rate (%)',
+          data: successRates,
+          backgroundColor: successRates.map(rate =>
+            rate > 90 ? '#16a34a' : rate > 80 ? '#ea580c' : '#dc2626'
+          ),
+          borderColor: '#1f2937',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        ...chartDefaults,
+        plugins: {
+          ...chartDefaults.plugins,
+          legend: { display: false }
+        },
+        scales: {
+          ...chartDefaults.scales,
+          y: {
+            ...chartDefaults.scales.y,
+            min: 0,
+            max: 100
+          }
+        }
+      }
+    })
+  }
+
+  // 4. Duration Comparison
+  const durationCtx = document.getElementById('durationComparisonChart')
+  if (durationCtx && repositoryNames.length > 0) {
+    new Chart(durationCtx, {
+      type: 'bar',
+      data: {
+        labels: repositoryNames,
+        datasets: [{
+          label: 'Average Duration (minutes)',
+          data: avgDurations,
+          backgroundColor: '#3b82f6',
+          borderColor: '#1f2937',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        ...chartDefaults,
+        plugins: {
+          ...chartDefaults.plugins,
+          legend: { display: false }
+        }
+      }
+    })
+  }
+
+  console.log(`Multi-repository overview charts initialized for ${repositoryNames.length} repositories`)
+}).catch(error => {
+  console.error('Failed to load Chart.js:', error)
+})
+</script>

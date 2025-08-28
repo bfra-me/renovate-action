@@ -1,0 +1,166 @@
+---
+title: Multi-Repository Overview
+description: Aggregated analytics and performance comparison across multiple repositories using Renovate action
+sidebar:
+  order: 5
+---
+
+import MultiRepositoryOverview from '../../../components/MultiRepositoryOverview.astro'
+import DashboardFilters from '../../../components/DashboardFilters.astro'
+
+# Multi-Repository Overview Dashboard
+
+Get a comprehensive view of Renovate action performance across your entire repository portfolio. This dashboard aggregates metrics from multiple repositories to help identify trends, compare performance, and prioritize optimization efforts.
+
+<DashboardFilters
+  showRepositoryFilter={false}
+  showTimeRange={true}
+  showMetricSort={true}
+  showCategoryFilter={true}
+  categories={['Excellent', 'Good', 'Fair', 'Needs Attention']}
+/>
+
+<MultiRepositoryOverview />
+
+## Key Metrics Explained
+
+### Performance Categories
+- **Excellent**: Cache hit rate > 80% AND success rate > 90%
+- **Good**: Cache hit rate > 60% AND success rate > 80%
+- **Fair**: Cache hit rate > 40% AND success rate > 70%
+- **Needs Attention**: Below fair thresholds
+
+### Cache Hit Rate
+The percentage of cache operations that successfully retrieved data without needing to rebuild. Higher rates indicate:
+- Efficient cache key strategies
+- Stable dependency patterns
+- Good cache retention policies
+
+### Success Rate
+The percentage of Renovate action runs that completed successfully without critical failures:
+- **> 95%**: Excellent reliability
+- **> 90%**: Good reliability with minimal issues
+- **> 80%**: Acceptable but may need attention
+- **< 80%**: Requires investigation and improvement
+
+### Average Duration
+Time from action start to completion, including all steps:
+- **< 3 minutes**: Excellent performance
+- **3-5 minutes**: Good performance
+- **5-10 minutes**: Acceptable but could be optimized
+- **> 10 minutes**: Requires optimization
+
+## Optimization Strategies
+
+### For Repositories Needing Attention
+
+1. **Low Cache Hit Rates**
+   - Review cache key patterns
+   - Optimize dependency management
+   - Consider cache warming strategies
+   - Check for frequent cache invalidations
+
+2. **Low Success Rates**
+   - Analyze failure patterns from individual repository dashboards
+   - Review error logs for common issues
+   - Check authentication and permissions
+   - Verify configuration consistency
+
+3. **Long Durations**
+   - Optimize Docker image layers
+   - Reduce tool installation overhead
+   - Implement selective processing
+   - Consider workflow parallelization
+
+### Cross-Repository Best Practices
+
+#### Standardization
+- Use consistent configuration patterns across repositories
+- Implement organization-wide preset configurations
+- Standardize cache key strategies
+- Align dependency management approaches
+
+#### Monitoring
+- Set up alerts for repositories falling below thresholds
+- Regular performance reviews using this dashboard
+- Track improvement trends over time
+- Identify and replicate successful patterns
+
+#### Resource Optimization
+- Prioritize high-impact repositories for optimization
+- Share cache data between similar repositories
+- Implement efficient CI/CD resource allocation
+- Consider repository-specific optimization strategies
+
+## Performance Insights
+
+### Top Performers
+Learn from repositories with excellent performance:
+- Analyze their configuration patterns
+- Review their dependency management strategies
+- Study their cache utilization patterns
+- Consider replicating successful approaches
+
+### Improvement Opportunities
+Focus optimization efforts on:
+- Repositories with consistently low performance
+- High-impact repositories with moderate performance
+- Repositories with performance degradation trends
+- Critical repositories requiring high reliability
+
+### Trend Analysis
+Monitor changes over time:
+- Performance improvements after optimization
+- Impact of configuration changes
+- Seasonal or cyclical patterns
+- Correlation between repository activity and performance
+
+## Repository-Specific Actions
+
+### Drill-Down Navigation
+Click on repository names in the table to access detailed dashboards:
+- [Cache Performance](/dashboards/cache/) - Detailed cache analysis
+- [Docker Operations](/dashboards/docker/) - Container performance
+- [API Usage](/dashboards/api/) - GitHub API utilization
+- [Failure Analysis](/dashboards/failures/) - Error tracking and troubleshooting
+
+### Comparison Views
+Use this dashboard to:
+- Compare similar repositories
+- Identify outliers requiring attention
+- Track organization-wide performance trends
+- Make data-driven optimization decisions
+
+### Export and Reporting
+Performance data can be used for:
+- Executive dashboards and reporting
+- Development team performance reviews
+- Infrastructure planning and budgeting
+- Continuous improvement initiatives
+
+## Best Practices for Multi-Repository Management
+
+### Configuration Management
+- Maintain consistent Renovate configurations
+- Use centralized preset configurations
+- Implement configuration validation
+- Document repository-specific customizations
+
+### Performance Monitoring
+- Regular review of this overview dashboard
+- Set up automated alerts for performance degradation
+- Track improvement initiatives and their impact
+- Maintain performance baselines and targets
+
+### Resource Planning
+- Allocate optimization effort based on impact and opportunity
+- Consider infrastructure scaling based on aggregate metrics
+- Plan for peak usage periods and resource contention
+- Optimize shared resources like cache storage and API quotas
+
+## Related Documentation
+
+- [Cache Performance Analysis](/dashboards/cache/) - Deep dive into caching strategies
+- [Failure Analysis](/dashboards/failures/) - Troubleshooting guide for common issues
+- [Docker Performance](/dashboards/docker/) - Container optimization techniques
+- [API Usage Optimization](/dashboards/api/) - GitHub API best practices

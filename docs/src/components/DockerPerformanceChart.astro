@@ -413,6 +413,11 @@ function initializeDockerCharts() {
 async function loadDockerAnalytics() {
   try {
     const client = createAnalyticsClient()
+    if (!client) {
+      console.warn('Analytics client not available')
+      return
+    }
+
     const repositoryName = 'renovate-action' // This would be dynamic in a real implementation
     const data = await client.getAggregatedData(repositoryName)
 

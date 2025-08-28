@@ -52,11 +52,11 @@ export default defineConfig({
         {
           label: 'Analytics Dashboards',
           items: [
+            {label: 'Multi-Repository Overview', slug: 'dashboards/overview'},
             {label: 'Cache Performance', slug: 'dashboards/cache'},
             {label: 'Docker Operations', slug: 'dashboards/docker'},
-            // {label: 'API Usage', slug: 'dashboards/api'},
-            // {label: 'Failure Analysis', slug: 'dashboards/failures'},
-            // {label: 'Multi-Repository Overview', slug: 'dashboards/overview'},
+            {label: 'API Usage', slug: 'dashboards/api'},
+            {label: 'Failure Analysis', slug: 'dashboards/failures'},
           ],
         },
         // {

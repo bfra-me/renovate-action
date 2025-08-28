@@ -1,0 +1,112 @@
+---
+title: Failure Analysis Dashboard
+description: Categorized failure tracking and troubleshooting insights for Renovate action performance analysis
+sidebar:
+  order: 4
+---
+
+import FailureAnalyticsChart from '../../../components/FailureAnalyticsChart.astro'
+import DashboardFilters from '../../../components/DashboardFilters.astro'
+
+# Failure Analysis Dashboard
+
+The Failure Analysis Dashboard provides comprehensive insights into error patterns, failure categories, and troubleshooting guidance for your Renovate action deployments.
+
+<DashboardFilters
+  showRepositoryFilter={true}
+  showTimeRange={true}
+  showMetricSort={true}
+  showCategoryFilter={true}
+  repositories={['renovate-action', 'typescript-action', 'astro-starlight-docs']}
+  categories={['permissions', 'authentication', 'cache-corruption', 'network-issues', 'docker-issues', 'api-limits', 'timeout', 'configuration-error']}
+/>
+
+<FailureAnalyticsChart repositoryName="renovate-action" />
+
+## Understanding Failure Categories
+
+### Permissions
+- **Common Causes**: Insufficient GitHub App permissions, repository access restrictions, organization settings
+- **Resolution**: Review and update GitHub App permissions, verify repository access, check organization security settings
+- **Prevention**: Regular permission audits, principle of least privilege
+
+### Authentication
+- **Common Causes**: Invalid GitHub App credentials, expired tokens, authentication flow issues
+- **Resolution**: Verify GitHub App ID and private key, regenerate tokens if necessary, check authentication configuration
+- **Prevention**: Token rotation policies, credential validation checks
+
+### Cache Corruption
+- **Common Causes**: Invalid cache data, version mismatches, data integrity issues
+- **Resolution**: Clear corrupted cache entries, verify cache key patterns, check data serialization
+- **Prevention**: Cache validation, versioned cache keys, data integrity checks
+
+### Network Issues
+- **Common Causes**: Connectivity problems, DNS resolution failures, firewall restrictions
+- **Resolution**: Check network connectivity, verify DNS settings, review firewall rules
+- **Prevention**: Network monitoring, redundant connections, timeout configuration
+
+### Docker Issues
+- **Common Causes**: Permission denied errors, container access problems, runtime configuration issues
+- **Resolution**: Verify Docker permissions, check container access rights, review runtime settings
+- **Prevention**: Container security policies, resource allocation, monitoring
+
+### API Limits
+- **Common Causes**: Rate limit exceeded, quota restrictions, request pattern issues
+- **Resolution**: Implement backoff strategies, optimize API usage patterns, monitor rate limits
+- **Prevention**: Rate limit monitoring, request optimization, caching strategies
+
+## Failure Metrics Analysis
+
+### Severity Classification
+- **Critical Failures**: Non-recoverable errors requiring immediate intervention
+- **Recoverable Failures**: Errors that can be resolved through retry mechanisms or automated recovery
+
+### Component Impact
+Monitor which components are most affected by failures to prioritize improvements:
+- **API**: Authentication and rate limiting issues
+- **Cache**: Data corruption and access problems
+- **Docker**: Container and permission issues
+- **Config**: Configuration validation errors
+- **Action**: Workflow execution problems
+- **Network**: Connectivity and timeout issues
+
+### Timeline Analysis
+Track failure patterns over time to identify:
+- Peak failure periods
+- Recurring issue patterns
+- System stability trends
+- Recovery effectiveness
+
+## Troubleshooting Workflow
+
+1. **Identify Pattern**: Use category charts to understand failure distribution
+2. **Assess Severity**: Review critical vs recoverable failure ratios
+3. **Component Focus**: Target the most affected components first
+4. **Timeline Review**: Look for patterns in failure occurrence
+5. **Apply Solutions**: Follow category-specific troubleshooting guides
+6. **Monitor Recovery**: Track improvement in failure rates and recovery times
+
+## Best Practices
+
+### Proactive Monitoring
+- Set up alerts for critical failure thresholds
+- Monitor recovery rate trends
+- Track component-specific failure patterns
+
+### Incident Response
+- Categorize failures quickly using the dashboard
+- Follow systematic troubleshooting procedures
+- Document resolution patterns for future reference
+
+### Prevention Strategies
+- Regular health checks for all components
+- Proactive permission and credential management
+- Network and infrastructure monitoring
+- Cache management and validation procedures
+
+## Related Dashboards
+
+- [Cache Performance](/dashboards/cache/) - Cache hit rates and operation timing
+- [Docker Operations](/dashboards/docker/) - Container performance metrics
+- [API Usage](/dashboards/api/) - GitHub API usage and rate limiting
+- [Multi-Repository Overview](/dashboards/overview/) - Cross-repository analytics

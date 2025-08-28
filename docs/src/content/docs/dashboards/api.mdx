@@ -1,12 +1,24 @@
 ---
 title: GitHub API Usage Dashboard
+sidebar:
+  order: 3
 ---
 
 import ApiUsageChart from '../../../components/ApiUsageChart.astro';
+import DashboardFilters from '../../../components/DashboardFilters.astro';
 
 # GitHub API Usage Dashboard
 
 This dashboard visualizes GitHub API usage, rate limiting, and authentication metrics collected from the Renovate action analytics system.
+
+<DashboardFilters
+  showRepositoryFilter={true}
+  showTimeRange={true}
+  showMetricSort={true}
+  showCategoryFilter={true}
+  repositories={['renovate-action', 'typescript-action', 'astro-starlight-docs']}
+  categories={['github-app', 'pat', 'authenticated', 'unauthenticated']}
+/>
 
 <ApiUsageChart />
 
