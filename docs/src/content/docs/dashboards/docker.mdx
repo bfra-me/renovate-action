@@ -1,13 +1,25 @@
 ---
-title: 'Docker Performance Dashboard'
-description: 'Analytics dashboard for Docker container operations, tool installations, and performance metrics'
+title: Docker Performance Dashboard
+description: Monitor Docker operations, container performance, and tool installation metrics for Renovate actions
+sidebar:
+  order: 2
 ---
 
 import DockerPerformanceChart from '../../../components/DockerPerformanceChart.astro'
+import DashboardFilters from '../../../components/DashboardFilters.astro'
 
 # Docker Performance Dashboard
 
-Monitor and analyze Docker container performance across your Renovate actions. This dashboard provides insights into image pull times, container execution performance, tool installation metrics, and operation success rates.
+Analyze Docker operations and container performance to optimize your Renovate action execution times and resource utilization.
+
+<DashboardFilters
+  showRepositoryFilter={true}
+  showTimeRange={true}
+  showMetricSort={true}
+  showCategoryFilter={true}
+  repositories={['renovate-action', 'typescript-action', 'astro-starlight-docs']}
+  categories={['pull', 'run', 'exec', 'tool-install']}
+/>
 
 ## Overview
 

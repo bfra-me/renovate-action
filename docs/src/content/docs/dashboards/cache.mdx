@@ -4,10 +4,19 @@ description: 'Analytics dashboard for cache performance metrics, hit rates, and 
 ---
 
 import CachePerformanceChart from '../../../components/CachePerformanceChart.astro'
+import DashboardFilters from '../../../components/DashboardFilters.astro'
 
 # Cache Performance Dashboard
 
 Monitor and analyze cache performance across your Renovate actions. This dashboard provides insights into cache hit rates, operation timings, and storage trends to help optimize your workflows.
+
+<DashboardFilters
+  showRepositoryFilter={true}
+  showTimeRange={true}
+  showMetricSort={true}
+  showCategoryFilter={false}
+  repositories={['renovate-action', 'typescript-action', 'astro-starlight-docs']}
+/>
 
 ## Overview
 
