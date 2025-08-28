@@ -1,0 +1,612 @@
+---
+/**
+ * Dashboard Filters Component
+ * Provides filtering, sorting, and time-range selection for analytics dashboards
+ */
+
+interface Props {
+  showRepositoryFilter?: boolean
+  showTimeRange?: boolean
+  showMetricSort?: boolean
+  showCategoryFilter?: boolean
+  repositories?: string[]
+  categories?: string[]
+  className?: string
+}
+
+const {
+  showRepositoryFilter = false,
+  showTimeRange = true,
+  showMetricSort = true,
+  showCategoryFilter = false,
+  repositories = [],
+  categories = [],
+  className = ''
+} = Astro.props
+
+// Default time ranges
+const timeRanges = [
+  { value: '24h', label: 'Last 24 Hours' },
+  { value: '7d', label: 'Last 7 Days' },
+  { value: '30d', label: 'Last 30 Days' },
+  { value: '90d', label: 'Last 90 Days' },
+  { value: 'custom', label: 'Custom Range' }
+];
+
+// Default sort options
+const sortOptions = [
+  { value: 'timestamp-desc', label: 'Latest First' },
+  { value: 'timestamp-asc', label: 'Oldest First' },
+  { value: 'performance-desc', label: 'Best Performance' },
+  { value: 'performance-asc', label: 'Worst Performance' },
+  { value: 'failures-desc', label: 'Most Failures' },
+  { value: 'failures-asc', label: 'Least Failures' },
+  { value: 'duration-desc', label: 'Longest Duration' },
+  { value: 'duration-asc', label: 'Shortest Duration' }
+];
+---
+
+<div class={`dashboard-filters ${className}`}>
+  <div class="filters-header">
+    <h4>Filters & Options</h4>
+    <button id="resetFilters" class="reset-button">Reset All</button>
+  </div>
+
+  <div class="filters-grid">
+    {showTimeRange && (
+      <div class="filter-group">
+        <label for="timeRange">Time Range</label>
+        <select id="timeRange" name="timeRange">
+          {timeRanges.map(range => (
+            <option value={range.value} selected={range.value === '7d'}>
+              {range.label}
+            </option>
+          ))}
+        </select>
+        <div id="customTimeRange" class="custom-time-range" style="display: none;">
+          <input type="date" id="startDate" name="startDate" />
+          <span>to</span>
+          <input type="date" id="endDate" name="endDate" />
+        </div>
+      </div>
+    )}
+
+    {showRepositoryFilter && repositories.length > 0 && (
+      <div class="filter-group">
+        <label for="repositoryFilter">Repository</label>
+        <select id="repositoryFilter" name="repositoryFilter">
+          <option value="">All Repositories</option>
+          {repositories.map(repo => (
+            <option value={repo}>{repo}</option>
+          ))}
+        </select>
+      </div>
+    )}
+
+    {showCategoryFilter && categories.length > 0 && (
+      <div class="filter-group">
+        <label for="categoryFilter">Category</label>
+        <select id="categoryFilter" name="categoryFilter">
+          <option value="">All Categories</option>
+          {categories.map(category => (
+            <option value={category}>{category}</option>
+          ))}
+        </select>
+      </div>
+    )}
+
+    {showMetricSort && (
+      <div class="filter-group">
+        <label for="sortBy">Sort By</label>
+        <select id="sortBy" name="sortBy">
+          {sortOptions.map(option => (
+            <option value={option.value} selected={option.value === 'timestamp-desc'}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    )}
+
+    <div class="filter-group">
+      <label for="searchFilter">Search</label>
+      <input
+        type="text"
+        id="searchFilter"
+        name="searchFilter"
+        placeholder="Search repositories, metrics..."
+      />
+    </div>
+
+    <div class="filter-group">
+      <label for="refreshInterval">Auto Refresh</label>
+      <select id="refreshInterval" name="refreshInterval">
+        <option value="0">Disabled</option>
+        <option value="30">30 seconds</option>
+        <option value="60">1 minute</option>
+        <option value="300">5 minutes</option>
+        <option value="900">15 minutes</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="filter-actions">
+    <button id="applyFilters" class="apply-button">Apply Filters</button>
+    <button id="exportData" class="export-button">Export Data</button>
+    <div class="filter-status" id="filterStatus">
+      <span class="status-text">Ready</span>
+    </div>
+  </div>
+
+  <!-- Quick Filters -->
+  <div class="quick-filters">
+    <span class="quick-filters-label">Quick Filters:</span>
+    <button class="quick-filter" data-filter="performance-issues">Performance Issues</button>
+    <button class="quick-filter" data-filter="recent-failures">Recent Failures</button>
+    <button class="quick-filter" data-filter="cache-misses">Cache Misses</button>
+    <button class="quick-filter" data-filter="long-duration">Long Duration</button>
+  </div>
+</div>
+
+<style>
+.dashboard-filters {
+  background: var(--sl-color-bg-sidebar);
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.filters-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.filters-header h4 {
+  margin: 0;
+  color: var(--sl-color-white);
+  font-size: 1.1rem;
+}
+
+.reset-button {
+  background: var(--sl-color-gray-6);
+  color: var(--sl-color-white);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reset-button:hover {
+  background: var(--sl-color-gray-5);
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-group label {
+  color: var(--sl-color-gray-2);
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+
+.filter-group select,
+.filter-group input {
+  background: var(--sl-color-bg-nav);
+  color: var(--sl-color-white);
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+  outline: none;
+  border-color: var(--sl-color-accent);
+}
+
+.custom-time-range {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.custom-time-range span {
+  color: var(--sl-color-gray-2);
+  font-size: 0.85rem;
+}
+
+.filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.apply-button,
+.export-button {
+  background: var(--sl-color-accent);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.export-button {
+  background: var(--sl-color-gray-6);
+}
+
+.apply-button:hover {
+  background: var(--sl-color-accent-high);
+}
+
+.export-button:hover {
+  background: var(--sl-color-gray-5);
+}
+
+.filter-status {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.status-text {
+  color: var(--sl-color-gray-2);
+  font-size: 0.85rem;
+}
+
+.quick-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  border-top: 1px solid var(--sl-color-gray-6);
+}
+
+.quick-filters-label {
+  color: var(--sl-color-gray-2);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.quick-filter {
+  background: var(--sl-color-bg-nav);
+  color: var(--sl-color-gray-2);
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 20px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quick-filter:hover,
+.quick-filter.active {
+  background: var(--sl-color-accent);
+  color: white;
+  border-color: var(--sl-color-accent);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-status {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+
+  .quick-filters {
+    justify-content: center;
+  }
+}
+</style>
+
+<script>
+// Dashboard Filters Functionality
+class DashboardFilters {
+  private filters: Record<string, any> = {}
+  private refreshInterval: number = 0
+  private refreshTimer: NodeJS.Timeout | null = null
+
+  constructor() {
+    this.initializeElements()
+    this.bindEvents()
+    this.loadSavedFilters()
+  }
+
+  private initializeElements() {
+    // Set today's date as default for date inputs
+    const today = new Date().toISOString().split('T')[0]
+    const endDateInput = document.getElementById('endDate') as HTMLInputElement
+    const startDateInput = document.getElementById('startDate') as HTMLInputElement
+
+    if (endDateInput) endDateInput.value = today
+    if (startDateInput) {
+      const weekAgo = new Date()
+      weekAgo.setDate(weekAgo.getDate() - 7)
+      startDateInput.value = weekAgo.toISOString().split('T')[0]
+    }
+  }
+
+  private bindEvents() {
+    // Time range selector
+    const timeRangeSelect = document.getElementById('timeRange') as HTMLSelectElement
+    if (timeRangeSelect) {
+      timeRangeSelect.addEventListener('change', (e) => {
+        const customRange = document.getElementById('customTimeRange')
+        if (customRange) {
+          customRange.style.display = (e.target as HTMLSelectElement).value === 'custom' ? 'flex' : 'none'
+        }
+      })
+    }
+
+    // Apply filters button
+    const applyButton = document.getElementById('applyFilters')
+    if (applyButton) {
+      applyButton.addEventListener('click', () => this.applyFilters())
+    }
+
+    // Reset filters button
+    const resetButton = document.getElementById('resetFilters')
+    if (resetButton) {
+      resetButton.addEventListener('click', () => this.resetFilters())
+    }
+
+    // Export data button
+    const exportButton = document.getElementById('exportData')
+    if (exportButton) {
+      exportButton.addEventListener('click', () => this.exportData())
+    }
+
+    // Auto refresh
+    const refreshSelect = document.getElementById('refreshInterval') as HTMLSelectElement
+    if (refreshSelect) {
+      refreshSelect.addEventListener('change', (e) => {
+        this.setRefreshInterval(parseInt((e.target as HTMLSelectElement).value))
+      })
+    }
+
+    // Quick filters
+    document.querySelectorAll('.quick-filter').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const filter = (e.target as HTMLElement).dataset.filter
+        if (filter) this.applyQuickFilter(filter)
+      })
+    })
+
+    // Search filter with debounce
+    const searchInput = document.getElementById('searchFilter') as HTMLInputElement
+    if (searchInput) {
+      let debounceTimer: NodeJS.Timeout
+      searchInput.addEventListener('input', () => {
+        clearTimeout(debounceTimer)
+        debounceTimer = setTimeout(() => this.applyFilters(), 300)
+      })
+    }
+  }
+
+  private applyFilters() {
+    this.updateFilterStatus('Applying filters...')
+
+    // Collect all filter values
+    this.filters = {
+      timeRange: this.getSelectValue('timeRange'),
+      repository: this.getSelectValue('repositoryFilter'),
+      category: this.getSelectValue('categoryFilter'),
+      sortBy: this.getSelectValue('sortBy'),
+      search: this.getInputValue('searchFilter'),
+      startDate: this.getInputValue('startDate'),
+      endDate: this.getInputValue('endDate')
+    }
+
+    // Save filters to localStorage
+    localStorage.setItem('dashboardFilters', JSON.stringify(this.filters))
+
+    // Emit custom event for dashboard components to listen to
+    const event = new CustomEvent('filtersChanged', {
+      detail: this.filters
+    })
+    document.dispatchEvent(event)
+
+    this.updateFilterStatus('Filters applied')
+    setTimeout(() => this.updateFilterStatus('Ready'), 2000)
+  }
+
+  private resetFilters() {
+    // Reset all form elements
+    document.querySelectorAll('select, input').forEach(element => {
+      if (element instanceof HTMLSelectElement) {
+        element.selectedIndex = 0
+      } else if (element instanceof HTMLInputElement) {
+        element.value = ''
+      }
+    })
+
+    // Reset time range
+    const timeRangeSelect = document.getElementById('timeRange') as HTMLSelectElement
+    if (timeRangeSelect) {
+      timeRangeSelect.value = '7d'
+    }
+
+    // Hide custom date range
+    const customRange = document.getElementById('customTimeRange')
+    if (customRange) {
+      customRange.style.display = 'none'
+    }
+
+    // Clear active quick filters
+    document.querySelectorAll('.quick-filter.active').forEach(button => {
+      button.classList.remove('active')
+    })
+
+    // Clear saved filters
+    localStorage.removeItem('dashboardFilters')
+    this.filters = {}
+
+    // Emit reset event
+    const event = new CustomEvent('filtersReset')
+    document.dispatchEvent(event)
+
+    this.updateFilterStatus('Filters reset')
+    setTimeout(() => this.updateFilterStatus('Ready'), 2000)
+  }
+
+  private applyQuickFilter(filterType: string) {
+    // Toggle active state
+    const button = document.querySelector(`[data-filter="${filterType}"]`)
+    if (button) {
+      button.classList.toggle('active')
+    }
+
+    // Apply specific quick filter logic
+    switch (filterType) {
+      case 'performance-issues':
+        this.setSelectValue('sortBy', 'performance-asc')
+        break
+      case 'recent-failures':
+        this.setSelectValue('timeRange', '24h')
+        this.setSelectValue('sortBy', 'failures-desc')
+        break
+      case 'cache-misses':
+        this.setSelectValue('sortBy', 'performance-asc')
+        break
+      case 'long-duration':
+        this.setSelectValue('sortBy', 'duration-desc')
+        break
+    }
+
+    this.applyFilters()
+  }
+
+  private exportData() {
+    this.updateFilterStatus('Exporting data...')
+
+    // Emit export event for dashboard components
+    const event = new CustomEvent('exportData', {
+      detail: { filters: this.filters, format: 'csv' }
+    })
+    document.dispatchEvent(event)
+
+    this.updateFilterStatus('Export complete')
+    setTimeout(() => this.updateFilterStatus('Ready'), 2000)
+  }
+
+  private setRefreshInterval(seconds: number) {
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer)
+      this.refreshTimer = null
+    }
+
+    this.refreshInterval = seconds
+    if (seconds > 0) {
+      this.refreshTimer = setInterval(() => {
+        this.applyFilters()
+      }, seconds * 1000)
+
+      this.updateFilterStatus(`Auto-refresh: ${seconds}s`)
+    } else {
+      this.updateFilterStatus('Ready')
+    }
+  }
+
+  private loadSavedFilters() {
+    const saved = localStorage.getItem('dashboardFilters')
+    if (saved) {
+      try {
+        this.filters = JSON.parse(saved)
+
+        // Apply saved filters to form elements
+        Object.entries(this.filters).forEach(([key, value]) => {
+          if (value) {
+            this.setSelectValue(key, value as string)
+            this.setInputValue(key, value as string)
+          }
+        })
+
+        // Handle custom time range
+        if (this.filters.timeRange === 'custom') {
+          const customRange = document.getElementById('customTimeRange')
+          if (customRange) {
+            customRange.style.display = 'flex'
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to load saved filters:', e)
+      }
+    }
+  }
+
+  private getSelectValue(id: string): string {
+    const element = document.getElementById(id) as HTMLSelectElement
+    return element ? element.value : ''
+  }
+
+  private getInputValue(id: string): string {
+    const element = document.getElementById(id) as HTMLInputElement
+    return element ? element.value : ''
+  }
+
+  private setSelectValue(id: string, value: string) {
+    const element = document.getElementById(id) as HTMLSelectElement
+    if (element) {
+      element.value = value
+    }
+  }
+
+  private setInputValue(id: string, value: string) {
+    const element = document.getElementById(id) as HTMLInputElement
+    if (element) {
+      element.value = value
+    }
+  }
+
+  private updateFilterStatus(message: string) {
+    const statusElement = document.querySelector('.status-text')
+    if (statusElement) {
+      statusElement.textContent = message
+    }
+  }
+}
+
+// Initialize filters when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  new DashboardFilters()
+})
+</script>
