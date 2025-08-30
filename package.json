@@ -24,7 +24,8 @@
   "scripts": {
     "bootstrap": "pnpm install --prefer-offline --loglevel warn",
     "build": "tsup && pnpm -r --stream run build",
-    "check": "pnpm run check-types && pnpm run lint",
+    "check": "pnpm run check-types && pnpm run lint && pnpm run check-docs",
+    "check-docs": "pnpm --filter docs run check",
     "check-types": "tsc --noEmit",
     "dev": "tsup --watch",
     "fix": "eslint --fix",
@@ -39,7 +40,7 @@
     "*.{ts,js,jsx,tsx,css,md,json,yaml,yml}": [
       "pnpm run fix"
     ],
-    "package.json": [
+    "**/package.json": [
       "pnpx sort-package-json"
     ]
   },

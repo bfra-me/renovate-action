@@ -23,9 +23,13 @@ defaults:
 
 jobs:
   setup:
+    env:
+      DOCS_BUILD_PATH: ./docs
     name: Setup
     outputs:
       dist-changed: ${{ contains(steps.filter.outputs.changes, 'dist-changed') }}
+      docs-build-path: ${{ env.DOCS_BUILD_PATH }}
+      docs-changed: ${{ contains(steps.filter.outputs.changes, 'docs-changed') }}
       node-version: ${{ steps.set-node-version.outputs.node-version }}
       should-check: ${{ contains(steps.filter.outputs.changes, 'should-check') }}
       src-changed: ${{ contains(steps.filter.outputs.changes, 'src-changed') }}
@@ -38,11 +42,12 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - id: set-node-version
+        name: Setup Node.js at version from package.json
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           cache: pnpm
           node-version-file: package.json
-      - run: pnpm bootstrap --frozen-lockfile
+      - run: pnpm bootstrap
       - id: filter
         uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
         with:
@@ -62,43 +67,20 @@ jobs:
         with:
           cache: pnpm
           node-version: ${{ needs.setup.outputs.node-version }}
-      - run: pnpm bootstrap
-      - run: pnpm build
-      - run: pnpm check
-
-  build:
-    if: ${{ github.event_name == 'push' || needs.setup.outputs.src-changed == 'true' }}
-    name: Build
-    needs: [setup]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      - name: Setup pnpm
-        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
-      - name: Setup Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          cache: pnpm
-          node-version: ${{ needs.setup.outputs.node-version }}
       - name: Install dependencies
-        run: pnpm bootstrap --frozen-lockfile
-      - name: Rebuild the dist/ directory
+        run: pnpm bootstrap
+      - name: Build
         run: pnpm build
-      - if: ${{ needs.setup.outputs.dist-changed == 'true' }}
-        name: Compare the expected and actual dist/ directories
+      - name: Check
+        run: pnpm check
+      - name: Test docs preview
         run: |
-          if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
-            echo "Detected uncommitted changes after build.  See status below:"
-            git diff --text
-            exit 1
-          fi
-        id: diff
-      # If index.js was different than expected, upload the expected version as an artifact
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: ${{ failure() && steps.diff.conclusion == 'failure' }}
-        with:
-          name: dist
-          path: dist/
+          pnpm run preview &
+          PREVIEW_PID=$!
+          sleep 5
+          curl -f http://localhost:4321/renovate-action || exit 1
+          kill $PREVIEW_PID
+        working-directory: ${{ needs.setup.outputs.docs-build-path }}
 
   test:
     if: ${{ github.event_name == 'push' || needs.setup.outputs.src-changed == 'true' }}
@@ -115,7 +97,7 @@ jobs:
           cache: pnpm
           node-version: ${{ needs.setup.outputs.node-version }}
       - name: Install dependencies
-        run: pnpm bootstrap --frozen-lockfile
+        run: pnpm bootstrap
       - run: pnpm test
       # Don't run a self test if Renovate configuration has changed as it will be run in the Renovate job
       - if: github.repository_owner == 'bfra-me' && github.ref_name != github.event.repository.default_branch && needs.setup.outputs.renovate-changed != 'true'
@@ -163,12 +145,99 @@ jobs:
           enable-custom-templates: true
           print-config: true
 
+  build:
+    if: ${{ github.event_name == 'push' || needs.setup.outputs.src-changed == 'true' }}
+    name: Build
+    needs: [setup, check, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          cache: pnpm
+          node-version: ${{ needs.setup.outputs.node-version }}
+      - name: Install dependencies
+        run: pnpm bootstrap
+      - name: Rebuild the dist/ directory
+        run: pnpm build
+      - if: ${{ needs.setup.outputs.dist-changed == 'true' }}
+        name: Compare the expected and actual dist/ directories
+        run: |
+          if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
+            echo "Detected uncommitted changes after build.  See status below:"
+            git diff --text
+            exit 1
+          fi
+        id: diff
+      # If index.js was different than expected, upload the expected version as an artifact
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: ${{ failure() && steps.diff.conclusion == 'failure' }}
+        with:
+          name: dist
+          path: dist/
+
+  build-analytics-dashboard:
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.setup.outputs.docs-changed == 'true' }}
+    name: Build Analytics Dashboard
+    needs: [setup, check]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          cache: pnpm
+          node-version: ${{ needs.setup.outputs.node-version }}
+      - name: Install dependencies
+        run: pnpm bootstrap
+        working-directory: ${{ needs.setup.outputs.docs-build-path }}
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
+      - name: Build with Astro
+        run: |
+          pnpm run build \
+            --site "${{ steps.pages.outputs.origin }}" \
+            --base "${{ steps.pages.outputs.base_path }}"
+        working-directory: ${{ needs.setup.outputs.docs-build-path }}
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
+        with:
+          path: ${{ needs.setup.outputs.docs-build-path }}/dist
+
+  deploy-pages:
+    name: Deploy to GitHub Pages
+    if: github.ref == 'refs/heads/main'
+    concurrency:
+      group: deploy
+      cancel-in-progress: true
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy-to-pages.outputs.page_url }}
+    needs: [build-analytics-dashboard]
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
+      - name: Deploy to GitHub Pages
+        id: deploy-to-pages
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
+
   release:
     env:
       DRY_RUN: ${{ github.ref_name != github.event.repository.default_branch }}
       RELEASE_BRANCH: release
     name: Release
-    needs: [setup, check, test, build]
+    needs: [setup, build]
     outputs:
       commit: ${{ steps.merge.outputs.commit }}
       published: ${{ env.DRY_RUN != 'true' && steps.semantic-release.outputs.new-release-published }}
