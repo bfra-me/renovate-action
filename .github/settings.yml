@@ -25,7 +25,19 @@ branches:
       required_pull_request_reviews: null
       required_status_checks:
         strict: true
-        contexts: [Build, Check, Release, Test, Setup, Renovate, Analyze, CodeQL, Review Dependencies]
+        contexts:
+          - Build
+          - Build Analytics Dashboard
+          - Check
+          - Deploy to GitHub Pages
+          - Release
+          - Test
+          - Setup
+          - Renovate
+          - Analyze
+          - CodeQL
+          - Review Dependencies
+
       restrictions: null
 
   - name: release
