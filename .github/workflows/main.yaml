@@ -195,16 +195,14 @@ jobs:
           node-version: ${{ needs.setup.outputs.node-version }}
       - name: Install dependencies
         run: pnpm bootstrap
-        working-directory: ${{ needs.setup.outputs.docs-build-path }}
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
       - name: Build with Astro
         run: |
-          pnpm run build \
+          pnpm --filter ${{ needs.setup.outputs.docs-build-path }} run build \
             --site "${{ steps.pages.outputs.origin }}" \
             --base "${{ steps.pages.outputs.base_path }}"
-        working-directory: ${{ needs.setup.outputs.docs-build-path }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
