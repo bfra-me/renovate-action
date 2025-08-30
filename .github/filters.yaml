@@ -8,6 +8,8 @@ config: &config
   - '**.yml'
 dist-changed:
   - added|modified: 'dist/**'
+docs-changed: &docs-changed
+  - docs/**
 src-changed: &src-changed
   - .github/workflows/**
   - docker/**
@@ -24,4 +26,5 @@ renovate-changed:
   - action.yaml
 should-check:
   - added|modified: *config
+  - added|modified: *docs-changed
   - added|modified: *src-changed
