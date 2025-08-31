@@ -3,7 +3,7 @@
  * Validates the complete analytics dashboard functionality and GitHub Pages deployment.
  */
 
-import {beforeEach, describe, expect, test, vi} from 'vitest'
+import {beforeEach, describe, expect, test} from 'vitest'
 import {exec} from 'node:child_process'
 import {promisify} from 'node:util'
 import {existsSync} from 'node:fs'
@@ -257,7 +257,15 @@ describe('End-to-End Astro Starlight Testing', () => {
   describe('GitHub Pages Deployment Simulation', () => {
     test('should validate deployment workflow exists', async () => {
       // Check if deployment workflow exists (should have at least one workflow)
-      const workflowsDir = join('/Users/mrbrown/src/github.com/bfra-me/renovate-action', '.github', 'workflows')
+      // Find project root - the test changes cwd to docs, so go up one level
+      let projectRoot = process.cwd()
+
+      // If we're in the docs directory, go up to project root
+      if (projectRoot.endsWith('/docs')) {
+        projectRoot = join(projectRoot, '..')
+      }
+
+      const workflowsDir = join(projectRoot, '.github', 'workflows')
       expect(existsSync(workflowsDir)).toBe(true)
 
       // Should have workflow files
