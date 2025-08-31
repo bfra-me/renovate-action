@@ -13,12 +13,12 @@ docs-changed: &docs-changed
 src-changed: &src-changed
   - .github/workflows/**
   - docker/**
-  - src/**
+  - '**/src/**'
   - action.yaml
-  - package.json
+  - '**/package.json'
   - pnpm-lock.yaml
   - pnpm-workspace.yaml
-  - tsconfig.json
+  - '**/tsconfig.json'
 renovate-changed:
   - .github/workflows/renovate.yaml
   - .github/renovate.json5
