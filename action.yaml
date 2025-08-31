@@ -171,6 +171,14 @@ inputs:
     description: Enable custom PR and issue templates with @bfra-me branding and CI integration.
     required: false
     default: 'false'
+  enable-analytics:
+    description: Enable analytics data collection for performance monitoring and reporting.
+    required: false
+    default: 'false'
+  analytics-collection-level:
+    description: Set the analytics collection level (basic, detailed, debug).
+    required: false
+    default: basic
 
 outputs:
   docker-image:
