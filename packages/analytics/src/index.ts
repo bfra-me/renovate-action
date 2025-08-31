@@ -9,6 +9,9 @@ export * from './aggregation.js'
 // GitHub Actions Cache integration
 export * from './cache.js'
 
+// Metrics collectors
+export * from './collectors/index.js'
+
 // Configuration system
 export * from './config.js'
 
