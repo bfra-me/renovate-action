@@ -1,11 +1,11 @@
 {
   "extends": "@bfra.me/tsconfig",
   "compilerOptions": {
+    "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "noEmit": true,
-    "target": "ESNext"
+    "noEmit": true
   },
-  "files": [],
-  "references": [{"path": "./docs"}, {"path": "./packages/analytics"}, {"path": "./tsconfig.eslint.json"}]
+  "references": [{"path": "./docs"}, {"path": "./packages/analytics"}, {"path": "./tsconfig.eslint.json"}],
+  "files": []
 }
