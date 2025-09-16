@@ -42,9 +42,9 @@
       description: 'Set the semantic commit type based on the type of update of Renovate dependencies.',
       matchPackageNames: [
         'ghcr.io/renovatebot/renovate',
-        'renovatebot/renovate',
-        'renovatebot/github-action',
         'renovate',
+        'renovatebot/github-action',
+        'renovatebot/renovate',
       ],
       commitBody: '{{#if hasReleaseNotes}}{{{body}}}{{/if}}',
       commitMessageTopic: '{{{depName}}}',
@@ -64,9 +64,9 @@
       description: 'Group major version updates of Renovate dependencies.',
       matchPackageNames: [
         'ghcr.io/renovatebot/renovate',
-        'renovatebot/renovate',
-        'renovatebot/github-action',
         'renovate',
+        'renovatebot/github-action',
+        'renovatebot/renovate',
       ],
       matchUpdateTypes: ['major'],
       dependencyDashboardApproval: false,
