@@ -24,60 +24,14 @@ on:
   workflow_run:
     branches: [main]
     types: [completed]
-    workflows: [Main, Update Repo Settings]
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
-
-permissions:
-  contents: read
+    workflows: [Main]
 
 jobs:
   renovate:
-    if: >-
-      (github.event_name != 'issues' && github.event_name != 'pull_request') ||
-      (github.event_name != 'issues' && contains(github.event.*.labels.*.name, 'renovate')) ||
-      (
-        contains(join(github.event.*.body, ''), '- [x] <!-- approve-all-pending-prs -->') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- approve-branch=') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- approvePr-branch=') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- create-all-rate-limited-prs -->') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- create-config-migration-pr -->') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- manual job -->') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- other-branch=') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- rebase-all-open-prs -->') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- rebase-branch=') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- rebase-check -->') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- recreate-branch=') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- retry-branch=') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- unlimit-branch=') ||
-        contains(join(github.event.*.body, ''), '- [x] <!-- unschedule-branch=')
-      )
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     name: Renovate
-    env:
-      WORKFLOW_LOG_LEVEL: debug
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      - id: filter
-        if: github.event_name == 'push'
-        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
-        with:
-          filters: .github/filters.yaml
-      - env:
-          dry_run: ${{ github.event_name == 'push' && github.ref != 'refs/heads/main' }}
-        if: >-
-          (github.event.action == 'edited' && !contains(github.actor, '[bot]')) ||
-          !contains('["push", "workflow_run"]', github.event_name) || github.event.workflow_run.conclusion == 'success' || contains(steps.filter.outputs.changes, 'renovate-changed')
-        name: Renovate
-        uses: ./
-        with:
-          branch: ${{ ( github.ref_name != github.event.repository.default_branch || env.dry_run == 'true' ) && github.ref_name || '' }}
-          cache: true
-          dry-run: ${{ env.dry_run }}
-          enable-custom-templates: true
-          log-level: ${{ inputs.log-level || github.event_name == 'pull_request' && 'debug' || env.WORKFLOW_LOG_LEVEL }}
-          print-config: ${{ inputs.print-config }}
-          renovate-app-id: ${{ secrets.APPLICATION_ID }}
-          renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+    secrets: inherit
+    uses: bfra-me/.github/.github/workflows/renovate.yaml@ac81952ed51e4ca62da5c4b84b15c28a1a6c169c # v4.2.5
+    with:
+      log-level: ${{ inputs.log-level || (github.event_name == 'pull_request' || github.ref_name != github.event.repository.default_branch) && 'debug' || 'info' }}
+      print-config: ${{ inputs.print-config || false }}
