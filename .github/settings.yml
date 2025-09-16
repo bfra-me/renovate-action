@@ -33,7 +33,7 @@ branches:
           - Release
           - Test
           - Setup
-          - Renovate
+          - Renovate / Renovate
           - Analyze
           - CodeQL
           - Review Dependencies
