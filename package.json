@@ -71,7 +71,7 @@
     "semantic-release-export-data": "1.1.1",
     "simple-git-hooks": "2.13.1",
     "tsup": "8.5.0",
-    "typescript": "5.9.2",
+    "typescript": "5.9.3",
     "vitest": "3.2.4"
   },
   "packageManager": "pnpm@10.17.1",
