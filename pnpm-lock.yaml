@@ -73,8 +73,8 @@ importers:
         specifier: 24.2.9
         version: 24.2.9(typescript@5.9.3)
       semantic-release-export-data:
-        specifier: 1.1.1
-        version: 1.1.1(semantic-release@24.2.9(typescript@5.9.3))
+        specifier: 1.2.0
+        version: 1.2.0(semantic-release@24.2.9(typescript@5.9.3))
       simple-git-hooks:
         specifier: 2.13.1
         version: 2.13.1
@@ -3863,10 +3863,10 @@ packages:
     resolution: {integrity: sha512-3A6sD0WYP7+QrjbfNA2FN3FsOaGGFoekCVgTyypy53gPxhbkCIjtO6YWgdrfM+n/8sI8JeXZOIxsHjMTNxQ4nQ==}
     engines: {node: ^14.0.0 || >=16.0.0}
 
-  semantic-release-export-data@1.1.1:
-    resolution: {integrity: sha512-cjhc6g7Vl4tRRD6eA593EyMiQaOvazsziabdzPqsf0OAKoIQSL2eynS2jaJhbdxiu4msZreZ+XcU5FU9FAZbeA==}
+  semantic-release-export-data@1.2.0:
+    resolution: {integrity: sha512-/9+yQWFieiN0KB7YA0TTCXHml7d2tlNLkprLjUOKf8XDQlJ6ZK9gkw0dJJ/8/kBzeuUPq8aZR2n0rYmuYCz7Xg==}
     peerDependencies:
-      semantic-release: '>=18'
+      semantic-release: '>=20'
 
   semantic-release@24.2.9:
     resolution: {integrity: sha512-phCkJ6pjDi9ANdhuF5ElS10GGdAKY6R1Pvt9lT3SFhOwM4T7QZE7MLpBDbNruUx/Q3gFD92/UOFringGipRqZA==}
@@ -9275,7 +9275,7 @@ snapshots:
       refa: 0.12.1
       regexp-ast-analysis: 0.7.1
 
-  semantic-release-export-data@1.1.1(semantic-release@24.2.9(typescript@5.9.3)):
+  semantic-release-export-data@1.2.0(semantic-release@24.2.9(typescript@5.9.3)):
     dependencies:
       semantic-release: 24.2.9(typescript@5.9.3)
 
