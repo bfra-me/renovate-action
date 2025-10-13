@@ -101,10 +101,10 @@ importers:
         version: 5.14.4(@azure/storage-blob@12.28.0)(@types/node@22.18.8)(jiti@2.1.2)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1)
       chart.js:
         specifier: ^4.4.8
-        version: 4.5.0
+        version: 4.5.1
       chartjs-adapter-date-fns:
         specifier: ^3.0.0
-        version: 3.0.0(chart.js@4.5.0)(date-fns@4.1.0)
+        version: 3.0.0(chart.js@4.5.1)(date-fns@4.1.0)
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -1640,8 +1640,8 @@ packages:
   character-reference-invalid@2.0.1:
     resolution: {integrity: sha512-iBZ4F4wRbyORVsu0jPV7gXkOsGYjGHPmAyv+HiHG8gi5PtC9KI2j1+v8/tlibRvjoWX027ypmG/n0HtO5t7unw==}
 
-  chart.js@4.5.0:
-    resolution: {integrity: sha512-aYeC/jDgSEx8SHWZvANYMioYMZ2KX02W6f6uVfyteuCGcadDLcYVHdfdygsTQkQ4TKn5lghoojAsPj5pu0SnvQ==}
+  chart.js@4.5.1:
+    resolution: {integrity: sha512-GIjfiT9dbmHRiYi6Nl2yFCq7kkwdkp1W/lp2J99rX0yo9tgJGn3lKQATztIjb5tVtevcBtIdICNWqlq5+E8/Pw==}
     engines: {pnpm: '>=8'}
 
   chartjs-adapter-date-fns@3.0.0:
@@ -6591,13 +6591,13 @@ snapshots:
 
   character-reference-invalid@2.0.1: {}
 
-  chart.js@4.5.0:
+  chart.js@4.5.1:
     dependencies:
       '@kurkle/color': 0.3.4
 
-  chartjs-adapter-date-fns@3.0.0(chart.js@4.5.0)(date-fns@4.1.0):
+  chartjs-adapter-date-fns@3.0.0(chart.js@4.5.1)(date-fns@4.1.0):
     dependencies:
-      chart.js: 4.5.0
+      chart.js: 4.5.1
       date-fns: 4.1.0
 
   check-error@2.1.1: {}
