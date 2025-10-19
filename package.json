@@ -61,7 +61,7 @@
     "eslint": "9.38.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-no-only-tests": "3.3.0",
-    "eslint-plugin-node-dependencies": "1.1.2",
+    "eslint-plugin-node-dependencies": "1.2.0",
     "eslint-plugin-prettier": "5.5.4",
     "jiti": "2.5.1",
     "js-yaml": "4.1.0",
