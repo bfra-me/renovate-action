@@ -16,8 +16,8 @@ importers:
         version: 1.11.1
     devDependencies:
       '@bfra.me/eslint-config':
-        specifier: 0.35.1
-        version: 0.35.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(@typescript-eslint/utils@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(@vitest/eslint-plugin@1.4.0(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(jiti@2.1.2)(yaml@2.8.1)))(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint@9.38.0(jiti@2.1.2))(prettier@3.6.2))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3)
+        specifier: 0.35.2
+        version: 0.35.2(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(@typescript-eslint/utils@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(@vitest/eslint-plugin@1.4.0(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(jiti@2.1.2)(yaml@2.8.1)))(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint@9.38.0(jiti@2.1.2))(prettier@3.6.2))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3)
       '@bfra.me/prettier-config':
         specifier: 0.16.1
         version: 0.16.1(prettier@3.6.2)
@@ -288,8 +288,8 @@ packages:
     resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
     engines: {node: '>=6.9.0'}
 
-  '@bfra.me/eslint-config@0.35.1':
-    resolution: {integrity: sha512-41LxYyEdfY5wUADxmz3c6Ts1nNSBPF2WI6RHaoRbDXR3YwUAlaqAWt544Dv/Yz48U/u5CN4pjssRYqaKK2R8eQ==}
+  '@bfra.me/eslint-config@0.35.2':
+    resolution: {integrity: sha512-ihWyxfEM7o/VMc1lFBi1cQPOh8zZt2fA4CZ7xMKUax4MKakr/2Ez0CNoiUrBtl8cghZZFb5soygIeTwgpELFUQ==}
     peerDependencies:
       '@eslint-react/eslint-plugin': ^2.0.1
       '@next/eslint-plugin-next': ^15.5.3
@@ -5175,7 +5175,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@bfra.me/eslint-config@0.35.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(@typescript-eslint/utils@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(@vitest/eslint-plugin@1.4.0(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(jiti@2.1.2)(yaml@2.8.1)))(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint@9.38.0(jiti@2.1.2))(prettier@3.6.2))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3)':
+  '@bfra.me/eslint-config@0.35.2(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(@typescript-eslint/utils@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(@vitest/eslint-plugin@1.4.0(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(jiti@2.1.2)(yaml@2.8.1)))(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint@9.38.0(jiti@2.1.2))(prettier@3.6.2))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3)':
     dependencies:
       '@eslint-community/eslint-plugin-eslint-comments': 4.5.0(eslint@9.38.0(jiti@2.1.2))
       '@eslint/markdown': 7.5.0
