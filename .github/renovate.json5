@@ -72,6 +72,14 @@
       dependencyDashboardApproval: false,
       groupName: 'Renovate',
     },
+    {
+      description: 'Automerge unstable versions of some packages.',
+      matchCurrentVersion: '0.x',
+      matchPackageNames: ['@astrojs/**'],
+      matchUpdateTypes: ['minor', 'patch'],
+      extends: ['github>bfra-me/renovate-config:automerge.json5#v4'],
+      dependencyDashboardApproval: false,
+    },
   ],
   platformAutomerge: true,
   postUpgradeTasks: {
