@@ -305,7 +305,7 @@ export class DataSanitizer {
     // Check for common sensitive key patterns in JSON-like strings
     const keyPatterns = this.config.strategies
     for (const [keyType, strategy] of Object.entries(keyPatterns)) {
-      const keyPattern = new RegExp(`["']?[\\w]*${keyType}[\\w]*["']?\\s*[:=]\\s*["']?([^"',\\s}]+)["']?`, 'gi')
+      const keyPattern = new RegExp(String.raw`["']?[\w]*${keyType}[\w]*["']?\s*[:=]\s*["']?([^"',\s}]+)["']?`, 'gi')
       const matches = [...sanitized.matchAll(keyPattern)]
 
       if (matches.length > 0) {
