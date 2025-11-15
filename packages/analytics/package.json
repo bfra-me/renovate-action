@@ -39,6 +39,6 @@
   },
   "devDependencies": {
     "@types/node": "24.10.1",
-    "tsup": "8.5.0"
+    "tsup": "8.5.1"
   }
 }
