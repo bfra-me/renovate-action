@@ -63,11 +63,11 @@ jobs:
 | `print-config` | Log the fully-resolved Renovate config for each repository, plus fully-resolved presets | No | `false` |
 | `renovate-app-id` | The ID of the GitHub App that will be used to run Renovate | Yes |  |
 | `renovate-app-private-key` | The private key of the GitHub App that will be used to run Renovate | Yes |  |
-| `pr-body-template` | Custom template for Renovate PR body content with placeholders for CI links and branding | No | [Default template with @bfra-me branding] |
-| `pr-header` | Custom header content for Renovate PRs with CI build links and @bfra-me branding | No | [Default header with CI links] |
-| `pr-footer` | Custom footer content for Renovate PRs with documentation links and @bfra-me signature | No | [Default footer with docs] |
-| `dependency-dashboard-header` | Custom header content for the Renovate dependency dashboard issue with repository context and @bfra-me branding | No | [Default dashboard header] |
-| `dependency-dashboard-footer` | Custom footer content for the Renovate dependency dashboard issue with action documentation links | No | [Default dashboard footer] |
+| `pr-body-template` | Custom template for Renovate PR body content with placeholders for CI links and branding | No | \[Default template with @bfra-me branding\] |
+| `pr-header` | Custom header content for Renovate PRs with CI build links and @bfra-me branding | No | \[Default header with CI links\] |
+| `pr-footer` | Custom footer content for Renovate PRs with documentation links and @bfra-me signature | No | \[Default footer with docs\] |
+| `dependency-dashboard-header` | Custom header content for the Renovate dependency dashboard issue with repository context and @bfra-me branding | No | \[Default dashboard header\] |
+| `dependency-dashboard-footer` | Custom footer content for the Renovate dependency dashboard issue with action documentation links | No | \[Default dashboard footer\] |
 | `enable-custom-templates` | Enable custom PR and issue templates with @bfra-me branding and CI integration | No | `false` |
 
 ### Template Functionality
