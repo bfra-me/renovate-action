@@ -13,11 +13,11 @@ importers:
         version: 1.11.1
     devDependencies:
       '@bfra.me/eslint-config':
-        specifier: 0.46.0
-        version: 0.46.0(@typescript-eslint/eslint-plugin@8.48.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@vitest/eslint-plugin@1.5.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.14(@types/node@24.10.1)(jiti@2.6.1)(yaml@2.8.1)))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.7.2))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+        specifier: 0.47.0
+        version: 0.47.0(@typescript-eslint/eslint-plugin@8.48.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@vitest/eslint-plugin@1.5.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.14(@types/node@24.10.1)(jiti@2.6.1)(yaml@2.8.1)))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.7.2))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       '@bfra.me/prettier-config':
-        specifier: 0.16.3
-        version: 0.16.3(prettier@3.7.2)
+        specifier: 0.16.5
+        version: 0.16.5(prettier@3.7.2)
       '@bfra.me/tsconfig':
         specifier: 0.12.1
         version: 0.12.1
@@ -282,8 +282,16 @@ packages:
     resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
     engines: {node: '>=6.9.0'}
 
-  '@bfra.me/eslint-config@0.46.0':
-    resolution: {integrity: sha512-pGa3nYsFHN+3qOUzlbeYpWivXZ81OcaIici86JXUtZYgRXIRa5ALm0dJZNbjYhjOqSwA/PvXE/WwQBFu21SX5Q==}
+  '@bfra.me/es@0.1.0':
+    resolution: {integrity: sha512-dTJDTcVo86AEXOYIOs5w9j4msuoj12H92jCqQmjAWxIsIPH4yTYr1SUl/+UBXMfnvX/NYPpVPZboWGWes+rtKQ==}
+    peerDependencies:
+      chokidar: ^5.0.0
+    peerDependenciesMeta:
+      chokidar:
+        optional: true
+
+  '@bfra.me/eslint-config@0.47.0':
+    resolution: {integrity: sha512-6ZQIxUSF8rZoo9YOm9umBdqMvvDo2OR4ypck+tJRrNDULqKDN2jK+OkYB3bO5gUO75FeRkfH6IYyFwe51U8CGg==}
     peerDependencies:
       '@eslint-react/eslint-plugin': ^2.0.1
       '@next/eslint-plugin-next': '>=15.5.3'
@@ -318,8 +326,8 @@ packages:
       eslint-plugin-react-refresh:
         optional: true
 
-  '@bfra.me/prettier-config@0.16.3':
-    resolution: {integrity: sha512-QkkMuoCYZniyb5nXddeL8UB8w5vUFvlSnUzOBjhfW6PRz+z9Cumn6weZRZt6k3OtUV3gjR8yCjVZkalQ5LGSyQ==}
+  '@bfra.me/prettier-config@0.16.5':
+    resolution: {integrity: sha512-iBuWbpjasrSSvuVQ60sF/mpCNBUOTkj+Iqj9tqs3lIVuIPO2xVPkLUsTpFqUKKl/mvdxgLYD+tFwIj7K27tV+g==}
     peerDependencies:
       prettier: ^3.0.0
 
@@ -3719,9 +3727,6 @@ packages:
     resolution: {integrity: sha512-ua1L4OgXSBdsu1FPb7F3tYH0F48a6kxvod4pLUlGY9COeJAJQNX/sNH2IiEmsxw7lqYiAwrdHMjz1FctOsyDQg==}
     engines: {node: '>=18'}
 
-  package-manager-detector@1.5.0:
-    resolution: {integrity: sha512-uBj69dVlYe/+wxj8JOpr97XfsxH/eumMt6HqjNTmJDf/6NO9s+0uxeOneIz3AsPt2m6y9PqzDzd3ATcU17MNfw==}
-
   package-manager-detector@1.6.0:
     resolution: {integrity: sha512-61A5ThoTiDG/C8s8UMZwSorAGwMJ0ERVGj2OjoW5pAalsNOg15+iQiPzrLJ4jhZ1HJzmC2PIHT2oEiH3R5fzNA==}
 
@@ -5424,8 +5429,13 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@bfra.me/eslint-config@0.46.0(@typescript-eslint/eslint-plugin@8.48.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@vitest/eslint-plugin@1.5.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.14(@types/node@24.10.1)(jiti@2.6.1)(yaml@2.8.1)))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.7.2))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)':
+  '@bfra.me/es@0.1.0':
     dependencies:
+      is-in-ci: 2.0.0
+
+  '@bfra.me/eslint-config@0.47.0(@typescript-eslint/eslint-plugin@8.48.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@vitest/eslint-plugin@1.5.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.14(@types/node@24.10.1)(jiti@2.6.1)(yaml@2.8.1)))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.7.2))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)':
+    dependencies:
+      '@bfra.me/es': 0.1.0
       '@eslint-community/eslint-plugin-eslint-comments': 4.5.0(eslint@9.39.1(jiti@2.6.1))
       '@eslint/markdown': 7.5.1
       '@stylistic/eslint-plugin': 5.6.1(eslint@9.39.1(jiti@2.6.1))
@@ -5448,7 +5458,7 @@ snapshots:
       globals: 16.5.0
       is-in-ci: 2.0.0
       local-pkg: 1.1.2
-      package-manager-detector: 1.5.0
+      package-manager-detector: 1.6.0
       sort-package-json: 3.5.0
       typescript-eslint: 8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
     optionalDependencies:
@@ -5459,11 +5469,12 @@ snapshots:
       - '@eslint/json'
       - '@typescript-eslint/eslint-plugin'
       - '@typescript-eslint/utils'
+      - chokidar
       - eslint-import-resolver-node
       - supports-color
       - typescript
 
-  '@bfra.me/prettier-config@0.16.3(prettier@3.7.2)':
+  '@bfra.me/prettier-config@0.16.5(prettier@3.7.2)':
     dependencies:
       prettier: 3.7.2
 
@@ -9259,8 +9270,6 @@ snapshots:
       registry-auth-token: 5.1.0
       registry-url: 6.0.1
       semver: 7.7.3
-
-  package-manager-detector@1.5.0: {}
 
   package-manager-detector@1.6.0: {}
 
