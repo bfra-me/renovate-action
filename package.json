@@ -46,7 +46,7 @@
     "@actions/core": "1.11.1"
   },
   "devDependencies": {
-    "@bfra.me/eslint-config": "0.47.1",
+    "@bfra.me/eslint-config": "0.47.2",
     "@bfra.me/prettier-config": "0.16.6",
     "@bfra.me/tsconfig": "0.12.1",
     "@semantic-release/changelog": "6.0.3",
