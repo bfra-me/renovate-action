@@ -144,6 +144,23 @@ else
   exit 1
 fi
 
+# renovate: datasource=github-releases depName=oven-sh/bun
+export BUN_VERSION=bun-v1.3.6
+echo "Installing Bun ${BUN_VERSION}..."
+
+if curl -fsSL -o bun-linux-x64.zip https://github.com/oven-sh/bun/releases/download/${BUN_VERSION}/bun-linux-x64.zip; then
+  unzip bun-linux-x64.zip -d /usr/local/bin/
+  rm bun-linux-x64.zip
+  chmod a+x /usr/local/bin/bun
+  bun --version
+  echo "✅ Bun installation completed successfully"
+else
+  error_msg="Failed to download or install Bun"
+  record_failure "${error_msg}" "docker" "docker-issues" "true" "{\"tool\":\"bun\",\"version\":\"${BUN_VERSION}\"}"
+  echo "❌ Bun installation failed"
+  exit 1
+fi
+
 # renovate: datasource=npm depName=pnpm
 export PNPM_VERSION=10.28.1
 
