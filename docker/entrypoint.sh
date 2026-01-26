@@ -149,9 +149,11 @@ export BUN_VERSION=bun-v1.3.6
 echo "Installing Bun ${BUN_VERSION}..."
 
 if curl -fsSL -o bun-linux-x64.zip https://github.com/oven-sh/bun/releases/download/${BUN_VERSION}/bun-linux-x64.zip; then
-  unzip bun-linux-x64.zip -d /usr/local/bin/
+  unzip bun-linux-x64.zip -d /tmp/bun
   rm bun-linux-x64.zip
+  mv /tmp/bun/bun-linux-x64/bun /usr/local/bin/bun
   chmod a+x /usr/local/bin/bun
+  ln -sf /usr/local/bin/bun /usr/local/bin/bunx
   bun --version
   echo "✅ Bun installation completed successfully"
 else
