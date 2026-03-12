@@ -52,7 +52,7 @@
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
     "@types/node": "24.10.14",
-    "@vitest/eslint-plugin": "1.6.9",
+    "@vitest/eslint-plugin": "1.6.10",
     "conventional-changelog-conventionalcommits": "9.3.0",
     "esbuild-plugin-license": "1.2.3",
     "eslint": "9.39.4",
