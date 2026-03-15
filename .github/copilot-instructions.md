@@ -1,136 +1,156 @@
-# Copilot Instructions for Renovate Action
+# Copilot Instructions for `bfra-me/renovate-action`
 
-## Project Architecture
+Start here before any changes:
 
-This is a **composite GitHub Action** that orchestrates self-hosted Renovate bot execution in Docker containers. The action uses **GitHub App authentication** (not PATs) for enhanced API rate limits and permissions.
+1. `.github/copilot-instructions.md` (this file)
+2. `README.md`
+3. `action.yaml`
+4. `.github/workflows/main.yaml`
+5. `.github/workflows/fro-bot.yaml` and `.github/workflows/fro-bot-autoheal.yaml`
 
-### Key Components
+## What this repository is
 
-- **`action.yaml`**: Composite action definition with complex input validation and multi-step workflow orchestration
-- **`src/main.ts`**: TypeScript entry point (minimal - real logic is in action.yaml shell scripts)
-- **`docker/entrypoint.sh`**: Docker container setup script for Renovate environment
-- **Global config system**: Secure merging of user config with base organizational defaults
+This is a composite GitHub Action that runs self-hosted Renovate in Docker, using GitHub App authentication. Most runtime behavior is in `action.yaml` shell steps, not TypeScript source.
 
-## Critical Patterns
+## Golden rules
 
-### Authentication Flow
-```yaml
-# Always use GitHub Apps, never PATs
-- uses: actions/create-github-app-token@v2
-  with:
-    app-id: ${{ inputs.renovate-app-id }}
-    private-key: ${{ inputs.renovate-app-private-key }}
-    owner: ${{ github.repository_owner }}
-```
+- Use `pnpm`, not npm/yarn.
+- Keep ESM-only patterns. Do not introduce `require()` or `module.exports`.
+- Keep type safety strict. Do not use `any`, `@ts-ignore`, or `@ts-expect-error`.
+- Keep external workflow actions pinned to full commit SHAs.
+- Preserve security boundaries in config merging.
+- This repo uses `simple-git-hooks` + `lint-staged` via `postinstall`. Do not add or enforce `pre-push` hooks for agent workflows. Pre-push hooks can interfere with Renovate automation in downstream repositories.
 
-### Config Merging Security
-The action implements **secure JSON merging** in `action.yaml:configure` step:
-- Base config contains `allowedCommands` array (security boundary)
-- User `global-config` input is validated and merged
-- **Never allow override** of: `platform`, `gitAuthor`, `cacheDir`, `allowedCommands`
-- Deep merging for `onboardingConfig` object
+## High-risk areas
 
-### Template System
-When `enable-custom-templates: true`, the action processes template variables:
-```yaml
-# Template variables automatically substituted:
-{{github.repository}} → owner/repo-name
-{{github.run_id}} → workflow-run-id
-```
+### 1) Config merge security in `action.yaml`
 
-### Caching Strategy
-- **Repository cache**: `/tmp/renovate/cache` with cross-OS support
-- **Cache key**: `renovate-cache-v{major-version}`
-- **Ownership handling**: `sudo chown` operations for Docker user conflicts
+The `Configure` step merges user `global-config` with a protected base config. Do not allow user config to override security-sensitive fields.
 
-## Development Workflows
+Must remain protected:
 
-### Build & Test
+- `allowedCommands`
+- `platform`
+- `gitAuthor`
+- `gitIgnoredAuthors`
+- `cacheDir`
+- `repositoryCache`
+
+### 2) Dist drift
+
+If `src/` behavior changes and generated output should change, regenerate `dist/` with `pnpm build` and include the updated artifacts.
+
+### 3) Workflow safety
+
+- Do not use `pull_request_target` unless explicitly justified in PR body.
+- Do not pass untrusted user content into shell evaluation.
+- Use minimum required permissions on jobs.
+
+## Verification commands
+
+Run these after changes:
+
 ```bash
-pnpm bootstrap    # Install dependencies (prefer offline)
-pnpm build       # tsup bundling to dist/
-pnpm test        # Vitest unit tests
-pnpm check       # Type checking + linting
+pnpm bootstrap
+pnpm build
+pnpm check
+pnpm test
 ```
 
-### Release Process
-- **Semantic Release**: Version managed automatically
-- **Action updates**: Renovate manages `RENOVATE_VERSION` in action.yaml
-- **Pin exact commits** in action steps for security
+If workflow files changed, also validate YAML locally:
 
-## Integration Points
-
-### Renovate Bot Integration
-- **Official action**: Uses `renovatebot/github-action@v43` as execution engine
-- **Environment mapping**: Extensive env vars (`RENOVATE_*` prefix)
-- **Docker execution**: Custom entrypoint script with tool installations
-
-### External Dependencies
-- **GitHub Apps**: Core authentication mechanism
-- **Docker Hub/GHCR**: Renovate container images
-- **Action dependencies**: All pinned to specific commit SHAs
-
-## Testing Strategy
-
-**Three-tier approach** (documented in `docs/testing-strategy.md`):
-1. **Unit tests**: Vitest for TypeScript functions
-2. **Integration tests**: Via workflow examples in `docs/examples/`
-3. **Self-tests**: Action tests itself via `.github/workflows/renovate.yaml`
-
-## @bfra-me Conventions
-
-- **Custom templates**: Branded PR/issue templates with CI links
-- **Global preset**: `github>bfra-me/renovate-config` as base configuration
-- **Git author format**: `{app-slug}[bot] <{app-id}+{app-slug}[bot]@users.noreply.github.com>`
-- **Onboarding**: Creates `.github/renovate.json5` (not `.json`)
-
-## TypeScript Patterns & Best Practices
-
-### Type Safety Principles
-- **Avoid `any` type**: Prefer `unknown` when type is uncertain, use type guards for narrowing
-- **Function signatures**: Always use explicit return types (`Promise<string>`, not just `Promise`)
-- **Utility types**: Leverage built-in utilities (`Pick<T, K>`, `Omit<T, K>`, `Partial<T>`, `Required<T>`)
-- **Const assertions**: Use `as const` for fixed values and readonly arrays
-
-### Code Structure
-```typescript
-// Avoid ES6 class syntax - prefer function-based approach
-export async function wait(milliseconds: number): Promise<string> {
-  if (Number.isNaN(milliseconds)) {
-    throw new TypeError('milliseconds not a number')
-  }
-  // Implementation...
-}
-
-// Use JSDoc for public APIs with meaningful descriptions
-/**
- * Validates GitHub App authentication credentials
- * @param appId - GitHub App ID for authentication
- * @param privateKey - Private key for GitHub App
- * @returns Promise resolving to validation result
- * @throws {Error} When credentials are invalid or missing
- */
+```bash
+node --input-type=module -e "import { load } from 'js-yaml'; import { readFileSync, existsSync } from 'node:fs'; for (const f of ['.github/workflows/main.yaml', '.github/workflows/renovate.yaml', '.github/workflows/fro-bot.yaml', '.github/workflows/fro-bot-autoheal.yaml', '.github/workflows/copilot-setup-steps.yaml']) { if (existsSync(f)) { load(readFileSync(f, 'utf8')); console.log(f + ': OK'); } }"
 ```
 
-### Testing with Vitest
-- **Type-checking in tests**: Leverage Vitest's built-in TypeScript support
-- **Test structure**: Place tests in `src/__tests__/` with `.test.ts` suffix
-- **Error testing**: Use `expect().rejects.toThrow()` for async error validation
+## Copilot ↔ Fro Bot collaboration contract
 
-### Error Handling
-- **Meaningful messages**: Provide context-specific error messages (not just "invalid input")
-- **GitHub Actions**: Use `@actions/core.setFailed()` for action failures
-- **Type guards**: Implement proper type checking before operations
+Both agents are first-class collaborators in this repo.
 
-### Documentation Standards
-- **JSDoc comments**: Required for all public APIs and complex functions
-- **Explain "why"**: Focus on business logic and reasoning, not implementation details
-- **Error scenarios**: Document when and why functions might throw
+### Fro Bot strengths
 
-## Common Gotchas
+- Autonomous GitHub-native maintenance via `.github/workflows/fro-bot.yaml`
+- Daily/periodic repo health and autoheal workflows
+- Multi-step issue/PR triage and remediation
 
-- **JSON validation**: All config inputs validated with `jq` before use
-- **Shell safety**: All scripts use `bash -Eeuo pipefail` for strict error handling
-- **Docker permissions**: Cache directories need ownership adjustments between runner and Docker
-- **Template escaping**: Use `jq -Rs .` for proper JSON string escaping
-- **TypeScript builds**: Use `tsup` for bundling; source maps required for debugging
+### Copilot coding agent strengths
+
+- Fast issue-to-PR implementation loops
+- Tight branch-focused coding tasks
+- Interactive PR follow-ups with `@copilot`
+
+### Required interoperability behavior
+
+When a task is started by one agent and continued by the other:
+
+1. Read prior issue/PR context first.
+2. Preserve acceptance criteria and constraints.
+3. Do not restart solved analysis; continue from existing findings.
+4. Keep commits scoped to the active root cause.
+5. Include a handoff note in issue/PR comments describing:
+   - what is done
+   - what remains
+   - exact verification status
+
+### Delegation paths
+
+- Copilot can trigger Fro Bot for broader maintenance/research by asking a maintainer (or automation) to run:
+
+```bash
+gh workflow run .github/workflows/fro-bot.yaml \
+  -f prompt='Investigate and propose fixes for flaky CI in main.yaml. Create one issue summary only; no code changes.'
+```
+
+- Fro Bot can hand implementation tasks to Copilot by creating/updating a scoped issue and assigning `copilot`.
+
+### Do/Don't examples for collaboration
+
+Do:
+
+- Continue partial work from Fro Bot issue comments instead of rewriting plan.
+- Use the same acceptance checklist in follow-up Copilot PRs.
+- Keep one root cause per PR.
+- Keep prompts single-objective, testable, and explicit about output target.
+
+Don't:
+
+- Open a second PR for the same root cause while one is active.
+- Change dependency versions for non-security reasons in autoheal contexts.
+- Weaken tests, lint, or security guards just to make CI green.
+- Add `pre-push` hook enforcement to agent automation workflows.
+
+## GitHub CLI playbook for handoffs
+
+Create bounded issue for Copilot from Fro Bot findings:
+
+```bash
+gh issue create \
+  --title "Fix: <single root cause>" \
+  --body "## Task
+<objective>
+
+## Constraints
+- Follow .github/copilot-instructions.md
+- Preserve config security boundaries
+- No new dependencies unless required
+
+## Verification
+- pnpm bootstrap
+- pnpm build
+- pnpm check
+- pnpm test" \
+  --assignee copilot
+```
+
+Request Fro Bot investigation from Copilot context:
+
+```bash
+gh workflow run .github/workflows/fro-bot.yaml \
+  -f prompt='Investigate stale failing PRs and create one Daily Maintenance Report update. No direct code changes.'
+```
+
+## Repo-specific quality bar
+
+- Keep conventional commit intent in commit messages.
+- Keep docs and workflow examples aligned with actual behavior.
+- Preserve existing runner/tooling conventions used in workflows (`pnpm bootstrap`, SHA pins, minimal permissions).
