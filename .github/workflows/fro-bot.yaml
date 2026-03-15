@@ -197,7 +197,7 @@ jobs:
           node-version-file: package.json
 
       - name: Install dependencies
-        run: pnpm bootstrap
+        run: pnpm install
 
       - name: Run Fro Bot
         uses: fro-bot/agent@8e60ed0350cfd455c23282937a1f0b8865803342 # v0.30.5
