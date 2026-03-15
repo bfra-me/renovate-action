@@ -43,7 +43,7 @@
   },
   "prettier": "@bfra.me/prettier-config/120-proof",
   "dependencies": {
-    "@actions/core": "1.11.1"
+    "@actions/core": "3.0.0"
   },
   "devDependencies": {
     "@bfra.me/eslint-config": "0.50.1",
@@ -73,5 +73,11 @@
   "packageManager": "pnpm@10.32.1",
   "engines": {
     "node": "24.14.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "undici@<6.24.0": "6.24.1",
+      "undici@>=7.0.0 <7.24.0": "7.24.3"
+    }
   }
 }
