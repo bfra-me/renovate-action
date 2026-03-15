@@ -1,0 +1,219 @@
+---
+name: Fro Bot
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  discussion_comment:
+    types: [created]
+  issues:
+    types: [opened, edited]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, review_requested]
+  schedule:
+    - cron: '30 15 * * *'
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: Custom prompt for the Fro Bot agent
+        required: true
+  workflow_call:
+    inputs:
+      prompt:
+        description: Prompt passed by reusable caller workflow
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: >-
+    fro-bot-${{
+      github.event.issue.number ||
+      github.event.pull_request.number ||
+      github.event.discussion.number ||
+      github.run_id
+    }}
+  cancel-in-progress: false
+
+env:
+  PR_REVIEW_PROMPT: |
+    You are a skeptical reviewer for bfra-me/renovate-action — a composite
+    GitHub Action that runs a self-hosted Renovate bot in Docker with GitHub
+    App authentication. This action is used across the bfra-me organization
+    and handles sensitive authentication flows.
+
+    Focus on correctness, security, and backwards compatibility. Prefer
+    false positives over false negatives for security issues.
+
+    Scope:
+    - Action definition (action.yaml): validate input handling, JSON config
+      merging security (allowedCommands must never be overridable), template
+      variable substitution, shell script safety (bash -Eeuo pipefail),
+      Docker entrypoint security, cache ownership handling.
+    - Workflow/CI changes: pin actions to full commit SHA; avoid
+      pull_request_target unless explicitly justified; prevent workflow
+      injection (untrusted input in run: blocks or shell eval); minimal
+      permissions; no secrets in logs.
+    - TypeScript: no `any`; no `@ts-ignore`/`@ts-expect-error`; explicit
+      function return types; pure ESM only (no require/module.exports).
+    - Dependencies: identify direct additions/updates; flag known
+      advisories; avoid unnecessary or duplicate deps; ensure license
+      compatibility (MIT project).
+    - Tests: verify new/changed behavior has tests covering happy path,
+      errors, and boundaries. Self-test steps in main.yaml must remain
+      functional. If tests aren't needed, explain why.
+    - Renovate config: validate allowedCommands regex safety; ensure
+      onboardingConfig changes don't break existing repos; verify
+      gitIgnoredAuthors list is consistent.
+    - dist/ consistency: if src/ changes, dist/ must be rebuilt. Flag PRs
+      that modify src/ without corresponding dist/ changes.
+
+    Hard boundaries:
+    - Review only. Do NOT push commits, modify files, create branches,
+      or open PRs.
+    - Do NOT use labels, assignments, or milestone changes.
+    - Use inline comments for file-specific findings. Use review body
+      for summary only.
+    - Do NOT speculate. If uncertain, state what evidence is missing.
+
+    Do NOT comment on formatting, lint, or style nits handled by CI.
+
+    Output:
+    ## Verdict: PASS / CONDITIONAL / REJECT
+    ### Blocking issues
+    ### Non-blocking concerns
+    ### Missing tests
+    ### Risk assessment (LOW/MED/HIGH) + rationale
+
+    Requirements:
+    - Include every heading exactly once and in the order above.
+    - Write "None" under headings with no findings.
+    - Keep findings actionable: file path, impact, and concrete
+      remediation.
+
+  SCHEDULE_PROMPT: |
+    Perform daily repository maintenance and update a SINGLE rolling issue
+    titled "Daily Maintenance Report" in this repository.
+
+    Search for an issue with this exact title. If multiple matches exist,
+    use the most recently updated one. If no open issue exists, create it.
+    If the most recent matching issue is closed, reopen it instead of
+    creating a new one.
+
+    Append a new dated section for each run using "## YYYY-MM-DD (UTC)".
+    To keep the issue bounded: after appending today's section, replace
+    any individual daily sections older than 14 days with a single
+    "## Historical Summary" section that lists only the count of prior
+    runs and any items that remained unresolved across those runs. If a
+    Historical Summary already exists, update it in place — do not create
+    a second one.
+
+    Include links only (no full content duplication). Keep it concise and
+    actionable. Flag items that appear in the stale list for the first
+    time (not present in the previous dated section) with a ★ marker.
+
+    Context: this repository is bfra-me/renovate-action, a composite
+    GitHub Action that runs a self-hosted Renovate bot. It is used across
+    the bfra-me organization. The main branch CI includes setup, check,
+    test, build, analytics dashboard, and semantic release jobs. A
+    separate release branch is used for versioning.
+
+    Sections (in order):
+    - Summary metrics (issues opened since last run, currently open PRs,
+      stale issues/PRs count, main branch check status, security alerts
+      if accessible)
+    - Stale issues (no activity >30 days; recommend next step)
+    - Stale PRs (no activity >7 days; stale >14 days)
+    - Unassigned bugs (label bug, no assignee)
+    - Release health (status of release branch, latest release version,
+      any failed release runs)
+    - Recommended actions (bulleted checklist)
+    - Notes (use "data unavailable" for any inaccessible data source)
+
+    Do NOT comment on or modify individual issues/PRs. Do NOT apply
+    labels. Do NOT open PRs. This run must update ONE issue only.
+
+jobs:
+  fro-bot:
+    name: Fro Bot
+    runs-on: ubuntu-latest
+    if: >-
+      (
+        github.event.pull_request == null ||
+        (
+          !github.event.pull_request.head.repo.fork &&
+          !endsWith(github.event.pull_request.user.login || '', '[bot]')
+        )
+      ) && (
+        (
+          github.event_name == 'issues' &&
+          !endsWith(github.event.issue.user.login || '', '[bot]') &&
+          (github.event.issue.user.login || '') != 'fro-bot'
+        ) ||
+        (
+          github.event_name == 'pull_request' &&
+          !endsWith(github.event.pull_request.user.login || '', '[bot]') &&
+          (github.event.pull_request.user.login || '') != 'fro-bot'
+        ) ||
+        github.event_name == 'schedule' ||
+        github.event_name == 'workflow_dispatch' ||
+        inputs.prompt != '' ||
+        (
+          ((
+            github.event_name == 'issue_comment' &&
+            github.event.issue.pull_request == null
+          ) ||
+           github.event_name == 'pull_request_review_comment' ||
+           github.event_name == 'discussion_comment') &&
+          contains(github.event.comment.body || '', '@fro-bot') &&
+          (github.event.comment.user.login || '') != 'fro-bot' &&
+          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association || '')
+        )
+      )
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          ref: >-
+            ${{
+              (github.event.issue.pull_request && format('refs/pull/{0}/head', github.event.issue.number))
+              || github.event.pull_request.head.sha
+              || ''
+            }}
+          token: ${{ secrets.FRO_BOT_PAT }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          cache: pnpm
+          node-version-file: package.json
+
+      - name: Install dependencies
+        run: pnpm bootstrap
+
+      - name: Run Fro Bot
+        uses: fro-bot/agent@8e60ed0350cfd455c23282937a1f0b8865803342 # v0.30.5
+        env:
+          OPENCODE_PROMPT_ARTIFACT: 'true'
+          PROMPT: >-
+            ${{
+              (github.event_name == 'workflow_dispatch' && (github.event.inputs.prompt || ''))
+              || inputs.prompt
+              || (github.event_name == 'schedule' && env.SCHEDULE_PROMPT)
+              || (github.event_name == 'pull_request' && env.PR_REVIEW_PROMPT)
+              || ''
+            }}
+        with:
+          github-token: ${{ secrets.FRO_BOT_PAT }}
+          auth-json: ${{ secrets.OPENCODE_AUTH_JSON }}
+          model: ${{ vars.FRO_BOT_MODEL }}
+          omo-providers: ${{ secrets.OMO_PROVIDERS }}
+          prompt: ${{ env.PROMPT }}
