@@ -34,8 +34,8 @@
     "dev": "tsup --watch"
   },
   "dependencies": {
-    "@actions/cache": "^4.0.5",
-    "@actions/core": "^1.11.1"
+    "@actions/cache": "^6.0.0",
+    "@actions/core": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "24.12.0",
