@@ -1,6 +1,6 @@
 {
   "name": "@bfra.me/renovate-action",
-  "version": "8.87.8",
+  "version": "8.87.9",
   "private": true,
   "description": "GitHub Action for Self-Hosted Renovate",
   "keywords": [
