@@ -19,8 +19,8 @@ export default defineConfig({
   },
   integrations: [
     starlight({
-      title: 'Renovate Action Analytics',
-      description: 'Performance analytics and monitoring dashboard for @bfra.me/renovate-action',
+      title: 'Renovate Action Docs',
+      description: 'Usage and migration documentation for @bfra.me/renovate-action',
       // logo: {
       //   src: './src/assets/logo.svg',
       //   replacesTitle: true,
@@ -49,16 +49,6 @@ export default defineConfig({
         //     {label: 'Dashboard Overview', slug: 'overview/dashboard'},
         //   ],
         // },
-        {
-          label: 'Analytics Dashboards',
-          items: [
-            {label: 'Multi-Repository Overview', slug: 'dashboards/overview'},
-            {label: 'Cache Performance', slug: 'dashboards/cache'},
-            {label: 'Docker Operations', slug: 'dashboards/docker'},
-            {label: 'API Usage', slug: 'dashboards/api'},
-            {label: 'Failure Analysis', slug: 'dashboards/failures'},
-          ],
-        },
         // {
         //   label: 'Reference',
         //   items: [

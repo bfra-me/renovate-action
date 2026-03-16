@@ -1,6 +1,5 @@
 packages:
   - docs
-  - packages/*
 
 overrides:
   undici@>=7.0.0 <7.24.0: 7.24.3

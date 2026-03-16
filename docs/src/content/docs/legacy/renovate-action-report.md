@@ -398,6 +398,8 @@ Our composite action builds upon `renovatebot/github-action` by adding:
 
 ## 7. Renovate Core (`renovatebot/renovate`) Analysis
 
+> v9 context: Renovate runtime was upgraded to v43. Docker-backed execution remains active in v9, but is marked deprecated for planned removal in v10.
+
 The underlying engine powering both the `renovatebot/github-action` and, by extension, our `bfra-me/renovate-action` is the [Renovate CLI](https://github.com/renovatebot/renovate) itself. Understanding its core technology and architecture provides deeper insight into the automation process.
 
 ### Key Benefits of Self-Hosted Renovate

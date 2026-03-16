@@ -17,7 +17,7 @@ jobs:
     name: Renovate
     runs-on: ubuntu-latest
     steps:
-      - uses: bfra-me/renovate-action@v7
+      - uses: bfra-me/renovate-action@v9
         with:
           renovate-app-id: ${{ secrets.APPLICATION_ID }}
           renovate-app-private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}

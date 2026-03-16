@@ -1,9 +1,0 @@
-{
-  "extends": "@bfra.me/tsconfig",
-  "compilerOptions": {
-    "strictNullChecks": true,
-    "outDir": "dist"
-  },
-  "include": ["__tests__/**/*", "src/**/*", "*.ts"],
-  "exclude": ["dist", "node_modules"]
-}
