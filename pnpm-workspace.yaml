@@ -1,6 +1,9 @@
 packages:
   - docs
 
+overrides:
+  undici@>=7.0.0 <7.24.0: 7.24.3
+
 onlyBuiltDependencies:
   - '@swc/core'
   - esbuild
