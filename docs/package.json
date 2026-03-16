@@ -2,7 +2,7 @@
   "name": "docs",
   "version": "0.0.1",
   "private": true,
-  "description": "Analytics dashboard for Renovate action performance tracking",
+  "description": "Documentation for Renovate action",
   "type": "module",
   "scripts": {
     "astro": "astro",
@@ -16,9 +16,6 @@
     "@astrojs/check": "0.9.7",
     "@astrojs/starlight": "^0.37.0",
     "astro": "^5.6.1",
-    "chart.js": "^4.4.8",
-    "chartjs-adapter-date-fns": "^3.0.0",
-    "date-fns": "^4.1.0",
     "sharp": "^0.34.2"
   },
   "devDependencies": {
