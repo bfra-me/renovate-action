@@ -6,6 +6,6 @@
     "moduleResolution": "Bundler",
     "noEmit": true
   },
-  "references": [{"path": "./docs"}, {"path": "./packages/analytics"}, {"path": "./tsconfig.eslint.json"}],
+  "references": [{"path": "./docs"}, {"path": "./tsconfig.eslint.json"}],
   "files": []
 }
