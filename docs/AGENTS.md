@@ -8,7 +8,7 @@ Static docs site built with Astro + Starlight. Deployed to GitHub Pages from CI.
 
 ## STRUCTURE
 
-```
+```text
 docs/
 ├── src/content/docs/   # Markdown content (routes)
 ├── src/styles/          # Custom styles
