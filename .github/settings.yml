@@ -27,7 +27,6 @@ branches:
         strict: true
         contexts:
           - Build
-          - Build Analytics Dashboard
           - Check
           - Deploy to GitHub Pages
           - Fro Bot

@@ -120,7 +120,7 @@ test("test runs", () => {
 
 **Test Job Dependencies**:
 
-```
+```text
 setup → test (runs if src changed)
 setup → build (runs if src changed or on push)
 [check, test, build] → release

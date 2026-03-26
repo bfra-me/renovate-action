@@ -3,6 +3,7 @@ packages:
 
 overrides:
   undici@>=7.0.0 <7.24.0: 7.24.3
+  smol-toml: 1.6.1
 
 onlyBuiltDependencies:
   - '@swc/core'
