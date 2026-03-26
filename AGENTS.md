@@ -8,7 +8,7 @@ Composite GitHub Action that runs self-hosted Renovate in Docker with GitHub App
 
 ## STRUCTURE
 
-```
+```text
 ./
 ├── action.yaml        # THE core runtime — config merging, Docker orchestration
 ├── docker/            # entrypoint.sh — tool installation (yq, node, bun, pnpm, yarn)
