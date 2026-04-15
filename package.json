@@ -46,9 +46,9 @@
     "@actions/core": "3.0.0"
   },
   "devDependencies": {
-    "@bfra.me/eslint-config": "0.50.3",
-    "@bfra.me/prettier-config": "0.16.7",
-    "@bfra.me/tsconfig": "0.12.2",
+    "@bfra.me/eslint-config": "0.51.0",
+    "@bfra.me/prettier-config": "0.16.8",
+    "@bfra.me/tsconfig": "0.13.0",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
     "@types/node": "24.12.0",
