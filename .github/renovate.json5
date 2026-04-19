@@ -1,6 +1,6 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
-  extends: ['github>bfra-me/.github:internal.json5#v4.16.6', 'github>sanity-io/renovate-config:semantic-commit-type'],
+  extends: ['github>bfra-me/.github:internal.json5#v4.16.7', 'github>sanity-io/renovate-config:semantic-commit-type'],
   ignorePresets: ['mergeConfidence:age-confidence-badges', 'mergeConfidence:all-badges'],
   customManagers: [
     {
