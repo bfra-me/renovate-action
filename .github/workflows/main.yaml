@@ -295,4 +295,4 @@ jobs:
     if: github.repository == 'bfra-me/renovate-action' && needs.release.outputs.published == 'true'
     needs: release
     secrets: inherit
-    uses: bfra-me/.github/.github/workflows/trigger-org-renovate.yaml@e48aa3d8e6d1f25febd989aa20527d30ef074e30 # v4.16.15
+    uses: bfra-me/.github/.github/workflows/trigger-org-renovate.yaml@71213b76c0a4c5ba90e8071a5777b3836092b655 # v4.16.16
