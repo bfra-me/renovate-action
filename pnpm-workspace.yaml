@@ -4,6 +4,7 @@ packages:
 overrides:
   undici@>=7.0.0 <7.24.0: 7.26.0
   smol-toml: 1.6.1
+  fast-uri: 3.1.2
 
 onlyBuiltDependencies:
   - '@swc/core'
