@@ -105,7 +105,7 @@ record_failure() {
 }
 
 # renovate: datasource=github-releases depName=mikefarah/yq
-export YQ_VERSION=v4.53.2
+export YQ_VERSION=v4.53.3
 
 echo "Installing yq ${YQ_VERSION}..."
 start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
@@ -164,7 +164,7 @@ else
 fi
 
 # renovate: datasource=npm depName=pnpm
-export PNPM_VERSION=10.33.4
+export PNPM_VERSION=10.34.3
 
 echo "Installing pnpm ${PNPM_VERSION}..."
 start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
@@ -183,7 +183,7 @@ else
 fi
 
 # renovate: datasource=npm packageName=@yarnpkg/cli-dist
-export YARN_VERSION=4.15.0
+export YARN_VERSION=4.16.0
 
 echo "Installing Yarn ${YARN_VERSION}..."
 start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")

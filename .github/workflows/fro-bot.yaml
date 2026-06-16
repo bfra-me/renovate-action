@@ -411,7 +411,7 @@ jobs:
       )
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           fetch-depth: 0
           ref: >-
@@ -485,7 +485,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Run Fro Bot
-        uses: fro-bot/agent@9a2d4b08196d3d5ad70692b655311e18ed6b2726 # v0.46.1
+        uses: fro-bot/agent@b7efdd6d8e9d41766e287327d1d99876959620d3 # v0.65.0
         env:
           OPENCODE_PROMPT_ARTIFACT: 'true'
           PROMPT: ${{ steps.resolve.outputs.prompt }}
