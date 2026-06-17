@@ -194,7 +194,7 @@ runs:
           fi
 
           local user_config_without_onboarding
-          user_config_without_onboarding=$(echo "$user_config" | jq -c 'del(.onboardingConfig)')
+          user_config_without_onboarding=$(echo "$user_config" | jq -c 'del(.onboardingConfig, .platform, .gitAuthor, .gitIgnoredAuthors, .cacheDir, .repositoryCache)')
 
           local merged_config
           merged_config=$(echo "$base_config" | jq -c \
