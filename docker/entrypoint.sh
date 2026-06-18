@@ -183,7 +183,7 @@ else
 fi
 
 # renovate: datasource=npm packageName=@yarnpkg/cli-dist
-export YARN_VERSION=4.16.0
+export YARN_VERSION=4.17.0
 
 echo "Installing Yarn ${YARN_VERSION}..."
 start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
