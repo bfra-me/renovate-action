@@ -68,7 +68,7 @@ runs:
     - name: Configure
       id: configure
       env:
-        RENOVATE_VERSION: 43.224.0 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate versioning=semver
+        RENOVATE_VERSION: 43.234.0 # renovate: datasource=docker depName=renovate packageName=ghcr.io/renovatebot/renovate versioning=semver
         autodiscover: ${{ inputs.autodiscover != '' && inputs.autodiscover || 'false' }}
         dry_run: ${{ inputs.dry-run != '' && inputs.dry-run || 'false' }}
         execution_mode: ${{ inputs.execution-mode != '' && inputs.execution-mode || 'container' }}
@@ -194,7 +194,7 @@ runs:
           fi
 
           local user_config_without_onboarding
-          user_config_without_onboarding=$(echo "$user_config" | jq -c 'del(.onboardingConfig)')
+          user_config_without_onboarding=$(echo "$user_config" | jq -c 'del(.onboardingConfig, .platform, .gitAuthor, .gitIgnoredAuthors, .cacheDir, .repositoryCache)')
 
           local merged_config
           merged_config=$(echo "$base_config" | jq -c \

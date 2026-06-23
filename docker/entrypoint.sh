@@ -126,7 +126,7 @@ else
 fi
 
 # renovate: datasource=node-version depName=node
-export NODE_VERSION=24.16.0
+export NODE_VERSION=24.17.0
 
 echo "Installing Node.js ${NODE_VERSION}..."
 start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
@@ -183,7 +183,7 @@ else
 fi
 
 # renovate: datasource=npm packageName=@yarnpkg/cli-dist
-export YARN_VERSION=4.16.0
+export YARN_VERSION=4.17.0
 
 echo "Installing Yarn ${YARN_VERSION}..."
 start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
