@@ -5,6 +5,8 @@ import {expect, test} from 'vitest'
 
 const actionPath = path.join(__dirname, '..', '..', 'action.yaml')
 const actionYaml = fs.readFileSync(actionPath, 'utf8')
+const readmePath = path.join(__dirname, '..', '..', 'README.md')
+const readme = fs.readFileSync(readmePath, 'utf8')
 
 function extractConfigureScript(): string {
   const match = /validate_json\(\) \{[\s\S]*?^        base_global_config=/m.exec(actionYaml)
@@ -113,6 +115,30 @@ test('allowedCommands rejects Bundler package tokens starting with - or .', () =
   expect(isAllowed(patterns, 'bundle update --bundler')).toBe(false)
 })
 
+function extractRenovateVersion(): string {
+  const match = /RENOVATE_VERSION:\s*([0-9]+\.[0-9]+\.[0-9]+)/.exec(actionYaml)
+
+  if (!match) {
+    throw new Error('Could not extract Renovate version')
+  }
+
+  return match[1]
+}
+
+function compareSemver(left: string, right: string): number {
+  const leftParts = left.split('.').map(Number)
+  const rightParts = right.split('.').map(Number)
+
+  for (let index = 0; index < Math.max(leftParts.length, rightParts.length); index += 1) {
+    const delta = (leftParts[index] ?? 0) - (rightParts[index] ?? 0)
+
+    if (delta !== 0) {
+      return delta
+    }
+  }
+
+  return 0
+}
 test('global config merge removes user-provided protected fields', () => {
   const script = `${extractConfigureScript()}
 merge_global_config "$BASE_CONFIG" "$USER_CONFIG"
@@ -142,4 +168,12 @@ merge_global_config "$BASE_CONFIG" "$USER_CONFIG"
   expect(mergedConfig).not.toHaveProperty('repositoryCache')
   expect(mergedConfig.allowedCommands).not.toEqual(['^unsafe$'])
   expect(mergedConfig.timezone).toBe('UTC')
+})
+
+test('pinned Renovate version includes the stability-days fix', () => {
+  expect(compareSemver(extractRenovateVersion(), '43.234.1')).toBeGreaterThanOrEqual(0)
+})
+
+test('README Renovate release link matches the pinned Renovate version', () => {
+  expect(readme).toContain(`https://github.com/renovatebot/renovate/releases/tag/${extractRenovateVersion()}`)
 })
