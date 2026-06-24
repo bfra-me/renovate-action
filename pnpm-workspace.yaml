@@ -3,6 +3,7 @@ packages:
 
 overrides:
   esbuild@>=0.17.0 <0.28.1: '>=0.28.1'
+  undici@>=6.0.0 <6.27.0: 6.27.0
   undici@>=7.0.0 <7.24.0: 7.28.0
   smol-toml: 1.6.1
   fast-uri: 3.1.2
