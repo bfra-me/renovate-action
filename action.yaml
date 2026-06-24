@@ -103,11 +103,11 @@ runs:
               "^ruff check( --fix)?( --quiet)? \\.$",
               "^isort( --profile black)? \\.$",
               "^pdm (install|lock|update)( --no-self)?$",
-              "^cargo (update( -p [\\w.-]+)?|build( --locked)?|test( --locked)?)$",
+              "^cargo (update( -p [a-zA-Z0-9][\\w.-]*)?|build( --locked)?|test( --locked)?)$",
               "^go mod (tidy|download)$",
               "^go (generate|test) \\./\\.\\.\\.$",
               "^gofmt -w \\.$",
-              "^bundle (install( --deployment)?|lock|update [\\w.-]+|exec rubocop -A \\.)$"
+              "^bundle (install( --deployment)?|lock|update [a-zA-Z0-9][\\w.-]*|exec rubocop -A \\.)$"
             ],
             "description": [
               "Use the global config preset for the @bfra-me organization.",

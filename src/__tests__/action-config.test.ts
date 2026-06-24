@@ -64,6 +64,13 @@ test('allowedCommands rejects dangerous Rust cargo commands', () => {
   expect(isAllowed(patterns, 'cargo test -- --nocapture')).toBe(false)
 })
 
+test('allowedCommands rejects Cargo package tokens starting with - or .', () => {
+  const patterns = extractAllowedCommands()
+  expect(isAllowed(patterns, 'cargo update -p -evil')).toBe(false)
+  expect(isAllowed(patterns, 'cargo update -p .evil')).toBe(false)
+  expect(isAllowed(patterns, 'cargo update -p --workspace')).toBe(false)
+})
+
 // Go ecosystem
 test('allowedCommands allows Go module commands', () => {
   const patterns = extractAllowedCommands()
@@ -96,6 +103,14 @@ test('allowedCommands rejects dangerous Ruby bundler commands', () => {
   expect(isAllowed(patterns, 'bundle update ../../evil')).toBe(false)
   expect(isAllowed(patterns, 'bundle exec rubocop -A .; curl evil')).toBe(false)
   expect(isAllowed(patterns, "bundle exec ruby -e 'system(\"curl evil\")'")).toBe(false)
+})
+
+test('allowedCommands rejects Bundler package tokens starting with - or .', () => {
+  const patterns = extractAllowedCommands()
+  expect(isAllowed(patterns, 'bundle update -evil')).toBe(false)
+  expect(isAllowed(patterns, 'bundle update .evil')).toBe(false)
+  expect(isAllowed(patterns, 'bundle update --all')).toBe(false)
+  expect(isAllowed(patterns, 'bundle update --bundler')).toBe(false)
 })
 
 test('global config merge removes user-provided protected fields', () => {
