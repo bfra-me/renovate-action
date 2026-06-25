@@ -126,7 +126,7 @@ else
 fi
 
 # renovate: datasource=node-version depName=node
-export NODE_VERSION=24.17.0
+export NODE_VERSION=24.18.0
 
 echo "Installing Node.js ${NODE_VERSION}..."
 start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
@@ -164,7 +164,7 @@ else
 fi
 
 # renovate: datasource=npm depName=pnpm
-export PNPM_VERSION=10.34.3
+export PNPM_VERSION=10.34.4
 
 echo "Installing pnpm ${PNPM_VERSION}..."
 start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")

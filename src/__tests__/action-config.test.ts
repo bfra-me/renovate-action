@@ -5,6 +5,8 @@ import {expect, test} from 'vitest'
 
 const actionPath = path.join(__dirname, '..', '..', 'action.yaml')
 const actionYaml = fs.readFileSync(actionPath, 'utf8')
+const readmePath = path.join(__dirname, '..', '..', 'README.md')
+const readme = fs.readFileSync(readmePath, 'utf8')
 
 function extractConfigureScript(): string {
   const match = /validate_json\(\) \{[\s\S]*?^        base_global_config=/m.exec(actionYaml)
@@ -34,6 +36,109 @@ function asRecord(value: unknown): Record<string, unknown> {
   return value as Record<string, unknown>
 }
 
+function extractAllowedCommands(): RegExp[] {
+  const config = JSON.parse(extractBaseConfig()) as Record<string, unknown>
+  const patterns = config['allowedCommands']
+  if (!Array.isArray(patterns)) {
+    throw new Error('allowedCommands is not an array')
+  }
+  return (patterns as string[]).map(p => new RegExp(p))
+}
+
+function isAllowed(patterns: RegExp[], command: string): boolean {
+  return patterns.some(re => re.test(command))
+}
+
+// Rust ecosystem
+test('allowedCommands allows Rust cargo commands', () => {
+  const patterns = extractAllowedCommands()
+  expect(isAllowed(patterns, 'cargo update')).toBe(true)
+  expect(isAllowed(patterns, 'cargo update -p serde')).toBe(true)
+  expect(isAllowed(patterns, 'cargo build')).toBe(true)
+  expect(isAllowed(patterns, 'cargo build --locked')).toBe(true)
+  expect(isAllowed(patterns, 'cargo test --locked')).toBe(true)
+})
+
+test('allowedCommands rejects dangerous Rust cargo commands', () => {
+  const patterns = extractAllowedCommands()
+  expect(isAllowed(patterns, 'cargo update -p ../../evil')).toBe(false)
+  expect(isAllowed(patterns, 'cargo build; curl evil')).toBe(false)
+  expect(isAllowed(patterns, 'cargo test -- --nocapture')).toBe(false)
+})
+
+test('allowedCommands rejects Cargo package tokens starting with - or .', () => {
+  const patterns = extractAllowedCommands()
+  expect(isAllowed(patterns, 'cargo update -p -evil')).toBe(false)
+  expect(isAllowed(patterns, 'cargo update -p .evil')).toBe(false)
+  expect(isAllowed(patterns, 'cargo update -p --workspace')).toBe(false)
+})
+
+// Go ecosystem
+test('allowedCommands allows Go module commands', () => {
+  const patterns = extractAllowedCommands()
+  expect(isAllowed(patterns, 'go mod tidy')).toBe(true)
+  expect(isAllowed(patterns, 'go mod download')).toBe(true)
+  expect(isAllowed(patterns, 'go generate ./...')).toBe(true)
+  expect(isAllowed(patterns, 'gofmt -w .')).toBe(true)
+  expect(isAllowed(patterns, 'go test ./...')).toBe(true)
+})
+
+test('allowedCommands rejects dangerous Go commands', () => {
+  const patterns = extractAllowedCommands()
+  expect(isAllowed(patterns, 'go generate ./...; curl evil')).toBe(false)
+  expect(isAllowed(patterns, 'gofmt -w ../evil.go')).toBe(false)
+  expect(isAllowed(patterns, 'go test ./... -exec sh')).toBe(false)
+})
+
+// Ruby ecosystem
+test('allowedCommands allows Ruby bundler commands', () => {
+  const patterns = extractAllowedCommands()
+  expect(isAllowed(patterns, 'bundle install')).toBe(true)
+  expect(isAllowed(patterns, 'bundle install --deployment')).toBe(true)
+  expect(isAllowed(patterns, 'bundle lock')).toBe(true)
+  expect(isAllowed(patterns, 'bundle update rails')).toBe(true)
+  expect(isAllowed(patterns, 'bundle exec rubocop -A .')).toBe(true)
+})
+
+test('allowedCommands rejects dangerous Ruby bundler commands', () => {
+  const patterns = extractAllowedCommands()
+  expect(isAllowed(patterns, 'bundle update ../../evil')).toBe(false)
+  expect(isAllowed(patterns, 'bundle exec rubocop -A .; curl evil')).toBe(false)
+  expect(isAllowed(patterns, "bundle exec ruby -e 'system(\"curl evil\")'")).toBe(false)
+})
+
+test('allowedCommands rejects Bundler package tokens starting with - or .', () => {
+  const patterns = extractAllowedCommands()
+  expect(isAllowed(patterns, 'bundle update -evil')).toBe(false)
+  expect(isAllowed(patterns, 'bundle update .evil')).toBe(false)
+  expect(isAllowed(patterns, 'bundle update --all')).toBe(false)
+  expect(isAllowed(patterns, 'bundle update --bundler')).toBe(false)
+})
+
+function extractRenovateVersion(): string {
+  const match = /RENOVATE_VERSION:\s*([0-9]+\.[0-9]+\.[0-9]+)/.exec(actionYaml)
+
+  if (!match) {
+    throw new Error('Could not extract Renovate version')
+  }
+
+  return match[1]
+}
+
+function compareSemver(left: string, right: string): number {
+  const leftParts = left.split('.').map(Number)
+  const rightParts = right.split('.').map(Number)
+
+  for (let index = 0; index < Math.max(leftParts.length, rightParts.length); index += 1) {
+    const delta = (leftParts[index] ?? 0) - (rightParts[index] ?? 0)
+
+    if (delta !== 0) {
+      return delta
+    }
+  }
+
+  return 0
+}
 test('global config merge removes user-provided protected fields', () => {
   const script = `${extractConfigureScript()}
 merge_global_config "$BASE_CONFIG" "$USER_CONFIG"
@@ -63,4 +168,12 @@ merge_global_config "$BASE_CONFIG" "$USER_CONFIG"
   expect(mergedConfig).not.toHaveProperty('repositoryCache')
   expect(mergedConfig.allowedCommands).not.toEqual(['^unsafe$'])
   expect(mergedConfig.timezone).toBe('UTC')
+})
+
+test('pinned Renovate version includes the stability-days fix', () => {
+  expect(compareSemver(extractRenovateVersion(), '43.234.1')).toBeGreaterThanOrEqual(0)
+})
+
+test('README Renovate release link matches the pinned Renovate version', () => {
+  expect(readme).toContain(`https://github.com/renovatebot/renovate/releases/tag/${extractRenovateVersion()}`)
 })
