@@ -5,6 +5,8 @@ import {expect, test} from 'vitest'
 
 const actionPath = path.join(__dirname, '..', '..', 'action.yaml')
 const actionYaml = fs.readFileSync(actionPath, 'utf8')
+const dockerEntrypointPath = path.join(__dirname, '..', '..', 'docker', 'entrypoint.sh')
+const dockerEntrypoint = fs.readFileSync(dockerEntrypointPath, 'utf8')
 const readmePath = path.join(__dirname, '..', '..', 'README.md')
 const readme = fs.readFileSync(readmePath, 'utf8')
 
@@ -176,4 +178,10 @@ test('pinned Renovate version includes the stability-days fix', () => {
 
 test('README Renovate release link matches the pinned Renovate version', () => {
   expect(readme).toContain(`https://github.com/renovatebot/renovate/releases/tag/${extractRenovateVersion()}`)
+})
+
+test('Docker analytics snippets use ESM imports', () => {
+  expect(dockerEntrypoint).not.toContain('require(')
+  expect(dockerEntrypoint).toContain('import fs from \'node:fs\'')
+  expect(dockerEntrypoint).toContain('import path from \'node:path\'')
 })
