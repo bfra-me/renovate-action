@@ -15,9 +15,9 @@ record_docker_metric() {
   local success="$6"
   local error="${7:-}"
 
-  node -e "
-  const fs = require('fs');
-  const path = require('path');
+  node --input-type=module -e "
+  import fs from 'node:fs';
+  import path from 'node:path';
 
   const analyticsDir = '/tmp/renovate-analytics';
   if (!fs.existsSync(analyticsDir)) {
@@ -67,9 +67,9 @@ record_failure() {
   local recoverable="${4:-false}"
   local context="${5:-{}}"
 
-  node -e "
-  const fs = require('fs');
-  const path = require('path');
+  node --input-type=module -e "
+  import fs from 'node:fs';
+  import path from 'node:path';
 
   const analyticsDir = '/tmp/renovate-analytics';
   if (!fs.existsSync(analyticsDir)) {
