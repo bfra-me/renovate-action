@@ -144,11 +144,11 @@ else
   exit 1
 fi
 
-# renovate: datasource=github-tags depName=oven-sh/bun versioning=loose
-export BUN_VERSION=bun-v1.3.6
+# renovate: datasource=npm depName=bun
+export BUN_VERSION=1.3.6
 echo "Installing Bun ${BUN_VERSION}..."
 
-if curl -fsSL -o bun-linux-x64.zip https://github.com/oven-sh/bun/releases/download/${BUN_VERSION}/bun-linux-x64.zip; then
+if curl -fsSL -o bun-linux-x64.zip https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-x64.zip; then
   unzip bun-linux-x64.zip -d /tmp/bun
   rm bun-linux-x64.zip
   mv /tmp/bun/bun-linux-x64/bun /usr/local/bin/bun
