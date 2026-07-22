@@ -144,7 +144,7 @@ else
   exit 1
 fi
 
-# renovate: datasource=github-releases depName=oven-sh/bun
+# renovate: datasource=github-tags depName=oven-sh/bun versioning=loose
 export BUN_VERSION=bun-v1.3.6
 echo "Installing Bun ${BUN_VERSION}..."
 
