@@ -19,7 +19,7 @@
       semanticCommitType: 'build',
     },
     {
-      matchPackageNames: ['tsup', 'typescript'],
+      matchPackageNames: ['bun', 'pnpm', 'tsup', 'typescript'],
       semanticCommitType: 'build',
     },
     {
