@@ -25,9 +25,13 @@ on:
           - maintenance
           - autoheal
         default: autoheal
-        required: false
       prompt:
-        description: Custom prompt for review mode
+        description: >-
+          Custom prompt for the Fro Bot agent. When non-empty, this prompt is
+          used verbatim regardless of `mode` (this is the path used by the
+          release-notes-narrative automation). Required when `mode=review`.
+          Ignored only when empty AND `mode` is set to `maintenance` or
+          `autoheal` (then the corresponding env prompt is used).
         required: false
         default: ''
   workflow_call:
@@ -57,6 +61,13 @@ env:
     GitHub Action that runs a self-hosted Renovate bot in Docker with GitHub
     App authentication. This action is used across the bfra-me organization
     and handles sensitive authentication flows.
+
+    Review the diff directly. Do NOT invoke `ce:review` or any other `ce:*`
+    skill (ce:work, ce:plan, ce:brainstorm, ce:compound, etc.). Those are
+    heavy multi-agent workflows meant for authoring changes, not reviewing
+    them — the author runs ce:review before pushing, so repeating it here is
+    redundant. Read the changed files yourself with standard tools (read,
+    grep, git diff). A focused single-pass review is the goal.
 
     Focus on correctness, security, and backwards compatibility. Prefer
     false positives over false negatives for security issues.
@@ -434,66 +445,25 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Determine mode and prompt
-        id: resolve
-        env:
-          INPUT_MODE: ${{ github.event.inputs.mode || '' }}
-          INPUT_PROMPT: ${{ inputs.prompt || github.event.inputs.prompt || '' }}
-          PR_REVIEW_PROMPT: ${{ env.PR_REVIEW_PROMPT }}
-          MAINTENANCE_PROMPT: ${{ env.MAINTENANCE_PROMPT }}
-          AUTOHEAL_PROMPT: ${{ env.AUTOHEAL_PROMPT }}
-        run: |
-          mode="$INPUT_MODE"
-          if [ -z "$mode" ]; then
-            case "${{ github.event_name }}" in
-              schedule)
-                if echo "${{ github.event.schedule }}" | grep -q "15"; then
-                  mode="maintenance"
-                else
-                  mode="autoheal"
-                fi
-                ;;
-              workflow_dispatch) mode="autoheal" ;;
-              pull_request) mode="review" ;;
-              *) mode="" ;;
-            esac
-          fi
-
-          case "$mode" in
-            review)
-              prompt="$PR_REVIEW_PROMPT"
-              ;;
-            maintenance)
-              prompt="$MAINTENANCE_PROMPT"
-              ;;
-            autoheal)
-              prompt="$AUTOHEAL_PROMPT"
-              ;;
-            *)
-              prompt="$INPUT_PROMPT"
-              ;;
-          esac
-
-          delimiter="EOF_$(openssl rand -hex 8)"
-          {
-            echo "mode<<$delimiter"
-            echo "$mode"
-            echo "$delimiter"
-            echo "prompt<<$delimiter"
-            echo "$prompt"
-            echo "$delimiter"
-          } >> "$GITHUB_OUTPUT"
-
       - name: Run Fro Bot
         uses: fro-bot/agent@d8f130ee41923598d2ca93a0871f37c804c6c57d # v0.94.1
         env:
           OPENCODE_PROMPT_ARTIFACT: 'true'
-          PROMPT: ${{ steps.resolve.outputs.prompt }}
+          PROMPT: >-
+            ${{
+              (github.event_name == 'workflow_call' && inputs.prompt != '' && inputs.prompt)
+              || (github.event_name == 'workflow_dispatch' && inputs.prompt != '' && inputs.prompt)
+              || (github.event_name == 'workflow_dispatch' && inputs.mode == 'maintenance' && env.MAINTENANCE_PROMPT)
+              || (github.event_name == 'workflow_dispatch' && inputs.mode == 'autoheal' && env.AUTOHEAL_PROMPT)
+              || (github.event_name == 'workflow_dispatch' && env.AUTOHEAL_PROMPT)
+              || (github.event_name == 'schedule' && github.event.schedule == '30 15 * * *' && env.MAINTENANCE_PROMPT)
+              || (github.event_name == 'schedule' && github.event.schedule == '30 3 * * *' && env.AUTOHEAL_PROMPT)
+              || (github.event_name == 'pull_request' && env.PR_REVIEW_PROMPT)
+              || ''
+            }}
         with:
           github-token: ${{ secrets.FRO_BOT_PAT }}
           auth-json: ${{ secrets.OPENCODE_AUTH_JSON }}
           model: ${{ vars.FRO_BOT_MODEL }}
-          omo-providers: ${{ secrets.OMO_PROVIDERS }}
           opencode-config: ${{ secrets.OPENCODE_CONFIG }}
           prompt: ${{ env.PROMPT }}
-          timeout: 0
