@@ -145,7 +145,7 @@ else
 fi
 
 # renovate: datasource=npm depName=bun
-export BUN_VERSION=1.3.6
+export BUN_VERSION=1.3.14
 echo "Installing Bun ${BUN_VERSION}..."
 
 if curl -fsSL -o bun-linux-x64.zip https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-x64.zip; then
