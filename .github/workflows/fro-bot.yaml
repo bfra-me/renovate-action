@@ -421,6 +421,16 @@ jobs:
         )
       )
     steps:
+      - name: Validate review mode inputs
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'review'
+        env:
+          PROMPT: ${{ inputs.prompt }}
+        run: |
+          if [ -z "$PROMPT" ]; then
+            echo "::error::Review mode requires a custom prompt. Provide one via the 'prompt' input, or choose a different mode."
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
