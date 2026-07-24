@@ -144,11 +144,11 @@ else
   exit 1
 fi
 
-# renovate: datasource=github-releases depName=oven-sh/bun
-export BUN_VERSION=bun-v1.3.6
+# renovate: datasource=npm depName=bun
+export BUN_VERSION=1.3.14
 echo "Installing Bun ${BUN_VERSION}..."
 
-if curl -fsSL -o bun-linux-x64.zip https://github.com/oven-sh/bun/releases/download/${BUN_VERSION}/bun-linux-x64.zip; then
+if curl -fsSL -o bun-linux-x64.zip https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-x64.zip; then
   unzip bun-linux-x64.zip -d /tmp/bun
   rm bun-linux-x64.zip
   mv /tmp/bun/bun-linux-x64/bun /usr/local/bin/bun
@@ -164,7 +164,7 @@ else
 fi
 
 # renovate: datasource=npm depName=pnpm
-export PNPM_VERSION=11.14.0
+export PNPM_VERSION=11.15.1
 
 echo "Installing pnpm ${PNPM_VERSION}..."
 start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
