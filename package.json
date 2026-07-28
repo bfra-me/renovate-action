@@ -52,17 +52,17 @@
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
     "@types/node": "24.13.2",
-    "@vitest/eslint-plugin": "1.6.23",
+    "@vitest/eslint-plugin": "1.6.24",
     "conventional-changelog-conventionalcommits": "9.3.1",
     "esbuild-plugin-license": "1.2.3",
-    "eslint": "10.7.0",
+    "eslint": "10.8.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-node-dependencies": "2.2.0",
     "eslint-plugin-prettier": "5.5.6",
     "jiti": "2.7.0",
     "js-yaml": "4.3.0",
     "lint-staged": "16.4.0",
-    "prettier": "3.9.5",
+    "prettier": "3.9.6",
     "semantic-release": "25.0.8",
     "semantic-release-export-data": "1.2.0",
     "simple-git-hooks": "2.13.1",
@@ -70,7 +70,7 @@
     "typescript": "6.0.3",
     "vitest": "4.1.10"
   },
-  "packageManager": "pnpm@11.15.1",
+  "packageManager": "pnpm@11.17.0",
   "engines": {
     "node": "24.18.0"
   }
