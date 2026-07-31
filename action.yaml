@@ -86,7 +86,7 @@ runs:
               "^npm install -g (npm|pnpm|yarn|bun)(?:@\\d+(?:\\.\\d+\\.\\d+)?)?$",
               "^(?:bunx?|p?npx|pnpm(?: dlx)?|yarn(?: dlx)?) prettier(?:@\\d+(?:\\.\\d+\\.\\d+)?)?( --no-color)? --write \\.$",
               "^(bun|pnpm|yarn) install( --force)?( --frozen-lockfile)?( --ignore-scripts)?$",
-              "^(?:bun|npm|pnpm|yarn)(?:\\srun)?\\s(?:bootstrap|build(-release)?|check|clean|fix|format|generate|lint|typecheck|update-snapshots)$",
+              "^(?:bun|npm|pnpm|yarn)(?:\\srun)?\\s(?:bootstrap|build(-release)?|check|clean|fix|format|generate|lint|postupgrade|typecheck|update-snapshots)$",
               "^yarn install( --force)?( --immutable)?( --immutable-cache)?$",
               "^(?:bunx?|p?npx|pnpm(?: dlx)?|yarn(?: dlx)?) @biomejs/biome(?:@\\d+(?:\\.\\d+\\.\\d+)?)? (check|format|lint) --write \\.$",
               "^(?:bunx?|p?npx|pnpm(?: dlx)?|yarn(?: dlx)?) eslint(?:@\\d+(?:\\.\\d+\\.\\d+)?)? --fix \\.$",
