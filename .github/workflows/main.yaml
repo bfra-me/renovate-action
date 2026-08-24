@@ -32,7 +32,8 @@ jobs:
       node-version: ${{ steps.set-node-version.outputs.node-version }}
       should-check: ${{ contains(steps.filter.outputs.changes, 'should-check') }}
       src-changed: ${{ contains(steps.filter.outputs.changes, 'src-changed') }}
-      renovate-changed: ${{ contains(steps.filter.outputs.changes, 'renovate-changed') }}
+      action-self-test-changed: ${{ contains(steps.filter.outputs.changes, 'action-self-test-changed') }}
+      docs-build-changed: ${{ contains(steps.filter.outputs.changes, 'docs-build-changed') }}
     permissions:
       pull-requests: read
     runs-on: ubuntu-latest
@@ -46,7 +47,6 @@ jobs:
         with:
           cache: pnpm
           node-version-file: package.json
-      - run: pnpm bootstrap
       - id: filter
         uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         with:
@@ -68,18 +68,8 @@ jobs:
           node-version: ${{ needs.setup.outputs.node-version }}
       - name: Install dependencies
         run: pnpm bootstrap
-      - name: Build
-        run: pnpm build
       - name: Check
         run: pnpm check
-      - name: Test docs preview
-        run: |
-          pnpm run preview &
-          PREVIEW_PID=$!
-          sleep 5
-          curl -f http://localhost:4321/renovate-action || exit 1
-          kill $PREVIEW_PID
-        working-directory: ${{ needs.setup.outputs.docs-build-path }}
 
   test:
     if: ${{ github.event_name == 'push' || needs.setup.outputs.src-changed == 'true' }}
@@ -98,7 +88,7 @@ jobs:
       - name: Install dependencies
         run: pnpm bootstrap
       - run: pnpm test
-      - if: github.repository_owner == 'bfra-me' && github.ref_name != github.event.repository.default_branch && needs.setup.outputs.renovate-changed != 'true'
+      - if: github.repository_owner == 'bfra-me' && github.event_name == 'push' && github.ref_name == github.event.repository.default_branch && needs.setup.outputs.action-self-test-changed == 'true'
         name: Self-test
         uses: ./
         with:
@@ -125,7 +115,7 @@ jobs:
       - name: Install dependencies
         run: pnpm bootstrap
       - name: Rebuild the dist/ directory
-        run: pnpm build
+        run: pnpm run build-action
       - if: ${{ needs.setup.outputs.dist-changed == 'true' }}
         name: Compare the expected and actual dist/ directories
         run: |
@@ -143,7 +133,7 @@ jobs:
           path: dist/
 
   build-docs:
-    if: ${{ github.event_name == 'workflow_dispatch' || needs.setup.outputs.docs-changed == 'true' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.setup.outputs.docs-build-changed == 'true' }}
     name: Build Docs
     needs: [setup, check]
     runs-on: ubuntu-latest
@@ -166,6 +156,18 @@ jobs:
           pnpm --filter ${{ needs.setup.outputs.docs-build-path }} run build \
             --site "${{ steps.pages.outputs.origin }}" \
             --base "${{ steps.pages.outputs.base_path }}"
+      - name: Test docs preview
+        run: |
+          pnpm run preview &
+          PREVIEW_PID=$!
+          cleanup() {
+            kill "$PREVIEW_PID" 2>/dev/null || true
+            wait "$PREVIEW_PID" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+          sleep 5
+          curl -f http://localhost:4321/renovate-action
+        working-directory: ${{ needs.setup.outputs.docs-build-path }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
@@ -259,7 +261,7 @@ jobs:
         run: pnpm bootstrap --frozen-lockfile
       - if: env.DRY_RUN != 'true'
         name: Build release
-        run: pnpm build
+        run: pnpm run build-action
       - name: Semantic Release
         id: semantic-release
         env:
