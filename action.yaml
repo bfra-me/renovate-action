@@ -91,7 +91,6 @@ runs:
               "^(?:bunx?|p?npx|pnpm(?: dlx)?|yarn(?: dlx)?) @biomejs/biome(?:@\\d+(?:\\.\\d+\\.\\d+)?)? (check|format|lint) --write \\.$",
               "^(?:bunx?|p?npx|pnpm(?: dlx)?|yarn(?: dlx)?) eslint(?:@\\d+(?:\\.\\d+\\.\\d+)?)? --fix \\.$",
               "^(?:bunx?|p?npx|pnpm(?: dlx)?|yarn(?: dlx)?) sort-package-json$",
-              "^(?:\\[ -w \\.npmrc \\] && )?git checkout -- \\.npmrc(?: \\|\\| true)?$",
               "^poetry (install|lock|update)( --no-interaction)?( --no-update)?( --sync)?( --no-root)?$",
               "^(?:python3? -m )?pip install( -r requirements[\\w.-]*\\.txt| -e \\.)( --require-hashes)?( --no-deps)?$",
               "^pip-compile( --generate-hashes)?( --strip-extras)?( --no-emit-index-url)?( requirements[\\w.-]*\\.in| pyproject\\.toml)?$",
