@@ -117,6 +117,20 @@ test('allowedCommands rejects Bundler package tokens starting with - or .', () =
   expect(isAllowed(patterns, 'bundle update --bundler')).toBe(false)
 })
 
+test('allowedCommands rejects obsolete .npmrc checkout commands', () => {
+  const patterns = extractAllowedCommands()
+  const commands = [
+    'git checkout -- .npmrc',
+    'git checkout -- .npmrc || true',
+    '[ -w .npmrc ] && git checkout -- .npmrc',
+    '[ -w .npmrc ] && git checkout -- .npmrc || true',
+  ]
+
+  for (const command of commands) {
+    expect(isAllowed(patterns, command), command).toBe(false)
+  }
+})
+
 function extractRenovateVersion(): string {
   const match = /RENOVATE_VERSION:\s*([0-9]+\.[0-9]+\.[0-9]+)/.exec(actionYaml)
 
