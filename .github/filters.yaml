@@ -19,11 +19,16 @@ src-changed: &src-changed
   - pnpm-lock.yaml
   - pnpm-workspace.yaml
   - '**/tsconfig.json'
-renovate-changed:
-  - .github/workflows/renovate.yaml
-  - .github/renovate.json5
-  - docker/entrypoint.sh
+action-self-test-changed:
   - action.yaml
+  - docker/**
+docs-build-changed:
+  - docs/**
+  - package.json
+  - pnpm-lock.yaml
+  - pnpm-workspace.yaml
+  - .github/workflows/main.yaml
+  - .github/filters.yaml
 should-check:
   - added|modified: *config
   - added|modified: *docs-changed

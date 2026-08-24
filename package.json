@@ -24,6 +24,7 @@
   "scripts": {
     "bootstrap": "pnpm install --prefer-offline --loglevel warn",
     "build": "tsup && pnpm -r --stream run build",
+    "build-action": "tsup",
     "check": "pnpm run check-types && pnpm run lint && pnpm run check-docs",
     "check-docs": "pnpm --filter docs run check",
     "check-types": "tsc --noEmit",
