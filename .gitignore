@@ -105,3 +105,10 @@ dist/**/*.js.map
 
 # Cursor config
 .cursor/mcp.json
+
+# Opencode
+!.opencode/
+.opencode/*
+!.opencode/commands/
+!.opencode/themes/
+!.opencode/tui.json
