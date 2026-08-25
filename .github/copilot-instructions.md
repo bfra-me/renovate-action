@@ -146,7 +146,8 @@ Request Fro Bot investigation from Copilot context:
 
 ```bash
 gh workflow run .github/workflows/fro-bot.yaml \
-  -f prompt='Investigate stale failing PRs and create one Daily Maintenance Report update. No direct code changes.'
+  -f mode=autoheal \
+  -f prompt='Investigate stale failing PRs and update the current Daily Fro Bot Report. No direct code changes.'
 ```
 
 ## Repo-specific quality bar
