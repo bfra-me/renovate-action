@@ -24,3 +24,6 @@ shamefullyHoist: true
 shellEmulator: true
 
 strictPeerDependencies: false
+
+minimumReleaseAgeExclude:
+  - '@bfra.me/eslint-config@0.52.0'
