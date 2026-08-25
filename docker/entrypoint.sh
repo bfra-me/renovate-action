@@ -90,7 +90,7 @@ record_failure() {
 
   let contextValue = {};
   try {
-    contextValue = JSON.parse(process.env.CONTEXT ?? "{}");
+    contextValue = JSON.parse(process.env.CONTEXT || "{}");
   } catch {
     contextValue = {};
   }
