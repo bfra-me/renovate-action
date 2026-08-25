@@ -75,6 +75,7 @@
     {
       description: 'Group the conventionalcommits preset with semantic-release; it must move with the plugin stack that consumes it.',
       matchPackageNames: ['conventional-changelog-conventionalcommits'],
+      matchUpdateTypes: ['major'],
       groupName: 'semantic-release monorepo',
     },
     {
