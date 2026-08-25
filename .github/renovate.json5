@@ -73,6 +73,11 @@
       groupName: 'Renovate',
     },
     {
+      description: 'Group the conventionalcommits preset with semantic-release; it must move with the plugin stack that consumes it.',
+      matchPackageNames: ['conventional-changelog-conventionalcommits'],
+      groupName: 'semantic-release monorepo',
+    },
+    {
       description: 'Automerge unstable versions of some packages.',
       matchCurrentVersion: '0.x',
       matchPackageNames: ['@astrojs/**'],
