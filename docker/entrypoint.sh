@@ -171,12 +171,12 @@ start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
 
 if install-tool bun $BUN_VERSION; then
   end_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-  record_docker_metric "tool-install" "bun" "${BUN_VERSION}" "${start_time}" "${end_time}" "true"
-  cat > /usr/local/bin/bunx <<'EOF'
+  cat > /usr/local/sbin/bunx <<'EOF'
 #!/bin/bash
 exec bun x "$@"
 EOF
-  chmod a+x /usr/local/bin/bunx
+  chmod a+x /usr/local/sbin/bunx
+  record_docker_metric "tool-install" "bun" "${BUN_VERSION}" "${start_time}" "${end_time}" "true"
   echo "✅ Bun installation completed successfully"
 else
   end_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
