@@ -15,48 +15,55 @@ record_docker_metric() {
   local success="$6"
   local error="${7:-}"
 
-  node --input-type=module -e "
-  import fs from 'node:fs';
-  import path from 'node:path';
+  OPERATION="$operation" \
+  TOOL="$tool" \
+  VERSION="$version" \
+  START_TIME="$start_time" \
+  END_TIME="$end_time" \
+  SUCCESS="$success" \
+  ERROR="$error" \
+  node --input-type=module -e '
+  import fs from "node:fs";
+  import path from "node:path";
 
-  const analyticsDir = '/tmp/renovate-analytics';
+  const analyticsDir = "/tmp/renovate-analytics";
   if (!fs.existsSync(analyticsDir)) {
     fs.mkdirSync(analyticsDir, { recursive: true });
   }
 
-  const duration = new Date('${end_time}').getTime() - new Date('${start_time}').getTime();
+  const duration = new Date(process.env.END_TIME).getTime() - new Date(process.env.START_TIME).getTime();
 
   const dockerMetric = {
-    operation: '${operation}',
-    tool: '${tool}' || undefined,
-    toolVersion: '${version}' || undefined,
-    startTime: '${start_time}',
-    endTime: '${end_time}',
+    operation: process.env.OPERATION,
+    tool: process.env.TOOL || undefined,
+    toolVersion: process.env.VERSION || undefined,
+    startTime: process.env.START_TIME,
+    endTime: process.env.END_TIME,
     duration: duration,
-    success: ${success},
-    error: '${error}' || undefined,
+    success: process.env.SUCCESS === "true",
+    error: process.env.ERROR || undefined,
     metadata: {
-      containerUser: 'ubuntu',
+      containerUser: "ubuntu",
       workingDir: process.cwd()
     }
   };
 
-  const metricsFile = path.join(analyticsDir, 'docker-metrics.json');
+  const metricsFile = path.join(analyticsDir, "docker-metrics.json");
   let existingMetrics = [];
 
   try {
     if (fs.existsSync(metricsFile)) {
-      existingMetrics = JSON.parse(fs.readFileSync(metricsFile, 'utf8'));
+      existingMetrics = JSON.parse(fs.readFileSync(metricsFile, "utf8"));
     }
   } catch (error) {
-    console.log('Creating new docker metrics file');
+    console.log("Creating new docker metrics file");
   }
 
   existingMetrics.push(dockerMetric);
   fs.writeFileSync(metricsFile, JSON.stringify(existingMetrics, null, 2));
 
-  console.log('Recorded Docker metric:', JSON.stringify(dockerMetric, null, 2));
-  "
+  console.log("Recorded Docker metric:", JSON.stringify(dockerMetric, null, 2));
+  '
 }
 
 # Function to record failure scenarios
@@ -65,43 +72,55 @@ record_failure() {
   local component="$2"
   local category="${3:-unknown}"
   local recoverable="${4:-false}"
-  local context="${5:-{}}"
+  local context="${5:-}"
 
-  node --input-type=module -e "
-  import fs from 'node:fs';
-  import path from 'node:path';
+  MESSAGE="$message" \
+  COMPONENT="$component" \
+  CATEGORY="$category" \
+  RECOVERABLE="$recoverable" \
+  CONTEXT="$context" \
+  node --input-type=module -e '
+  import fs from "node:fs";
+  import path from "node:path";
 
-  const analyticsDir = '/tmp/renovate-analytics';
+  const analyticsDir = "/tmp/renovate-analytics";
   if (!fs.existsSync(analyticsDir)) {
     fs.mkdirSync(analyticsDir, { recursive: true });
   }
 
+  let contextValue = {};
+  try {
+    contextValue = JSON.parse(process.env.CONTEXT ?? "{}");
+  } catch {
+    contextValue = {};
+  }
+
   const failureMetric = {
-    category: '${category}',
-    type: 'docker-execution-error',
+    category: process.env.CATEGORY,
+    type: "docker-execution-error",
     timestamp: new Date().toISOString(),
-    message: '${message}',
-    component: '${component}',
-    recoverable: ${recoverable},
-    context: ${context}
+    message: process.env.MESSAGE,
+    component: process.env.COMPONENT,
+    recoverable: process.env.RECOVERABLE === "true",
+    context: contextValue
   };
 
-  const metricsFile = path.join(analyticsDir, 'failure-metrics.json');
+  const metricsFile = path.join(analyticsDir, "failure-metrics.json");
   let existingMetrics = [];
 
   try {
     if (fs.existsSync(metricsFile)) {
-      existingMetrics = JSON.parse(fs.readFileSync(metricsFile, 'utf8'));
+      existingMetrics = JSON.parse(fs.readFileSync(metricsFile, "utf8"));
     }
   } catch (error) {
-    console.log('Creating new failure metrics file');
+    console.log("Creating new failure metrics file");
   }
 
   existingMetrics.push(failureMetric);
   fs.writeFileSync(metricsFile, JSON.stringify(existingMetrics, null, 2));
 
-  console.log('Recorded failure metric:', JSON.stringify(failureMetric, null, 2));
-  "
+  console.log("Recorded failure metric:", JSON.stringify(failureMetric, null, 2));
+  '
 }
 
 # renovate: datasource=github-releases depName=mikefarah/yq
