@@ -225,8 +225,20 @@ test('README Renovate release link matches the pinned Renovate version', () => {
 
 test('Docker analytics snippets use ESM imports', () => {
   expect(dockerEntrypoint).not.toContain('require(')
-  expect(dockerEntrypoint).toContain('import fs from \'node:fs\'')
-  expect(dockerEntrypoint).toContain('import path from \'node:path\'')
+  expect(dockerEntrypoint).toMatch(/import fs from ['"]node:fs['"]/)
+  expect(dockerEntrypoint).toMatch(/import path from ['"]node:path['"]/)
+})
+
+test('Docker analytics snippets never interpolate shell values into JS source', () => {
+  const snippets = [...dockerEntrypoint.matchAll(/node --input-type=module -e '([\s\S]*?)'\n/g)].map(
+    match => match[1] ?? '',
+  )
+
+  expect(snippets).toHaveLength(2)
+  for (const snippet of snippets) {
+    expect(snippet).not.toMatch(/\$\{/)
+    expect(snippet).toContain('process.env.')
+  }
 })
 
 test('package scripts keep the full workspace build separate from the action build', () => {
