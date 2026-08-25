@@ -279,7 +279,9 @@ env:
     another one. Confirm that today's report exists and is accessible before
     closing any prior reports. After that confirmation, close only bot-authored
     issues whose title is exactly Daily Autohealing Report, exactly Daily
-    Maintenance Report, or exactly matches a dated Daily Fro Bot Report —
+    Maintenance Report, exactly matches a dated legacy Daily Autohealing
+    Report — YYYY-MM-DD title whose UTC date is strictly before the current
+    run's UTC date, or exactly matches a dated Daily Fro Bot Report —
     YYYY-MM-DD (UTC) title whose UTC date is strictly before the current run's
     UTC date. Leave ambiguous or near-match titles, unrelated bugs, and issues
     without bot authorship open; record each under Needs Human Attention. For
