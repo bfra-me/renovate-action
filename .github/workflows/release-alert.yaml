@@ -1,0 +1,76 @@
+---
+name: Release Alert
+
+on:
+  workflow_run:
+    workflows: [Main]
+    types: [completed]
+
+permissions:
+  issues: write
+
+concurrency:
+  group: release-alert
+  cancel-in-progress: false
+
+jobs:
+  alert:
+    if: >-
+      ${{
+        github.event.workflow_run.conclusion == 'failure' &&
+        github.event.workflow_run.event == 'push' &&
+        github.event.workflow_run.head_branch == github.event.repository.default_branch
+      }}
+    name: Alert
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPOSITORY: ${{ github.repository }}
+      RUN_ID: ${{ github.event.workflow_run.id }}
+      RUN_URL: ${{ github.event.workflow_run.html_url }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Report failed release
+        run: |
+          set -Eeuo pipefail
+
+          # `Main` fails for any job. Only alert when the release itself broke.
+          release_conclusion=$(gh api "repos/${REPOSITORY}/actions/runs/${RUN_ID}/jobs" \
+            --paginate --jq '[.jobs[] | select(.name == "Release")] | last | .conclusion // empty')
+
+          if [[ "${release_conclusion}" != 'failure' ]]; then
+            echo "Release job concluded '${release_conclusion:-skipped}'; no alert."
+            exit 0
+          fi
+
+          label='release-failure'
+          marker='<!-- release-failure:v1 -->'
+          title='Release workflow failure'
+          body=$(printf '%s\n' \
+            "${marker}" \
+            'The `Release` job in the `Main` workflow failed on the default branch.' \
+            '' \
+            "- Run: ${RUN_URL}" \
+            "- Head SHA: \`${HEAD_SHA}\`" \
+            '' \
+            'A published release may be missing for this commit. Check the run logs before re-running.')
+
+          if ! gh label view "${label}" --repo "${REPOSITORY}" >/dev/null 2>&1; then
+            gh label create "${label}" --repo "${REPOSITORY}" \
+              --color b60205 --description 'Release job failures on the default branch'
+          fi
+
+          issue_number=$(gh issue list \
+            --repo "${REPOSITORY}" \
+            --state open \
+            --label "${label}" \
+            --search "${title} in:title" \
+            --limit 100 \
+            --json number,body \
+            --jq "[.[] | select(.body != null and (.body | contains(\"${marker}\")))] | sort_by(.number) | .[0].number // empty")
+
+          if [[ -n "${issue_number}" ]]; then
+            gh issue comment "${issue_number}" --repo "${REPOSITORY}" --body "${body}"
+          else
+            gh issue create --repo "${REPOSITORY}" --title "${title}" --label "${label}" --body "${body}"
+          fi
