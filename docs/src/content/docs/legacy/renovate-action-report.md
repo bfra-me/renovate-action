@@ -1,6 +1,8 @@
 ---
 title: Renovate Action - Technology Report
 description: Comprehensive technology analysis and implementation report for the Renovate action
+banner:
+  content: '⚠️ This is archived historical documentation. For active v9 usage, see the <a href="/renovate-action/guides/usage/">Usage Guide</a>.'
 ---
 
 ## 1. Overview of the Repository

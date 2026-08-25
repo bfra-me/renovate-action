@@ -19,4 +19,4 @@ pnpm run build
 ## Notes
 
 - This site no longer hosts analytics dashboards.
-- See `README.md` for v9 migration and deprecation notes.
+- See the [current Usage guide](src/content/docs/guides/usage.md) for v9 usage and Docker deprecation context.
