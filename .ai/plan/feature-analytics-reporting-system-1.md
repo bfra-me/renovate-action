@@ -4,13 +4,15 @@ version: 1.0
 date_created: 2025-08-02
 last_updated: 2025-08-31
 owner: Marcus R. Brown <git@mrbro.dev>
-status: 'Completed'
-tags: ['feature', 'analytics', 'dashboard', 'github-pages', 'astro-starlight', 'monitoring']
+status: "Historical"
+tags: ["feature", "analytics", "dashboard", "github-pages", "astro-starlight", "monitoring"]
 ---
+
+> **Historical record — not current guidance.** This plan describes analytics and dashboard capabilities that are removed in v9. For current behavior, consult [`action.yaml`](../../action.yaml), [`docker/entrypoint.sh`](../../docker/entrypoint.sh), and the [current Usage guide](../../docs/src/content/docs/guides/usage.md).
 
 # Introduction
 
-![Status: Completed](https://img.shields.io/badge/status-Completed-green)
+![Status: Historical](https://img.shields.io/badge/status-Historical-grey)
 
 This implementation plan defines the development of a comprehensive analytics and reporting system that tracks Renovate action performance across multiple repositories. The system will implement structured logging to capture critical metrics including cache hit rates, Docker performance, API usage patterns, and failure scenarios. A companion GitHub Pages site built with Astro Starlight will provide interactive analytics dashboards using @bfra.me organization tooling patterns. The analytics data will be stored using the existing GitHub Actions Cache infrastructure and follow the project's established three-tier testing strategy.
 

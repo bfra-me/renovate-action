@@ -41,24 +41,13 @@ export default defineConfig({
         maxHeadingLevel: 4,
       },
       sidebar: [
-        // Dashboard navigation will be enabled as pages are created
-        // {
-        //   label: 'Overview',
-        //   items: [
-        //     {label: 'Getting Started', slug: 'overview/getting-started'},
-        //     {label: 'Dashboard Overview', slug: 'overview/dashboard'},
-        //   ],
-        // },
-        // {
-        //   label: 'Reference',
-        //   items: [
-        //     {label: 'Data Models', slug: 'reference/data-models'},
-        //     {label: 'API Reference', slug: 'reference/api'},
-        //     {label: 'Troubleshooting', slug: 'reference/troubleshooting'},
-        //   ],
-        // },
         {
-          label: 'Legacy Documentation',
+          label: 'Guides',
+          items: [{label: 'Usage Guide', slug: 'guides/usage'}],
+        },
+        {
+          label: 'Archive / Legacy',
+          collapsed: true,
           items: [
             {label: 'Testing Strategy', slug: 'legacy/testing-strategy'},
             {label: 'Action Report', slug: 'legacy/renovate-action-report'},

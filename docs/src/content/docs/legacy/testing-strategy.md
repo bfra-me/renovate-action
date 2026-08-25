@@ -1,6 +1,8 @@
 ---
 title: Testing Strategy for Renovate Action
 description: Three-tier testing strategy for validating Renovate action functionality
+banner:
+  content: '⚠️ This is archived historical documentation. For active v9 usage, see the <a href="/renovate-action/guides/usage/">Usage Guide</a>.'
 ---
 
 ## Overview
