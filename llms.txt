@@ -6,15 +6,22 @@ This action orchestrates dependency updates through the official Renovate GitHub
 
 Key points:
 
-- Renovate v43 runtime
+- Renovate 44.30.0 runtime
 - Docker-backed execution in v9 (deprecated for removal in v10)
 - GitHub App authentication
 - Global configuration merging support
 - Action-level template and analytics features removed in v9
 
-## Primary docs
+## Current user-facing docs
+
+- [Usage guide](docs/src/content/docs/guides/usage.md)
+
+## Runtime authority and references
 
 - [README](README.md)
 - [Action definition](action.yaml)
 - [Main workflow](.github/workflows/main.yaml)
 - [Renovate workflow](.github/workflows/renovate.yaml)
+
+The `docs/src/content/docs/legacy/` and `.ai/plan/` directories are historical,
+non-authoritative context.

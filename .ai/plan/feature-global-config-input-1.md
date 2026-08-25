@@ -4,13 +4,15 @@ version: 1.0
 date_created: 2025-08-01
 last_updated: 2025-08-24
 owner: Marcus R. Brown
-status: 'Completed'
+status: "Historical"
 tags: [feature, configuration, security, validation]
 ---
 
+> **Historical record — not current guidance.** This plan is historical context only: it remains relevant background but is never active guidance. For current `global-config` behavior, consult [`action.yaml`](../../action.yaml) and the [current Usage guide](../../docs/src/content/docs/guides/usage.md).
+
 # Introduction
 
-![Status: Completed](https://img.shields.io/badge/status-Completed-green)
+![Status: Historical](https://img.shields.io/badge/status-Historical-grey)
 
 This implementation plan adds support for a `global-config` input parameter to the Renovate Action, allowing users to pass custom global configuration that merges securely with the existing embedded RENOVATE_CONFIG. The implementation uses pure bash scripting and JSON processing tools within the composite action framework, with no TypeScript dependencies or modifications to src/ files.
 

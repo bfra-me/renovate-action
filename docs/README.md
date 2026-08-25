@@ -1,49 +1,34 @@
-# Starlight Starter Kit: Basics
+# Renovate Action documentation
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+This directory contains the Astro/Starlight documentation site for the current v9 GitHub Action. The active user entrypoint is the [Usage guide](src/content/docs/guides/usage.md). Runtime behavior remains authoritative in [`action.yaml`](../action.yaml) and [`docker/entrypoint.sh`](../docker/entrypoint.sh); the docs explain how to use that behavior and should not replace those files as specifications.
 
-```bash
-pnpm create astro@latest -- --template starlight
-```
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro + Starlight project, you'll see the following folders and files:
+## Workspace structure
 
 ```text
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── content/
-│   │   └── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+docs/
+├── src/content/docs/    # Markdown and MDX routes
+├── public/              # Static site assets
+├── astro.config.mjs     # Site and sidebar configuration
+├── package.json         # Docs workspace commands
+└── DEPLOYMENT.md        # GitHub Pages deployment handoff
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+Files under `src/content/docs/` become routes based on their paths. The `guides/` directory contains maintained user guidance. The `legacy/` directory contains retained historical material and is not current runtime authority.
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+## Local workflow
 
-Static assets, like favicons, can be placed in the `public/` directory.
+Run these commands from `docs/`:
 
-## 🧞 Commands
+| Command        | Purpose                                      |
+| -------------- | -------------------------------------------- |
+| `pnpm install` | Install the docs workspace dependencies.     |
+| `pnpm dev`     | Start the local Astro development server.    |
+| `pnpm check`   | Run Astro/Starlight content and type checks. |
+| `pnpm build`   | Build the production site into `docs/dist`.  |
+| `pnpm preview` | Preview the production build locally.        |
 
-All commands are run from the root of the project, from a terminal:
+From the repository root, `pnpm check-docs` runs the docs check through the workspace filter. Use `pnpm build` when validating the complete repository build.
 
-| Command                | Action                                           |
-| :--------------------- | :----------------------------------------------- |
-| `pnpm install`         | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+## Deployment handoff
 
-## 👀 Want to learn more?
-
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+The production site is deployed to GitHub Pages from the built `docs/dist` artifacts. See [`DEPLOYMENT.md`](DEPLOYMENT.md) for the deployment steps. Content changes should remain limited to documentation files; runtime, workflow, and deployment-policy changes are outside this workspace README's scope.

@@ -1,6 +1,8 @@
 ---
 title: Action Examples
 description: Collection of example workflows and configurations for the Renovate action
+banner:
+  content: '⚠️ This is archived historical documentation. For active v9 usage, see the <a href="/renovate-action/guides/usage/">Usage Guide</a>.'
 ---
 
 This section contains example workflows and configurations for using the @bfra.me/renovate-action in various scenarios.

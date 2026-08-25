@@ -4,7 +4,7 @@ version: 1.0
 date_created: 2025-08-01
 last_updated: 2025-08-23
 owner: marcusrbrown
-status: 'Completed'
+status: "Historical"
 tags:
   - feature
   - renovate
@@ -13,9 +13,11 @@ tags:
   - composite-action
 ---
 
+> **Historical record — not current guidance.** This plan describes custom template and branding capabilities that are removed in v9. For current behavior, consult [`action.yaml`](../../action.yaml) and the [current Usage guide](../../docs/src/content/docs/guides/usage.md).
+
 # Feature: Custom Renovate PR and Issue Templates
 
-![Status: Completed](https://img.shields.io/badge/status-Completed-green)
+![Status: Historical](https://img.shields.io/badge/status-Historical-grey)
 
 This implementation plan adds custom PR and issue templates to the @bfra-me Renovate self-hosted action, providing CI build links, documentation links, and @bfra-me branding while maintaining the composite action architecture and existing security patterns.
 

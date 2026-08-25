@@ -3,10 +3,10 @@ title: Renovate Action
 description: Documentation for the self-hosted Renovate GitHub Action.
 template: splash
 hero:
-  tagline: v9 includes Renovate v43 and deprecates Docker-based execution for planned removal in v10.
+  tagline: v9 runs Renovate v44 and deprecates Docker-backed execution for planned removal in v10.
   actions:
     - text: View usage
-      link: /legacy/examples/
+      link: /renovate-action/guides/usage/
       icon: right-arrow
       variant: primary
     - text: View on GitHub
@@ -20,22 +20,21 @@ import {Card, CardGrid} from '@astrojs/starlight/components'
 ## v9 highlights
 
 <CardGrid>
-  <Card title="Renovate v43" icon="approve-check">
-    v9 runs Renovate 43.x.
+  <Card title="Renovate v44" icon="approve-check">
+    v9 runs Renovate v44.x.
   </Card>
-  <Card title="Docker deprecation" icon="warning">
+  <Card title="GitHub App Auth" icon="setting">
+    Secure authentication using GitHub App credentials.
+  </Card>
+  <Card title="Docker Deprecation" icon="warning">
     Docker-backed execution remains active in v9 but is deprecated and planned for removal in v10.
   </Card>
-  <Card title="Templates removed" icon="trash">
-    Action-level template and branding inputs were removed.
-  </Card>
-  <Card title="Analytics removed" icon="trash">
-    Action analytics and dashboard features were removed.
+  <Card title="Global Configuration" icon="document">
+    Supports merged global configurations with built-in security boundaries.
   </Card>
 </CardGrid>
 
 ## Migration notes
 
-- Keep existing workflows on the Docker-backed action behavior for v9.
-- Remove deprecated template/analytics inputs from workflow configuration.
-- Plan migration to direct CLI runtime in v10.
+- **Docker Deprecation**: Docker-backed execution remains active in v9 but is deprecated and planned for removal in v10. Keep existing workflows on container execution for v9.
+- **Removed Inputs**: Action-level template, branding, and analytics/dashboard features are fully removed in v9. Remove these inputs from your workflow configurations.
