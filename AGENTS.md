@@ -15,6 +15,7 @@ Composite GitHub Action that runs self-hosted Renovate in Docker with GitHub App
 ├── src/               # Scaffold TS — wait utility, not actual action logic
 ├── dist/              # Bundled output (committed, verified in CI)
 ├── docs/              # Astro/Starlight docs site (separate workspace package)
+│   └── solutions/     # documented solutions to past problems, by category with YAML frontmatter (module, tags, problem_type)
 ├── .github/workflows/ # 9 workflows — CI, release, Renovate, security, bot agents
 └── .github/           # Renovate config, path filters, CODEOWNERS, copilot-instructions
 ```
