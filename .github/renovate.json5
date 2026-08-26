@@ -79,6 +79,16 @@
       groupName: 'semantic-release monorepo',
     },
     {
+      description: 'Block js-yaml v5 until Astro stops default-importing it; v5 dropped the CommonJS default export and breaks the docs build.',
+      matchPackageNames: ['js-yaml'],
+      allowedVersions: '<5',
+    },
+    {
+      description: 'Block TypeScript v7 until typescript-eslint supports it; see https://github.com/typescript-eslint/typescript-eslint/issues/10940.',
+      matchPackageNames: ['typescript'],
+      allowedVersions: '<7',
+    },
+    {
       description: 'Automerge unstable versions of some packages.',
       matchCurrentVersion: '0.x',
       matchPackageNames: ['@astrojs/**'],
