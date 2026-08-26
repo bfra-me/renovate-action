@@ -188,7 +188,7 @@ else
 fi
 
 # renovate: datasource=npm depName=pnpm
-export PNPM_VERSION=11.22.0
+export PNPM_VERSION=11.23.0
 
 echo "Installing pnpm ${PNPM_VERSION}..."
 start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
