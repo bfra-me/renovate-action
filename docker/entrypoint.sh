@@ -129,8 +129,8 @@ export YQ_VERSION=v4.53.6
 echo "Installing yq ${YQ_VERSION}..."
 start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
 
-if curl -fsSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64; then
-  chmod a+x /usr/local/bin/yq
+if curl -fsSL -o /usr/local/sbin/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64; then
+  chmod a+x /usr/local/sbin/yq
   end_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
   yq --version
   record_docker_metric "tool-install" "yq" "${YQ_VERSION}" "${start_time}" "${end_time}" "true"
