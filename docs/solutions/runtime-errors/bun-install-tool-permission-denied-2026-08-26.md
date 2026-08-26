@@ -163,4 +163,4 @@ Routing Bun through `install-tool` puts the whole lifecycle back under Container
 
 - [#3436](https://github.com/bfra-me/renovate-action/issues/3436) — the original report, closed by this fix
 - [#3686](https://github.com/bfra-me/renovate-action/pull/3686) — the fix (merge `1fb6f6d7`, released in `v10.21.4`)
-- [#3687](https://github.com/bfra-me/renovate-action/issues/3687) — `yq` is still hand-installed to `/usr/local/bin/yq`. Same squat class, inert only because Containerbase 14.14.0 ships no `yq` tool. Revisit before any Renovate image major bump.
+- [#3687](https://github.com/bfra-me/renovate-action/issues/3687) — `yq` was hand-installed to `/usr/local/bin/yq`, the same squat class. Inert only because Containerbase ships no `yq` tool; moved to `/usr/local/sbin/yq` before it could bite.
