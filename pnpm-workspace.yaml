@@ -2,6 +2,7 @@ packages:
   - docs
 
 overrides:
+  conventional-changelog-writer: ^9.2.1
   esbuild@>=0.17.0 <0.28.1: '>=0.28.1'
 
 onlyBuiltDependencies:
