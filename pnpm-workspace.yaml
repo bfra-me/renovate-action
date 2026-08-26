@@ -27,4 +27,4 @@ shellEmulator: true
 strictPeerDependencies: false
 
 minimumReleaseAgeExclude:
-  - '@bfra.me/eslint-config@0.52.0'
+  - '@bfra.me/eslint-config@0.52.0 || 0.52.1'

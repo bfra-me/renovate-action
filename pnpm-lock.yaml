@@ -17,8 +17,8 @@ importers:
         version: 3.0.1
     devDependencies:
       '@bfra.me/eslint-config':
-        specifier: 0.52.0
-        version: 0.52.0(dd840ea4f1a34e3ebe047b3a3bc9226c)
+        specifier: 0.52.1
+        version: 0.52.1(dd840ea4f1a34e3ebe047b3a3bc9226c)
       '@bfra.me/prettier-config':
         specifier: 0.16.11
         version: 0.16.11(prettier@3.9.6)
@@ -279,8 +279,8 @@ packages:
       chokidar:
         optional: true
 
-  '@bfra.me/eslint-config@0.52.0':
-    resolution: {integrity: sha512-qV9oCD+miq9WAuS1wUyCzPby4nw3Z6hGg1Kk/ZpVP/PR3J/vJzgb3Ot05fF5UeO6wjK5cjpjo0ehUfk5jpS8rQ==}
+  '@bfra.me/eslint-config@0.52.1':
+    resolution: {integrity: sha512-Ee1sZWtf8R+nuLGE/LKYyALMlOxf68QVJ8ulA7mJCHjP3CIcUkLEvQ5vNXup7ao/77gI5vUjcWmWDXU8cqmcvA==}
     engines: {node: ^22.22.2 || >=24.15.0}
     peerDependencies:
       '@eslint-react/eslint-plugin': ^4.2.3 || ^5.0.0
@@ -2405,8 +2405,8 @@ packages:
     peerDependencies:
       eslint: '>=9.38.0'
 
-  eslint-plugin-jsonc@3.4.1:
-    resolution: {integrity: sha512-HHWkjAmVJ3QAffCkfo0XKl3CstLtgbIu5EGfFfVDLQT6vqPrxl4pFbUwFwY03nOlvyuDiiBixhHFrlbzn9u09Q==}
+  eslint-plugin-jsonc@3.4.2:
+    resolution: {integrity: sha512-q5xzjCYFQuhFomTbctXzd3STfDJ8XduvaigjQmMEbP2gzSKrc58y3Fv6D775/cIK1/sRUn+4kpljiU2iW8k0zw==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
     peerDependencies:
       eslint: '>=9.38.0'
@@ -5248,7 +5248,7 @@ snapshots:
     optionalDependencies:
       chokidar: 5.0.0
 
-  '@bfra.me/eslint-config@0.52.0(dd840ea4f1a34e3ebe047b3a3bc9226c)':
+  '@bfra.me/eslint-config@0.52.1(dd840ea4f1a34e3ebe047b3a3bc9226c)':
     dependencies:
       '@bfra.me/es': 0.1.0(chokidar@5.0.0)
       '@eslint-community/eslint-plugin-eslint-comments': 4.7.2(eslint@10.9.0(jiti@2.7.0)(supports-color@7.2.0))
@@ -5262,7 +5262,7 @@ snapshots:
       eslint-plugin-import-x: 4.17.1(@typescript-eslint/utils@8.67.0(eslint@10.9.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.9.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)
       eslint-plugin-jsdoc: 64.2.1(eslint@10.9.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)
       eslint-plugin-json-schema-validator: 6.3.1(eslint@10.9.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)
-      eslint-plugin-jsonc: 3.4.1(eslint@10.9.0(jiti@2.7.0)(supports-color@7.2.0))
+      eslint-plugin-jsonc: 3.4.2(eslint@10.9.0(jiti@2.7.0)(supports-color@7.2.0))
       eslint-plugin-n: 18.3.0(eslint@10.9.0(jiti@2.7.0)(supports-color@7.2.0))(ts-declaration-location@1.0.7(typescript@6.0.3))(typescript@6.0.3)
       eslint-plugin-perfectionist: 5.10.1(eslint@10.9.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       eslint-plugin-regexp: 3.2.0(eslint@10.9.0(jiti@2.7.0)(supports-color@7.2.0))
@@ -7257,7 +7257,7 @@ snapshots:
       - '@eslint/json'
       - supports-color
 
-  eslint-plugin-jsonc@3.4.1(eslint@10.9.0(jiti@2.7.0)(supports-color@7.2.0)):
+  eslint-plugin-jsonc@3.4.2(eslint@10.9.0(jiti@2.7.0)(supports-color@7.2.0)):
     dependencies:
       '@eslint-community/eslint-utils': 4.10.1(eslint@10.9.0(jiti@2.7.0)(supports-color@7.2.0))
       '@eslint/core': 1.2.1
