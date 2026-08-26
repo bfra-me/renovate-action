@@ -165,18 +165,23 @@ fi
 
 # renovate: datasource=npm depName=bun
 export BUN_VERSION=1.4.0
-echo "Installing Bun ${BUN_VERSION}..."
 
-if curl -fsSL -o bun-linux-x64.zip https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-x64.zip; then
-  unzip bun-linux-x64.zip -d /tmp/bun
-  rm bun-linux-x64.zip
-  mv /tmp/bun/bun-linux-x64/bun /usr/local/bin/bun
-  chmod a+x /usr/local/bin/bun
-  ln -sf /usr/local/bin/bun /usr/local/bin/bunx
-  bun --version
+echo "Installing Bun ${BUN_VERSION}..."
+start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+
+if install-tool bun $BUN_VERSION; then
+  end_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+  cat > /usr/local/sbin/bunx <<'EOF'
+#!/bin/bash
+exec bun x "$@"
+EOF
+  chmod a+x /usr/local/sbin/bunx
+  record_docker_metric "tool-install" "bun" "${BUN_VERSION}" "${start_time}" "${end_time}" "true"
   echo "✅ Bun installation completed successfully"
 else
-  error_msg="Failed to download or install Bun"
+  end_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+  error_msg="Failed to install Bun"
+  record_docker_metric "tool-install" "bun" "${BUN_VERSION}" "${start_time}" "${end_time}" "false" "${error_msg}"
   record_failure "${error_msg}" "docker" "docker-issues" "true" "{\"tool\":\"bun\",\"version\":\"${BUN_VERSION}\"}"
   echo "❌ Bun installation failed"
   exit 1
