@@ -157,7 +157,7 @@ Routing Bun through `install-tool` puts the whole lifecycle back under Container
 
 - **Record success only after the whole setup step succeeds**, not immediately after the primary command.
 
-- **Verify runtime changes on `main`, not on the PR.** The `Self-test` step lives in the **Test** job of `.github/workflows/main.yaml` and is gated on push-to-default-branch, so `action.yaml` and `docker/**` changes are never exercised end-to-end by PR CI. Reproduce locally against the pinned image before merging.
+- **Verify runtime changes locally before merging.** The `Self-test` step never runs on pull requests, so `action.yaml` and `docker/**` changes are unexercised until they land on `main`. See [`../workflow-issues/self-test-runs-only-after-merge-2026-08-26.md`](../workflow-issues/self-test-runs-only-after-merge-2026-08-26.md).
 
 ## Related Issues
 
