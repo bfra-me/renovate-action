@@ -136,5 +136,6 @@ Record exit status and exact error text per matrix row. One variable per run.
 ## Related
 
 - [`../runtime-errors/bun-install-tool-permission-denied-2026-08-26.md`](../runtime-errors/bun-install-tool-permission-denied-2026-08-26.md) — the bug found by this practice; its isolation matrix is the worked example above
+- [`semantic-release-dry-run-skips-notes-2026-08-26.md`](./semantic-release-dry-run-skips-notes-2026-08-26.md) — the release pipeline has a separate check that also doesn't prove what it appears to
 - [#3686](https://github.com/bfra-me/renovate-action/pull/3686), [#3690](https://github.com/bfra-me/renovate-action/pull/3690) — runtime changes whose PR CI proved nothing
 - `docs/brainstorms/2026-08-24-trusted-action-self-test-requirements.md` — the trust-boundary requirements this gate implements
