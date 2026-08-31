@@ -66,7 +66,7 @@
     "prettier": "3.9.6",
     "semantic-release": "25.0.9",
     "semantic-release-export-data": "1.2.0",
-    "simple-git-hooks": "2.13.1",
+    "simple-git-hooks": "2.14.0",
     "tsup": "8.5.1",
     "typescript": "6.0.3",
     "vitest": "4.1.11"
