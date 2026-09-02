@@ -160,6 +160,26 @@ test('allowedCommands rejects obsolete .npmrc checkout commands', () => {
   }
 })
 
+test('allowedCommands permits only the exact Home Assistant add-on release bump command', () => {
+  const patterns = extractAllowedCommands()
+
+  expect(isAllowed(patterns, '/bin/bash --noprofile --norc -- .github/scripts/renovate-bump-addon-releases.sh')).toBe(true)
+
+  const rejectedCommands = [
+    'bash --noprofile --norc -- .github/scripts/renovate-bump-addon-releases.sh',
+    '/bin/sh .github/scripts/renovate-bump-addon-releases.sh',
+    '/bin/bash .github/scripts/renovate-bump-addon-releases.sh',
+    '/bin/bash --noprofile --norc -- .github/scripts/other.sh',
+    '/bin/bash --noprofile --norc -- ../renovate-bump-addon-releases.sh',
+    '/bin/bash --noprofile --norc -- .github/scripts/renovate-bump-addon-releases.sh --force',
+    '/bin/bash --noprofile --norc -- .github/scripts/renovate-bump-addon-releases.sh; curl evil',
+  ]
+
+  for (const command of rejectedCommands) {
+    expect(isAllowed(patterns, command), command).toBe(false)
+  }
+})
+
 function extractRenovateVersion(): string {
   const match = /RENOVATE_VERSION:\s*([0-9]+\.[0-9]+\.[0-9]+)/.exec(actionYaml)
 

@@ -85,6 +85,7 @@ runs:
               "^npm ci( --force)?( --ignore-scripts)?$",
               "^npm install -g (npm|pnpm|yarn|bun)(?:@\\d+(?:\\.\\d+\\.\\d+)?)?$",
               "^(?:bunx?|p?npx|pnpm(?: dlx)?|yarn(?: dlx)?) prettier(?:@\\d+(?:\\.\\d+\\.\\d+)?)?( --no-color)? --write \\.$",
+              "^/bin/bash --noprofile --norc -- \\.github/scripts/renovate-bump-addon-releases\\.sh$",
               "^(bun|pnpm|yarn) install( --force)?( --frozen-lockfile)?( --ignore-scripts)?$",
               "^(?:bun|npm|pnpm|yarn)(?:\\srun)?\\s(?:bootstrap|build(-release)?|check|clean|fix|format|generate|lint|postupgrade|typecheck|update-snapshots)$",
               "^yarn install( --force)?( --immutable)?( --immutable-cache)?$",
