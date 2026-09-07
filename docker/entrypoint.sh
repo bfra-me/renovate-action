@@ -164,7 +164,7 @@ else
 fi
 
 # renovate: datasource=npm depName=bun
-export BUN_VERSION=1.4.0
+export BUN_VERSION=1.4.1
 
 echo "Installing Bun ${BUN_VERSION}..."
 start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
