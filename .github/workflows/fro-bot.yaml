@@ -424,6 +424,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: >-
+            ${{ !contains(fromJSON('["pull_request", "issue_comment", "issues"]'), github.event_name) }}
           ref: >-
             ${{
               (github.event.issue.pull_request && format('refs/pull/{0}/head', github.event.issue.number))
