@@ -63,7 +63,7 @@
     "jiti": "2.7.0",
     "js-yaml": "4.3.2",
     "lint-staged": "17.5.1",
-    "prettier": "3.9.7",
+    "prettier": "3.9.8",
     "semantic-release": "25.0.9",
     "semantic-release-export-data": "1.2.0",
     "simple-git-hooks": "2.14.0",
