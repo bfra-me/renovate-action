@@ -124,7 +124,7 @@ record_failure() {
 }
 
 # renovate: datasource=github-releases depName=mikefarah/yq
-export YQ_VERSION=v4.53.6
+export YQ_VERSION=v4.54.1
 
 echo "Installing yq ${YQ_VERSION}..."
 start_time=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
