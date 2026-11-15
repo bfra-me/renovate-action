@@ -424,8 +424,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-          persist-credentials: >-
-            ${{ !contains(fromJSON('["pull_request", "issue_comment", "issues"]'), github.event_name) }}
+          persist-credentials: false
           ref: >-
             ${{
               (github.event.issue.pull_request && format('refs/pull/{0}/head', github.event.issue.number))
@@ -447,7 +446,7 @@ jobs:
         run: pnpm install
 
       - name: Run Fro Bot
-        uses: fro-bot/agent@95b0fbf4e39ff2d1c8431050c51260de7bbd34ed # v0.144.1
+        uses: fro-bot/agent@4e394905b7eafda2d7424816eb7846d3f09c40df # v0.144.2
         env:
           OPENCODE_PROMPT_ARTIFACT: 'true'
           PROMPT: >-
@@ -460,6 +459,7 @@ jobs:
               || ''
             }}
         with:
+          isolate-agent: true
           github-token: ${{ secrets.FRO_BOT_PAT }}
           auth-json: ${{ secrets.OPENCODE_AUTH_JSON }}
           model: ${{ vars.FRO_BOT_MODEL }}
